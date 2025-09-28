@@ -9,12 +9,19 @@ namespace Models
 {
     public class User
     {
+        int userId;
         string userName;
         string userEmail;
         string userPassword;
         string userAddress;
         int cityId;
         string userPhoneNumber;
+
+        public int UserId
+        {
+            get { return userId; }
+            set { userId = value; }
+        }
 
         [Required(ErrorMessage = "You must enter your name")]
         [StringLength(15, MinimumLength = 2, ErrorMessage = "First name cannot be longer than 15 characters and less than 2")]
