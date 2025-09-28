@@ -10,7 +10,7 @@ namespace Models
     {
         int typeId;
         string typeName;
-        int TypeCode; // 1 = Work/gaming/laptop 2 = ram type ddr4/ddr3 3 = storagetype ssd/nvme2
+        int typeCode; // 1 = Work/gaming/laptop 2 = ram type ddr4/ddr3 3 = storagetype ssd/nvme2
 
         public string TypeName
         {
@@ -20,8 +20,8 @@ namespace Models
 
         public int TypeCode
         {
-            get { return this.TypeCode; }
-            set { this.TypeCode = value; }
+            get { return this.typeCode; }
+            set { this.typeCode = value; }
         }
 
 
