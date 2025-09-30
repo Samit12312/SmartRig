@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public class User
+    public class User:Model
     {
         int userId;
         string userName;
@@ -29,28 +29,36 @@ namespace Models
         public string UserName
         {
             get { return userName; }
-            set { userName = value; }
+            set { userName = value; 
+            ValidateProperty(value,"UserName");
+            }
         }
         [Required(ErrorMessage = "You must enter your email address")]
         [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
         public string UserEmail
         {
             get { return userEmail; }
-            set { userEmail = value; }
+            set { userEmail = value;
+                ValidateProperty(value, "UserEmail");
+            }
         }
         [Required(ErrorMessage = "You must enter your password")]
         [StringLength(25, MinimumLength = 5, ErrorMessage = "Password must be between 4 and 25 characters.")]
         [RegularExpression(@"^(?=.*\d)", ErrorMessage = "Password must contain at least one number.")]
-        public string Password
+        public string UserPassword
         {
             get { return userPassword; }
-            set { userPassword = value; }
+            set { userPassword = value;
+                ValidateProperty(value, "UserPassword");
+            }
         }
         [Required(ErrorMessage = "You must enter your address")]
         public string UserAddress
         {
             get { return userAddress; }
-            set { userAddress = value; }
+            set { userAddress = value;
+                ValidateProperty(value, "UserAddress");
+            }
         }
         [Required(ErrorMessage = "You must enter your phone number")]
         [Phone(ErrorMessage = "Please enter a valid phone number")]
