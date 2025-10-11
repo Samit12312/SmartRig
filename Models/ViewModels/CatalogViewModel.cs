@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Models.ViewModels
 {
-    internal class CatalogViewModel
+    public class CatalogViewModel
     {
+        public List<Computer>? AllComputers { get; set; }
+        public List<Type>? types { get; set; }
+        public List<Company>? Companys { get; set; }
+        public List<OperatingSystem>? operatingSystems { get; set; }
     }
 }
