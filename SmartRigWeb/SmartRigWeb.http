@@ -1,0 +1,6 @@
+@SmartRigWeb_HostAddress = http://localhost:5195
+
+GET {{SmartRigWeb_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
