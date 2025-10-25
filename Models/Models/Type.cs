@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Models
 {
@@ -10,7 +6,13 @@ namespace Models
     {
         int typeId;
         string typeName;
-        int typeCode; // 1 = Work/gaming/laptop 2 = ram type ddr4/ddr3 3 = storagetype ssd/nvme2
+        int typeCode; // 1 = Work/gaming/laptop, 2 = RAM type (DDR4/DDR3), 3 = storage type (SSD/NVMe2)
+
+        public int TypeId
+        {
+            get { return this.typeId; }
+            set { this.typeId = value; }
+        }
 
         public string TypeName
         {
@@ -23,8 +25,5 @@ namespace Models
             get { return this.typeCode; }
             set { this.typeCode = value; }
         }
-
-
-
     }
 }

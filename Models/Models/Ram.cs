@@ -16,6 +16,12 @@ namespace Models
         int ramPrice;
         int ramCompanyId;
 
+        public int RamId
+        {
+            get { return this.ramId; }
+            set { this.ramId = value; }
+        }
+
         public string RamName
         {
             get { return this.ramName; }
@@ -51,8 +57,5 @@ namespace Models
             get { return this.ramCompanyId; }
             set { this.ramCompanyId = value; }
         }
-
-
-
     }
 }

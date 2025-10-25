@@ -1,27 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
 
-namespace Models
-{
-    public class Company
+    namespace Models
     {
-        int companyId;
-        string companyName;
-        public int CompanyId
+        public class Company
         {
-            get { return this.companyId; }
-            set { this.companyId = value; }
+            int companyId;
+            string companyName;
+            public int CompanyId
+            {
+                get { return this.companyId; }
+                set { this.companyId = value; }
+            }
+
+            public string CompanyName
+            {
+                get { return this.companyName; }
+                set { this.companyName = value; }
+            }
+
+
         }
-
-        public string CompanyName
-        {
-            get { return this.companyName; }
-            set { this.companyName = value; }
-        }
-
-
     }
-}

@@ -15,6 +15,12 @@ namespace Models
         int gpuPrice;
         int gpuCompanyId;
 
+        public int GpuId
+        {
+            get { return this.gpuId; }
+            set { this.gpuId = value; }
+        }
+
         public string GpuName
         {
             get { return this.gpuName; }
@@ -44,8 +50,5 @@ namespace Models
             get { return this.gpuCompanyId; }
             set { this.gpuCompanyId = value; }
         }
-
-
-
     }
 }

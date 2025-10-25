@@ -13,6 +13,13 @@ namespace Models
         int powerSupplyPrice;
         int powerSupplyWatt;
         int powerSupplyCompanyId;
+
+        public int PowerSupplyId
+        {
+            get { return this.powerSupplyId; }
+            set { this.powerSupplyId = value; }
+        }
+
         public string PowerSupplyName
         {
             get { return this.powerSupplyName; }
@@ -36,8 +43,5 @@ namespace Models
             get { return this.powerSupplyCompanyId; }
             set { this.powerSupplyCompanyId = value; }
         }
-
-
-
     }
 }
