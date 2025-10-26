@@ -53,7 +53,9 @@ namespace SmartRigWeb
         public IDataReader Select(string sql)
         {
             this.command.CommandText = sql;
-            return this.command.ExecuteReader();
+            IDataReader dataReader = this.command.ExecuteReader();
+            this.command.Parameters.Clear();
+            return dataReader;
         }
 
         public int Update(string sql)
@@ -63,7 +65,13 @@ namespace SmartRigWeb
         private int ChangeDb(string sql) 
         {
             this.command.CommandText = sql;
-            return this.command.ExecuteNonQuery();
+            int records = this.command.ExecuteNonQuery();
+            this.command.Parameters.Clear();
+            return records;
+        }
+        public void AddParameter(string name, string value)
+        {
+            this.command.Parameters.Add(new OleDbParameter(name, value))
         }
     }
 }
