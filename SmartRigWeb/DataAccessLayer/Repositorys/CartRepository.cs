@@ -8,9 +8,7 @@ namespace SmartRigWeb
     public class CartRepository : Repository, IRepository<Cart>
     {
         public CartRepository(OleDbConext dbContext, ModelsFactory modelsFactory)
-            : base(dbContext, modelsFactory)
-        {
-        }
+            : base(dbContext, modelsFactory) { }
 
         public bool Create(Cart item)
         {
@@ -28,7 +26,7 @@ namespace SmartRigWeb
         {
             string sql = @"DELETE FROM [Cart] WHERE CartId = @CartId";
             this.dbContext.AddParameter("@CartId", Id);
-            return this.dbContext.Insert(sql) > 0;
+            return this.dbContext.Delete(sql) > 0;
         }
 
         public List<Cart> GetAll()
@@ -39,14 +37,7 @@ namespace SmartRigWeb
             {
                 while (reader.Read())
                 {
-                    Cart c = new Cart
-                    {
-                        CartId = Convert.ToInt32(reader["CartId"]),
-                        UserId = Convert.ToInt32(reader["UserId"]),
-                        Date = reader["Date"].ToString(),
-                        IsPayed = Convert.ToBoolean(reader["IsPayed"])
-                    };
-                    list.Add(c);
+                    list.Add(this.modelsFactory.CartCreator.CreateModel(reader));
                 }
             }
             return list;
@@ -59,13 +50,7 @@ namespace SmartRigWeb
             using (IDataReader reader = this.dbContext.Select(sql))
             {
                 reader.Read();
-                return new Cart
-                {
-                    CartId = Convert.ToInt32(reader["CartId"]),
-                    UserId = Convert.ToInt32(reader["UserId"]),
-                    Date = reader["Date"].ToString(),
-                    IsPayed = Convert.ToBoolean(reader["IsPayed"])
-                };
+                return this.modelsFactory.CartCreator.CreateModel(reader);
             }
         }
 

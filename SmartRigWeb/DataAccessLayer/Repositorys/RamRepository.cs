@@ -15,12 +15,11 @@ namespace SmartRigWeb
         public bool Create(Ram item)
         {
             string sql = @"INSERT INTO [Ram] 
-                           (RamName, RamSize, RamTypeId, RamSpeed, RamPrice, RamCompanyId)
-                           VALUES (@RamName, @RamSize, @RamTypeId, @RamSpeed, @RamPrice, @RamCompanyId)";
+                           (RamName, RamSize, RamSpeed, RamPrice, RamCompanyId) 
+                           VALUES (@RamName, @RamSize, @RamSpeed, @RamPrice, @RamCompanyId)";
 
             this.dbContext.AddParameter("@RamName", item.RamName);
             this.dbContext.AddParameter("@RamSize", item.RamSize);
-            this.dbContext.AddParameter("@RamTypeId", item.RamTypeId.ToString());
             this.dbContext.AddParameter("@RamSpeed", item.RamSpeed);
             this.dbContext.AddParameter("@RamPrice", item.RamPrice.ToString());
             this.dbContext.AddParameter("@RamCompanyId", item.RamCompanyId.ToString());
@@ -37,16 +36,16 @@ namespace SmartRigWeb
 
         public List<Ram> GetAll()
         {
-            List<Ram> rams = new List<Ram>();
+            List<Ram> list = new List<Ram>();
             string sql = @"SELECT * FROM [Ram]";
             using (IDataReader reader = this.dbContext.Select(sql))
             {
                 while (reader.Read())
                 {
-                    rams.Add(this.modelsFactory.RamCreator.CreateModel(reader));
+                    list.Add(this.modelsFactory.RamCreator.CreateModel(reader));
                 }
             }
-            return rams;
+            return list;
         }
 
         public Ram GetById(int id)
@@ -65,7 +64,6 @@ namespace SmartRigWeb
             string sql = @"UPDATE [Ram] 
                            SET RamName = @RamName, 
                                RamSize = @RamSize, 
-                               RamTypeId = @RamTypeId, 
                                RamSpeed = @RamSpeed, 
                                RamPrice = @RamPrice, 
                                RamCompanyId = @RamCompanyId
@@ -73,7 +71,6 @@ namespace SmartRigWeb
 
             this.dbContext.AddParameter("@RamName", item.RamName);
             this.dbContext.AddParameter("@RamSize", item.RamSize);
-            this.dbContext.AddParameter("@RamTypeId", item.RamTypeId.ToString());
             this.dbContext.AddParameter("@RamSpeed", item.RamSpeed);
             this.dbContext.AddParameter("@RamPrice", item.RamPrice.ToString());
             this.dbContext.AddParameter("@RamCompanyId", item.RamCompanyId.ToString());

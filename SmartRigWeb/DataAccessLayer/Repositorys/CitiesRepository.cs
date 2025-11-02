@@ -12,10 +12,10 @@ namespace SmartRigWeb
         {
         }
 
-        // Method to create a new City entry in the database
         public bool Create(Cities item)
         {
-            string sql = @"INSERT INTO [Cities] (CityName) 
+            string sql = @"INSERT INTO [Cities] 
+                           (CityName) 
                            VALUES (@CityName)";
 
             this.dbContext.AddParameter("@CityName", item.CityName);
@@ -23,7 +23,6 @@ namespace SmartRigWeb
             return this.dbContext.Insert(sql) > 0;
         }
 
-        // Method to delete a City record based on its ID
         public bool Delete(string Id)
         {
             string sql = @"DELETE FROM [Cities] WHERE CityId = @CityId";
@@ -31,7 +30,6 @@ namespace SmartRigWeb
             return this.dbContext.Insert(sql) > 0;
         }
 
-        // Method to get all cities from the database
         public List<Cities> GetAll()
         {
             List<Cities> list = new List<Cities>();
@@ -40,18 +38,12 @@ namespace SmartRigWeb
             {
                 while (reader.Read())
                 {
-                    Cities city = new Cities
-                    {
-                        CityId = Convert.ToInt32(reader["CityId"]),
-                        CityName = reader["CityName"].ToString()
-                    };
-                    list.Add(city);
+                    list.Add(this.modelsFactory.CitiesCreator.CreateModel(reader));
                 }
             }
             return list;
         }
 
-        // Method to get a specific city by its ID
         public Cities GetById(int id)
         {
             string sql = @"SELECT * FROM [Cities] WHERE CityId = @CityId";
@@ -59,19 +51,14 @@ namespace SmartRigWeb
             using (IDataReader reader = this.dbContext.Select(sql))
             {
                 reader.Read();
-                return new Cities
-                {
-                    CityId = Convert.ToInt32(reader["CityId"]),
-                    CityName = reader["CityName"].ToString()
-                };
+                return this.modelsFactory.CitiesCreator.CreateModel(reader);
             }
         }
 
-        // Method to update an existing city record
         public bool Update(Cities item)
         {
             string sql = @"UPDATE [Cities] 
-                           SET CityName = @CityName
+                           SET CityName = @CityName 
                            WHERE CityId = @CityId";
 
             this.dbContext.AddParameter("@CityName", item.CityName);

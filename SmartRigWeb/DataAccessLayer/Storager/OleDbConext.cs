@@ -71,7 +71,14 @@ namespace SmartRigWeb
         }
         public void AddParameter(string name, string value)
         {
-            this.command.Parameters.Add(new OleDbParameter(name, value))
+            this.command.Parameters.Add(new OleDbParameter(name, value));
+        }
+        public object GetValue(string sql)
+        {
+            this.command.CommandText = sql;
+            object value = this.command.ExecuteScalar();
+            this.command.Parameters.Clear();
+            return value;
         }
     }
 }

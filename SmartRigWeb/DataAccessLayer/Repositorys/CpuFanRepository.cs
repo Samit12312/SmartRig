@@ -1,33 +1,26 @@
 ﻿using Models;
-using System;
-using System.Collections.Generic;
 using System.Data;
+using System.Collections.Generic;
 
 namespace SmartRigWeb
 {
     public class CpuFanRepository : Repository, IRepository<CpuFan>
     {
         public CpuFanRepository(OleDbConext dbContext, ModelsFactory modelsFactory)
-            : base(dbContext, modelsFactory)
-        {
-        }
+            : base(dbContext, modelsFactory) { }
 
         public bool Create(CpuFan item)
         {
-            string sql = @"INSERT INTO [CpuFan] 
-                           (CpuFanName, CpuFanPrice, CpuFanCompanyId)
-                           VALUES (@CpuFanName, @CpuFanPrice, @CpuFanCompanyId)";
-
+            string sql = @"INSERT INTO [CpuFan] (CpuFanName, CpuFanCompanyId, CpuFanPrice) VALUES (@CpuFanName, @CpuFanCompanyId, @CpuFanPrice)";
             this.dbContext.AddParameter("@CpuFanName", item.CpuFanName);
-            this.dbContext.AddParameter("@CpuFanPrice", item.CpuFanPrice.ToString());
             this.dbContext.AddParameter("@CpuFanCompanyId", item.CpuFanCompanyId.ToString());
-
+            this.dbContext.AddParameter("@CpuFanPrice", item.CpuFanPrice.ToString());
             return this.dbContext.Insert(sql) > 0;
         }
 
         public bool Delete(string Id)
         {
-            string sql = @"DELETE FROM [CpuFan] WHERE CpuFanId = @CpuFanId";
+            string sql = @"DELETE FROM [CpuFan] WHERE CpuFanId=@CpuFanId";
             this.dbContext.AddParameter("@CpuFanId", Id);
             return this.dbContext.Insert(sql) > 0;
         }
@@ -37,52 +30,29 @@ namespace SmartRigWeb
             List<CpuFan> list = new List<CpuFan>();
             string sql = @"SELECT * FROM [CpuFan]";
             using (IDataReader reader = this.dbContext.Select(sql))
-            {
                 while (reader.Read())
-                {
-                    CpuFan cpuFan = new CpuFan
-                    {
-                        CpuFanId = Convert.ToInt32(reader["CpuFanId"]),
-                        CpuFanName = reader["CpuFanName"].ToString(),
-                        CpuFanPrice = Convert.ToInt32(reader["CpuFanPrice"]),
-                        CpuFanCompanyId = Convert.ToInt32(reader["CpuFanCompanyId"])
-                    };
-                    list.Add(cpuFan);
-                }
-            }
+                    list.Add(this.modelsFactory.CpuFanCreator.CreateModel(reader));
             return list;
         }
 
         public CpuFan GetById(int id)
         {
-            string sql = @"SELECT * FROM [CpuFan] WHERE CpuFanId = @CpuFanId";
+            string sql = @"SELECT * FROM [CpuFan] WHERE CpuFanId=@CpuFanId";
             this.dbContext.AddParameter("@CpuFanId", id.ToString());
             using (IDataReader reader = this.dbContext.Select(sql))
             {
                 reader.Read();
-                return new CpuFan
-                {
-                    CpuFanId = Convert.ToInt32(reader["CpuFanId"]),
-                    CpuFanName = reader["CpuFanName"].ToString(),
-                    CpuFanPrice = Convert.ToInt32(reader["CpuFanPrice"]),
-                    CpuFanCompanyId = Convert.ToInt32(reader["CpuFanCompanyId"])
-                };
+                return this.modelsFactory.CpuFanCreator.CreateModel(reader);
             }
         }
 
         public bool Update(CpuFan item)
         {
-            string sql = @"UPDATE [CpuFan] 
-                           SET CpuFanName = @CpuFanName, 
-                               CpuFanPrice = @CpuFanPrice, 
-                               CpuFanCompanyId = @CpuFanCompanyId
-                           WHERE CpuFanId = @CpuFanId";
-
+            string sql = @"UPDATE [CpuFan] SET CpuFanName=@CpuFanName, CpuFanCompanyId=@CpuFanCompanyId, CpuFanPrice=@CpuFanPrice WHERE CpuFanId=@CpuFanId";
             this.dbContext.AddParameter("@CpuFanName", item.CpuFanName);
-            this.dbContext.AddParameter("@CpuFanPrice", item.CpuFanPrice.ToString());
             this.dbContext.AddParameter("@CpuFanCompanyId", item.CpuFanCompanyId.ToString());
+            this.dbContext.AddParameter("@CpuFanPrice", item.CpuFanPrice.ToString());
             this.dbContext.AddParameter("@CpuFanId", item.CpuFanId.ToString());
-
             return this.dbContext.Update(sql) > 0;
         }
     }

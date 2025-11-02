@@ -1,4 +1,6 @@
-﻿namespace SmartRigWeb
+﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+
+namespace SmartRigWeb
 {
     public abstract class Repository 
     {

@@ -1,26 +1,26 @@
 ﻿using Models;
-using System.Data;
+using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace SmartRigWeb
 {
-    public class StorageRepository : Repository, IRepository<Models.Storage>
+    public class StorageRepository : Repository, IRepository<Storage>
     {
         public StorageRepository(OleDbConext dbContext, ModelsFactory modelsFactory)
             : base(dbContext, modelsFactory)
         {
         }
 
-        public bool Create(Models.Storage item)
+        public bool Create(Storage item)
         {
             string sql = @"INSERT INTO [Storage] 
-                           (StorageName, StorageSize, StorageSpeed, StorageType, StoragePrice, StorageCompanyId)
-                           VALUES (@StorageName, @StorageSize, @StorageSpeed, @StorageType, @StoragePrice, @StorageCompanyId)";
+                           (StorageName, StorageSize, StorageSpeed, StoragePrice, StorageCompanyId) 
+                           VALUES (@StorageName, @StorageSize, @StorageSpeed, @StoragePrice, @StorageCompanyId)";
 
             this.dbContext.AddParameter("@StorageName", item.StorageName);
             this.dbContext.AddParameter("@StorageSize", item.StorageSize);
             this.dbContext.AddParameter("@StorageSpeed", item.StorageSpeed);
-            this.dbContext.AddParameter("@StorageType", item.StorageType.ToString());
             this.dbContext.AddParameter("@StoragePrice", item.StoragePrice.ToString());
             this.dbContext.AddParameter("@StorageCompanyId", item.StorageCompanyId.ToString());
 
@@ -34,21 +34,21 @@ namespace SmartRigWeb
             return this.dbContext.Insert(sql) > 0;
         }
 
-        public List<Models.Storage> GetAll()
+        public List<Storage> GetAll()
         {
-            List<Models.Storage> storages = new List<Models.Storage>();
+            List<Storage> list = new List<Storage>();
             string sql = @"SELECT * FROM [Storage]";
             using (IDataReader reader = this.dbContext.Select(sql))
             {
                 while (reader.Read())
                 {
-                    storages.Add(this.modelsFactory.StorageCreator.CreateModel(reader));
+                    list.Add(this.modelsFactory.StorageCreator.CreateModel(reader));
                 }
             }
-            return storages;
+            return list;
         }
 
-        public Models.Storage GetById(int id)
+        public Storage GetById(int id)
         {
             string sql = @"SELECT * FROM [Storage] WHERE StorageId = @StorageId";
             this.dbContext.AddParameter("@StorageId", id.ToString());
@@ -59,13 +59,12 @@ namespace SmartRigWeb
             }
         }
 
-        public bool Update(Models.Storage item)
+        public bool Update(Storage item)
         {
             string sql = @"UPDATE [Storage] 
                            SET StorageName = @StorageName, 
                                StorageSize = @StorageSize, 
                                StorageSpeed = @StorageSpeed, 
-                               StorageType = @StorageType, 
                                StoragePrice = @StoragePrice, 
                                StorageCompanyId = @StorageCompanyId
                            WHERE StorageId = @StorageId";
@@ -73,7 +72,6 @@ namespace SmartRigWeb
             this.dbContext.AddParameter("@StorageName", item.StorageName);
             this.dbContext.AddParameter("@StorageSize", item.StorageSize);
             this.dbContext.AddParameter("@StorageSpeed", item.StorageSpeed);
-            this.dbContext.AddParameter("@StorageType", item.StorageType.ToString());
             this.dbContext.AddParameter("@StoragePrice", item.StoragePrice.ToString());
             this.dbContext.AddParameter("@StorageCompanyId", item.StorageCompanyId.ToString());
             this.dbContext.AddParameter("@StorageId", item.StorageId.ToString());

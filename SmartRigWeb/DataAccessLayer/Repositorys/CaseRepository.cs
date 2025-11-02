@@ -18,8 +18,8 @@ namespace SmartRigWeb
                            VALUES (@CaseName, @CasePrice, @CaseCompanyId)";
 
             this.dbContext.AddParameter("@CaseName", item.CaseName);
-            this.dbContext.AddParameter("@CasePrice", item.CasePrice);
-            this.dbContext.AddParameter("@CaseCompanyId", item.CaseCompanyId);
+            this.dbContext.AddParameter("@CasePrice", item.CasePrice.ToString());
+            this.dbContext.AddParameter("@CaseCompanyId", item.CaseCompanyId.ToString());
 
             return this.dbContext.Insert(sql) > 0;
         }
@@ -39,14 +39,7 @@ namespace SmartRigWeb
             {
                 while (reader.Read())
                 {
-                    Case c = new Case
-                    {
-                        CaseId = Convert.ToInt32(reader["CaseId"]),
-                        CaseName = reader["CaseName"].ToString(),
-                        CasePrice = Convert.ToInt32(reader["CasePrice"]),
-                        CaseCompanyId = Convert.ToInt32(reader["CaseCompanyId"])
-                    };
-                    list.Add(c);
+                    list.Add(this.modelsFactory.CaseCreator.CreateModel(reader));
                 }
             }
             return list;
@@ -59,13 +52,7 @@ namespace SmartRigWeb
             using (IDataReader reader = this.dbContext.Select(sql))
             {
                 reader.Read();
-                return new Case
-                {
-                    CaseId = Convert.ToInt32(reader["CaseId"]),
-                    CaseName = reader["CaseName"].ToString(),
-                    CasePrice = Convert.ToInt32(reader["CasePrice"]),
-                    CaseCompanyId = Convert.ToInt32(reader["CaseCompanyId"])
-                };
+                return this.modelsFactory.CaseCreator.CreateModel(reader);
             }
         }
 
@@ -78,8 +65,8 @@ namespace SmartRigWeb
                            WHERE CaseId = @CaseId";
 
             this.dbContext.AddParameter("@CaseName", item.CaseName);
-            this.dbContext.AddParameter("@CasePrice", item.CasePrice);
-            this.dbContext.AddParameter("@CaseCompanyId", item.CaseCompanyId);
+            this.dbContext.AddParameter("@CasePrice", item.CasePrice.ToString());
+            this.dbContext.AddParameter("@CaseCompanyId", item.CaseCompanyId.ToString());
             this.dbContext.AddParameter("@CaseId", item.CaseId.ToString());
 
             return this.dbContext.Update(sql) > 0;

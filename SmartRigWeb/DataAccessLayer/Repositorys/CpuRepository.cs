@@ -15,7 +15,7 @@ namespace SmartRigWeb
         public bool Create(Cpu item)
         {
             string sql = @"INSERT INTO [Cpu] 
-                           (CpuName, CpuPrice, CpuCompanyId)
+                           (CpuName, CpuPrice, CpuCompanyId) 
                            VALUES (@CpuName, @CpuPrice, @CpuCompanyId)";
 
             this.dbContext.AddParameter("@CpuName", item.CpuName);
@@ -40,14 +40,7 @@ namespace SmartRigWeb
             {
                 while (reader.Read())
                 {
-                    Cpu cpu = new Cpu
-                    {
-                        CpuId = Convert.ToInt32(reader["CpuId"]),
-                        CpuName = reader["CpuName"].ToString(),
-                        CpuPrice = Convert.ToInt32(reader["CpuPrice"]),
-                        CpuCompanyId = Convert.ToInt32(reader["CpuCompanyId"])
-                    };
-                    list.Add(cpu);
+                    list.Add(this.modelsFactory.CpuCreator.CreateModel(reader));
                 }
             }
             return list;
@@ -60,13 +53,7 @@ namespace SmartRigWeb
             using (IDataReader reader = this.dbContext.Select(sql))
             {
                 reader.Read();
-                return new Cpu
-                {
-                    CpuId = Convert.ToInt32(reader["CpuId"]),
-                    CpuName = reader["CpuName"].ToString(),
-                    CpuPrice = Convert.ToInt32(reader["CpuPrice"]),
-                    CpuCompanyId = Convert.ToInt32(reader["CpuCompanyId"])
-                };
+                return this.modelsFactory.CpuCreator.CreateModel(reader);
             }
         }
 
@@ -74,6 +61,7 @@ namespace SmartRigWeb
         {
             string sql = @"UPDATE [Cpu] 
                            SET CpuName = @CpuName, 
+                               CpuSpeed = @CpuSpeed, 
                                CpuPrice = @CpuPrice, 
                                CpuCompanyId = @CpuCompanyId
                            WHERE CpuId = @CpuId";

@@ -50,36 +50,53 @@ namespace SmartRigWeb
 
         // method to get all computers from the database
         public List<Computer> GetAll()
+        { 
+            string sql = @"SELECT * FROM [Computer]";
+            return GetComputers(sql);
+        }
+        public List<Computer> GetComputerByType(int TypeId)
+        {
+            string sql = $@"SELECT Computer.ComputerId, Computer.ComputerName, Computer.ComputerTypeId, Computer.CompanyId, Computer.StorageId, Computer.RamId, Computer.CpuId, Computer.GpuId, Computer.Price, Computer.OperatingSystem, Computer.CaseId, Computer.PowerSupplyId, Computer.CpuFanId, Computer.MotherBoardId, Computer.ComputerPicture
+                    FROM Type INNER JOIN Computer ON (Type.TypeId = Computer.ComputerTypeId) AND (Type.TypeId = Computer.ComputerTypeId)
+                    WHERE Computer.ComputerTypeId=@TypeId;";
+            this.dbContext.AddParameter("@TypeId", TypeId.ToString()); // Add parameter for TypeId
+            return GetComputers(sql);
+        }
+        public List<Computer> GetComputersByCompanyId(int CompanyId)
+        {
+            string sql = @"SELECT Computer.ComputerId, Computer.ComputerName, Computer.ComputerTypeId, Computer.CompanyId, Computer.StorageId, Computer.RamId, Computer.CpuId, Computer.GpuId, Computer.Price, Computer.OperatingSystem, Computer.CaseId, Computer.PowerSupplyId, Computer.CpuFanId, Computer.MotherBoardId, Computer.ComputerPicture
+                   FROM Company INNER JOIN Computer 
+                   ON Company.CompanyId = Computer.CompanyId
+                   WHERE Computer.CompanyId = @CompanyId;";
+
+            this.dbContext.AddParameter("@CompanyId", CompanyId.ToString()); // Add parameter for CompanyId
+            return GetComputers(sql);
+        }
+        public List<Computer> GetComputersByOperatingSystemId(int OperatingSystemId)
+        {
+            string sql = @"SELECT Computer.ComputerId, Computer.ComputerName, Computer.ComputerTypeId, Computer.CompanyId, Computer.StorageId, Computer.RamId, Computer.CpuId, Computer.GpuId, Computer.Price, Computer.OperatingSystem, Computer.CaseId, Computer.PowerSupplyId, Computer.CpuFanId, Computer.MotherBoardId, Computer.ComputerPicture
+                   FROM OperatingSystem INNER JOIN Computer 
+                   ON OperatingSystem.OperatingSystemId = Computer.OperatingSystem
+                   WHERE Computer.OperatingSystem = @OperatingSystemId;";
+
+            this.dbContext.AddParameter("@OperatingSystemId", OperatingSystemId.ToString()); // Add parameter for OperatingSystemId
+            return GetComputers(sql);
+        }
+
+        private List<Computer> GetComputers(string sql)
         {
             List<Computer> list = new List<Computer>();
-            string sql = @"SELECT * FROM [Computer]";
             using (IDataReader reader = this.dbContext.Select(sql))
             {
                 while (reader.Read())
                 {
-                    Computer computer = new Computer
-                    {
-                        ComputerId = Convert.ToInt32(reader["ComputerId"]),
-                        ComputerName = reader["ComputerName"].ToString(),
-                        ComputerTypeId = Convert.ToInt32(reader["ComputerTypeId"]),
-                        CompanyId = Convert.ToInt32(reader["CompanyId"]),
-                        StroageId = Convert.ToInt32(reader["StroageId"]),
-                        RamId = Convert.ToInt32(reader["RamId"]),
-                        CpuId = Convert.ToInt32(reader["CpuId"]),
-                        GpuId = Convert.ToInt32(reader["GpuId"]),
-                        Price = Convert.ToInt32(reader["Price"]),
-                        OperatingSystemId = Convert.ToInt32(reader["OperatingSystemId"]),
-                        CaseId = Convert.ToInt32(reader["CaseId"]),
-                        PowerSupplyId = Convert.ToInt32(reader["PowerSupplyId"]),
-                        CpuFanId = Convert.ToInt32(reader["CpuFanId"]),
-                        MotherBoardId = Convert.ToInt32(reader["MotherBoardId"]),
-                        ComputerPicture = reader["ComputerPicture"].ToString()
-                    };
-                    list.Add(computer);
+                    list.Add(this.modelsFactory.ComputerCreator.CreateModel(reader));
                 }
             }
             return list;
         }
+        
+
         public Computer GetById(int id)
         {
             string sql = @"SELECT * FROM [Computer] WHERE ComputerId = @ComputerId";
@@ -87,24 +104,7 @@ namespace SmartRigWeb
             using (IDataReader reader = this.dbContext.Select(sql))
             {
                 reader.Read();
-                return new Computer
-                {
-                    ComputerId = Convert.ToInt32(reader["ComputerId"]),
-                    ComputerName = reader["ComputerName"].ToString(),
-                    ComputerTypeId = Convert.ToInt32(reader["ComputerTypeId"]),
-                    CompanyId = Convert.ToInt32(reader["CompanyId"]),
-                    StroageId = Convert.ToInt32(reader["StroageId"]),
-                    RamId = Convert.ToInt32(reader["RamId"]),
-                    CpuId = Convert.ToInt32(reader["CpuId"]),
-                    GpuId = Convert.ToInt32(reader["GpuId"]),
-                    Price = Convert.ToInt32(reader["Price"]),
-                    OperatingSystemId = Convert.ToInt32(reader["OperatingSystemId"]),
-                    CaseId = Convert.ToInt32(reader["CaseId"]),
-                    PowerSupplyId = Convert.ToInt32(reader["PowerSupplyId"]),
-                    CpuFanId = Convert.ToInt32(reader["CpuFanId"]),
-                    MotherBoardId = Convert.ToInt32(reader["MotherBoardId"]),
-                    ComputerPicture = reader["ComputerPicture"].ToString()
-                };
+                return this.modelsFactory.ComputerCreator.CreateModel(reader);
             }
         }
 
