@@ -88,15 +88,15 @@ namespace SmartRigWeb
 
             return this.dbContext.Update(sql) > 0;
         }
-        public string Login(string gmail, string password)
+        public string Login(string userEmail, string userPassword)
         {
             string sql = @"SELECT UserId, UserName, UserEmail, UserPassword 
                    FROM [User] 
                    WHERE UserEmail = @UserEmail AND UserPassword = @UserPassword";
 
             // Add parameters to the query to avoid SQL injection
-            this.dbContext.AddParameter("@UserEmail", gmail);
-            this.dbContext.AddParameter("@UserPassword", password);
+            this.dbContext.AddParameter("@UserEmail", userEmail);
+            this.dbContext.AddParameter("@UserPassword", userPassword);
             return this.dbContext.GetValue(sql).ToString();
 
         }
