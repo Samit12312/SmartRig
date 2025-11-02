@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public class User:Model
+    public class User : Model
     {
         int userId;
         string userName;
@@ -16,6 +16,7 @@ namespace Models
         string userAddress;
         int cityId;
         string userPhoneNumber;
+        bool manager;
 
         public int UserId
         {
@@ -29,37 +30,49 @@ namespace Models
         public string UserName
         {
             get { return userName; }
-            set { userName = value; 
-            ValidateProperty(value,"UserName");
+            set
+            {
+                userName = value;
+                ValidateProperty(value, "UserName");
             }
         }
+
         [Required(ErrorMessage = "You must enter your email address")]
         [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
         public string UserEmail
         {
             get { return userEmail; }
-            set { userEmail = value;
+            set
+            {
+                userEmail = value;
                 ValidateProperty(value, "UserEmail");
             }
         }
+
         [Required(ErrorMessage = "You must enter your password")]
         [StringLength(25, MinimumLength = 5, ErrorMessage = "Password must be between 4 and 25 characters.")]
         [RegularExpression(@"^(?=.*\d)", ErrorMessage = "Password must contain at least one number.")]
         public string UserPassword
         {
             get { return userPassword; }
-            set { userPassword = value;
+            set
+            {
+                userPassword = value;
                 ValidateProperty(value, "UserPassword");
             }
         }
+
         [Required(ErrorMessage = "You must enter your address")]
         public string UserAddress
         {
             get { return userAddress; }
-            set { userAddress = value;
+            set
+            {
+                userAddress = value;
                 ValidateProperty(value, "UserAddress");
             }
         }
+
         [Required(ErrorMessage = "You must enter your phone number")]
         [Phone(ErrorMessage = "Please enter a valid phone number")]
         public string UserPhoneNumber
@@ -67,11 +80,22 @@ namespace Models
             get { return userPhoneNumber; }
             set { userPhoneNumber = value; }
         }
+
         [Required(ErrorMessage = "You must enter your city")]
         public int CityId
         {
             get { return cityId; }
             set { cityId = value; }
+        }
+
+        public bool Manager
+        {
+            get { return manager; }
+            set
+            {
+                manager = value;
+                ValidateProperty(value, "Manager");
+            }
         }
     }
 }

@@ -12,16 +12,21 @@ namespace SmartRigWeb
 
         public bool Create(User item)
         {
-            string sql = $@"INSERT INTO [User] (UserName,UserEmail,UserPassword,UserAdress,CityId,UserPhoneNumber)
-                            VALUES ( @UserName, @UserEmail,@UserPassword,@UserAdress, @CityId,@UserPhoneNumber )";
+            string sql = $@"INSERT INTO [User] 
+                    (UserName, UserEmail, UserPassword, UserAdress, CityId, UserPhoneNumber, Manager)
+                    VALUES (@UserName, @UserEmail, @UserPassword, @UserAdress, @CityId, @UserPhoneNumber, @Manager)";
+
             this.dbContext.AddParameter("@UserName", item.UserName);
             this.dbContext.AddParameter("@UserEmail", item.UserEmail);
             this.dbContext.AddParameter("@UserPassword", item.UserPassword);
-            this.dbContext.AddParameter("@UserAddress", item.UserAddress);
+            this.dbContext.AddParameter("@UserAdress", item.UserAddress);
             this.dbContext.AddParameter("@CityId", item.CityId.ToString());
             this.dbContext.AddParameter("@UserPhoneNumber", item.UserPhoneNumber);
-            return this.dbContext.Insert(sql)>0;
+            this.dbContext.AddParameter("@Manager", item.Manager.ToString());
+
+            return this.dbContext.Insert(sql) > 0;
         }
+
 
         public bool Delete(string Id)
         {
@@ -46,17 +51,43 @@ namespace SmartRigWeb
         }
         public User GetById(int id)
         {
-            string sql = @"SELECT * FROM [User] WHERE UserId = @UserId";
+            string sql = $@"SELECT * FROM [User] WHERE UserId = @UserId";
             this.dbContext.AddParameter("@UserId", id.ToString());
-            IDataReader reader = this.dbContext.Select(sql);
-            reader.Read();
-            return this.modelsFactory.UserCreator.CreateModel(reader);
+            using (IDataReader reader = this.dbContext.Select(sql))
+            {
+                reader.Read();
+                return this.modelsFactory.UserCreator.CreateModel(reader);
+            }
+            return null;
         }
 
 
         public bool Update(User item)
         {
-            throw new NotImplementedException();
+            string sql = $@"
+        UPDATE [User]
+        SET 
+            UserName = @UserName,
+            UserEmail = @UserEmail,
+            UserPassword = @UserPassword,
+            UserAdress = @UserAdress,
+            CityId = @CityId,
+            UserPhoneNumber = @UserPhoneNumber,
+            Manager = @Manager
+        WHERE 
+            UserId = @UserId";
+
+            this.dbContext.AddParameter("@UserName", item.UserName);
+            this.dbContext.AddParameter("@UserEmail", item.UserEmail);
+            this.dbContext.AddParameter("@UserPassword", item.UserPassword);
+            this.dbContext.AddParameter("@UserAdress", item.UserAddress);
+            this.dbContext.AddParameter("@CityId", item.CityId.ToString());
+            this.dbContext.AddParameter("@UserPhoneNumber", item.UserPhoneNumber);
+            this.dbContext.AddParameter("@Manager", item.Manager.ToString());
+            this.dbContext.AddParameter("@UserId", item.UserId.ToString());
+
+            return this.dbContext.Update(sql) > 0;
         }
+
     }
 }
