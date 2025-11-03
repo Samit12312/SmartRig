@@ -95,7 +95,27 @@ namespace SmartRigWeb
             }
             return list;
         }
-        
+        public List<Computer> GetByPriceRange(int minPrice, int maxPrice)
+        {
+            string sql = @"SELECT * FROM [Computer]
+                   WHERE Price >= @MinPrice AND Price <= @MaxPrice";
+
+            this.dbContext.AddParameter("@MinPrice", minPrice.ToString());
+            this.dbContext.AddParameter("@MaxPrice", maxPrice.ToString());
+
+            return GetComputers(sql);
+        }
+        public List<Computer> GetByPriceAscending() // from lowest to hightest
+        {
+            string sql = @"SELECT * FROM [Computer] ORDER BY Price ASC";
+            return GetComputers(sql);
+        }
+        public List<Computer> GetByPriceDescending()// from highest to lowest
+        {
+            string sql = @"SELECT * FROM [Computer] ORDER BY Price DESC";
+            return GetComputers(sql);
+        }
+
 
         public Computer GetById(int id)
         {
