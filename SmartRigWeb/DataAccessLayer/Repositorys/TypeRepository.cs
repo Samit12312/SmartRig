@@ -43,6 +43,21 @@ namespace SmartRigWeb
             return types;
         }
 
+        public List<Models.Type> GetAllByTypeCode(int TypeCode)
+        {
+            List<Models.Type> types = new List<Models.Type>();
+            string sql = @"SELECT * FROM [Type] where TypeCode=@TypeCode";
+            this.dbContext.AddParameter("@TypeCode", TypeCode.ToString());
+            using (IDataReader reader = this.dbContext.Select(sql))
+            {
+                while (reader.Read())
+                {
+                    types.Add(this.modelsFactory.TypeCreator.CreateModel(reader));
+                }
+            }
+            return types;
+        }
+
         public Models.Type GetById(int id)
         {
             string sql = @"SELECT * FROM [Type] WHERE TypeId = @TypeId";

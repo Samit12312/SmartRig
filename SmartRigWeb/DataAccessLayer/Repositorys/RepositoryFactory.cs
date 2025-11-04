@@ -23,10 +23,10 @@ namespace SmartRigWeb
         OleDbConext dbContext;
         ModelsFactory modelsFactory;
 
-        public RepositoryFactory(OleDbConext dbContext, ModelsFactory modelsFactory)
+        public RepositoryFactory()
         {
-            this.dbContext = dbContext;
-            this.modelsFactory = modelsFactory;
+            this.dbContext = new OleDbConext();
+            this.modelsFactory = new ModelsFactory();
         }
 
         public UserRepository UserRepository

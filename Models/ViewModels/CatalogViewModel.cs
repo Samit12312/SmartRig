@@ -8,7 +8,7 @@ namespace Models.ViewModels
 {
     public class CatalogViewModel
     {
-        public List<Computer>? AllComputers { get; set; }
+        public List<Computer>? Computers { get; set; }
         public List<Type>? types { get; set; }
         public List<Company>? Companys { get; set; }
         public List<OperatingSystem>? operatingSystems { get; set; }
