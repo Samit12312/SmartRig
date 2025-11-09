@@ -178,5 +178,13 @@ namespace SmartRigWeb
                 return this.cartRepository;
             }
         }
+        public void ConnectDbContext()
+        {
+            this.dbContext.OpenConnection();
+        }
+        public void DisconnectDb()
+        {
+            this.dbContext.CloseConnection();
+        }
     }
 }
