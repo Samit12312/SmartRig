@@ -82,6 +82,20 @@ namespace SmartRigWeb
             this.dbContext.AddParameter("@OperatingSystemId", OperatingSystemId.ToString()); // Add parameter for OperatingSystemId
             return GetComputers(sql);
         }
+        public List<Computer> GetComputersByCartId(int cartId)
+        {
+            string sql = @"SELECT Computer.ComputerId, Computer.ComputerName, Computer.ComputerTypeId, Computer.CompanyId, 
+                          Computer.StorageId, Computer.RamId, Computer.CpuId, Computer.GpuId, Computer.Price, 
+                          Computer.OperatingSystem, Computer.CaseId, Computer.PowerSupplyId, Computer.CpuFanId, 
+                          Computer.MotherBoardId, Computer.ComputerPicture
+                   FROM Computer 
+                   INNER JOIN CartItem 
+                   ON Computer.ComputerId = CartItem.ComputerId
+                   WHERE CartItem.CartId = @CartId;";
+
+            this.dbContext.AddParameter("@CartId", cartId.ToString());
+            return GetComputers(sql);
+        }
 
         private List<Computer> GetComputers(string sql)
         {

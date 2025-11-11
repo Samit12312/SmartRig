@@ -45,6 +45,31 @@ namespace SmartRigWeb
                 return this.modelsFactory.OperatingSystemCreator.CreateModel(reader);
             }
         }
+        public List<Company> GetOperatingSystemCompanies()
+        {
+            List<Company> companies = new List<Company>();
+
+            // SQL to find companies that have at least one operating system
+            string sql = @"
+        SELECT DISTINCT Company.CompanyId, Company.CompanyName
+        FROM Company
+        INNER JOIN OperatingSystem 
+        ON Company.CompanyId = OperatingSystem.OperatingSystemCompany;
+    ";
+
+            using (IDataReader reader = this.dbContext.Select(sql))
+            {
+                while (reader.Read())
+                {
+                    Company company = new Company();
+                    company.CompanyId = Convert.ToInt32(reader["CompanyId"]);
+                    company.CompanyName = reader["CompanyName"].ToString();
+                    companies.Add(company);
+                }
+            }
+
+            return companies;
+        }
 
         public bool Update(Models.OperatingSystem item)
         {

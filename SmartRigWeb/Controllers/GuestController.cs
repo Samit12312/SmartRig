@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging.Abstractions;
 using Models;
 using Models.ViewModels;
 using SmartRigWeb.ModelCreator;
+using System;
 
 namespace SmartRigWeb.Controllers
 {
@@ -16,32 +18,51 @@ namespace SmartRigWeb.Controllers
             repositoryFactory = new RepositoryFactory();
         }
 
-
         [HttpGet]
-        public CatalogViewModel GetCatalog()
+        public CatalogViewModel GetCatalog(int? minPrice = null, int? maxPrice = null, int? companyId = null, int? operatingSystemId = null, int? typeId = null)
         {
             CatalogViewModel catalogViewModel = new CatalogViewModel();
-            //open connection :O
+
             try
             {
                 this.repositoryFactory.ConnectDbContext();
+
                 catalogViewModel.types = this.repositoryFactory.TypeRepository.GetAllByTypeCode(1);
-                catalogViewModel.Computers = this.repositoryFactory.ComputerRepository.GetAll();
                 catalogViewModel.Companys = this.repositoryFactory.CompanyRepository.GetAll();
                 catalogViewModel.operatingSystems = this.repositoryFactory.OperatingSystemRepository.GetAll();
+
+                List<Computer> computers = this.repositoryFactory.ComputerRepository.GetAll();
+
+                if (minPrice.HasValue)
+                    computers = computers.Where(c => c.Price >= minPrice.Value).ToList();
+
+                if (maxPrice.HasValue)
+                    computers = computers.Where(c => c.Price <= maxPrice.Value).ToList();
+
+                if (typeId.HasValue)
+                    computers = computers.Where(c => c.ComputerTypeId == typeId.Value).ToList();
+
+                if (companyId.HasValue)
+                    computers = computers.Where(c => c.CompanyId == companyId.Value).ToList();
+
+                if (operatingSystemId.HasValue)
+                    computers = computers.Where(c => c.OperatingSystemId == operatingSystemId.Value).ToList();
+                    
+                catalogViewModel.Computers = computers;
+
                 return catalogViewModel;
             }
             catch (Exception ex)
-            { 
+            {
                 Console.WriteLine(ex.Message);
                 return null;
             }
             finally
             {
-                //close connection :D
                 this.repositoryFactory.DisconnectDb();
             }
         }
+
         [HttpGet]
         public ComputerDetailsViewModel GetComputerDetails(int Id)
         {
@@ -71,6 +92,45 @@ namespace SmartRigWeb.Controllers
             finally
             {
                 //close connection :D
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+        [HttpGet]
+        public ShopingCartViewModel GetShoppingCart(int userId)
+        {
+            ShopingCartViewModel sCVM = new ShopingCartViewModel();
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                sCVM.cart = this.repositoryFactory.CartRepository.GetById(userId);
+                sCVM.Computers = this.repositoryFactory.ComputerRepository.GetComputersByCartId(sCVM.cart.CartId);
+                return sCVM;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+        [HttpGet]
+        public bool Registration(User user)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.UserRepository.Create(user);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
                 this.repositoryFactory.DisconnectDb();
             }
         }
