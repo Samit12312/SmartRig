@@ -31,24 +31,91 @@ namespace SmartRigWeb.Controllers
                 catalogViewModel.Companys = this.repositoryFactory.CompanyRepository.GetAll();
                 catalogViewModel.operatingSystems = this.repositoryFactory.OperatingSystemRepository.GetAll();
 
-                List<Computer> computers = this.repositoryFactory.ComputerRepository.GetAll();
+                List<Computer> computers;
 
-                if (minPrice.HasValue)
-                    computers = computers.Where(c => c.Price >= minPrice.Value).ToList();
+                // Price Range Filter
+                if (minPrice.HasValue == true && maxPrice.HasValue == true &&
+                    companyId.HasValue == false && operatingSystemId.HasValue == false &&
+                    typeId.HasValue == false)
+                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRange(minPrice.Value, maxPrice.Value);
 
-                if (maxPrice.HasValue)
-                    computers = computers.Where(c => c.Price <= maxPrice.Value).ToList();
+                // Company Filter
+                if (minPrice.HasValue == false && maxPrice.HasValue == false &&
+                    companyId.HasValue == true && operatingSystemId.HasValue == false &&
+                    typeId.HasValue == false)
+                    computers = this.repositoryFactory.ComputerRepository.GetComputersByCompanyId(companyId.Value);
 
-                if (typeId.HasValue)
-                    computers = computers.Where(c => c.ComputerTypeId == typeId.Value).ToList();
+                // Operating System Filter
+                if (minPrice.HasValue == false && maxPrice.HasValue == false &&
+                    companyId.HasValue == false && operatingSystemId.HasValue == true &&
+                    typeId.HasValue == false)
+                    computers = this.repositoryFactory.ComputerRepository.GetComputersByOperatingSystemId(operatingSystemId.Value);
 
-                if (companyId.HasValue)
-                    computers = computers.Where(c => c.CompanyId == companyId.Value).ToList();
+                // Type Filter
+                if (minPrice.HasValue == false && maxPrice.HasValue == false &&
+                    companyId.HasValue == false && operatingSystemId.HasValue == false &&
+                    typeId.HasValue == true)
+                    computers = this.repositoryFactory.ComputerRepository.GetComputerByType(typeId.Value);
 
-                if (operatingSystemId.HasValue)
-                    computers = computers.Where(c => c.OperatingSystemId == operatingSystemId.Value).ToList();
-                    
-                catalogViewModel.Computers = computers;
+                // Price + Company Filter
+                if (minPrice.HasValue == true && maxPrice.HasValue == true &&
+                    companyId.HasValue == true && operatingSystemId.HasValue == false &&
+                    typeId.HasValue == false)
+                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyId(minPrice.Value, maxPrice.Value, companyId.Value);
+
+                // Price + Operating System Filter
+                if (minPrice.HasValue == true && maxPrice.HasValue == true &&
+                    companyId.HasValue == false && operatingSystemId.HasValue == true &&
+                    typeId.HasValue == false)
+                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndOperatingSystemId(minPrice.Value, maxPrice.Value, operatingSystemId.Value);
+
+                // Price + Type Filter
+                if (minPrice.HasValue == true && maxPrice.HasValue == true &&
+                    companyId.HasValue == false && operatingSystemId.HasValue == false &&
+                    typeId.HasValue == true)
+                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndTypeId(minPrice.Value, maxPrice.Value, typeId.Value);
+
+                // Company + Operating System Filter
+                if (minPrice.HasValue == false && maxPrice.HasValue == false &&
+                    companyId.HasValue == true && operatingSystemId.HasValue == true &&
+                    typeId.HasValue == false)
+                    computers = this.repositoryFactory.ComputerRepository.GetComputersByCompanyIdAndOperatingSystemId(companyId.Value, operatingSystemId.Value);
+
+                // Company + Type Filter
+                if (minPrice.HasValue == false && maxPrice.HasValue == false &&
+                    companyId.HasValue == true && operatingSystemId.HasValue == false &&
+                    typeId.HasValue == true)
+                    computers = this.repositoryFactory.ComputerRepository.GetComputersByCompanyIdAndTypeId(companyId.Value, typeId.Value);
+
+                // Operating System + Type Filter
+                if (minPrice.HasValue == false && maxPrice.HasValue == false &&
+                    companyId.HasValue == false && operatingSystemId.HasValue == true &&
+                    typeId.HasValue == true)
+                    computers = this.repositoryFactory.ComputerRepository.GetComputersByOperatingSystemIdAndTypeId(operatingSystemId.Value, typeId.Value);
+
+                // Price + Company + Operating System Filter
+                if (minPrice.HasValue == true && maxPrice.HasValue == true &&
+                    companyId.HasValue == true && operatingSystemId.HasValue == true &&
+                    typeId.HasValue == false)
+                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyIdAndOperatingSystemId(minPrice.Value, maxPrice.Value, companyId.Value, operatingSystemId.Value);
+
+                // Price + Company + Type Filter
+                if (minPrice.HasValue == true && maxPrice.HasValue == true &&
+                    companyId.HasValue == true && operatingSystemId.HasValue == false &&
+                    typeId.HasValue == true)
+                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyIdAndTypeId(minPrice.Value, maxPrice.Value, companyId.Value, typeId.Value);
+
+                // Price + Operating System + Type Filter
+                if (minPrice.HasValue == true && maxPrice.HasValue == true &&
+                    companyId.HasValue == false && operatingSystemId.HasValue == true &&
+                    typeId.HasValue == true)
+                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndOperatingSystemIdAndTypeId(minPrice.Value, maxPrice.Value, operatingSystemId.Value, typeId.Value);
+
+                // Price + Company + Operating System + Type Filter
+                if (minPrice.HasValue == true && maxPrice.HasValue == true &&
+                    companyId.HasValue == true && operatingSystemId.HasValue == true &&
+                    typeId.HasValue == true)
+                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyIdAndOperatingSystemIdAndTypeId(minPrice.Value, maxPrice.Value, companyId.Value, operatingSystemId.Value, typeId.Value);
 
                 return catalogViewModel;
             }
