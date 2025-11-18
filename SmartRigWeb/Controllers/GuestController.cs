@@ -162,27 +162,7 @@ namespace SmartRigWeb.Controllers
                 this.repositoryFactory.DisconnectDb();
             }
         }
-        [HttpGet]
-        public ShopingCartViewModel GetShoppingCart(int userId)
-        {
-            ShopingCartViewModel sCVM = new ShopingCartViewModel();
-            try
-            {
-                this.repositoryFactory.ConnectDbContext();
-                sCVM.cart = this.repositoryFactory.CartRepository.GetById(userId);
-                sCVM.Computers = this.repositoryFactory.ComputerRepository.GetComputersByCartId(sCVM.cart.CartId);
-                return sCVM;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return null;
-            }
-            finally
-            {
-                this.repositoryFactory.DisconnectDb();
-            }
-        }
+
         [HttpGet]
         public bool Registration(User user)
         {

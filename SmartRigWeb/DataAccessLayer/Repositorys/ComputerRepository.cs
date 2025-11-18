@@ -141,6 +141,147 @@ namespace SmartRigWeb
                 return this.modelsFactory.ComputerCreator.CreateModel(reader);
             }
         }
+        public List<Computer> GetComputersByCompanyIdAndTypeId(int companyId, int typeId)
+        {
+            string sql = @"SELECT * FROM Computer
+                   WHERE CompanyId = @CompanyId
+                   AND ComputerTypeId = @TypeId";
+
+            this.dbContext.AddParameter("@CompanyId", companyId.ToString());
+            this.dbContext.AddParameter("@TypeId", typeId.ToString());
+
+            return GetComputers(sql);
+        }
+
+        public List<Computer> GetComputersByCompanyIdAndOperatingSystemId(int companyId, int operatingSystemId)
+        {
+            string sql = @"SELECT * FROM Computer
+                   WHERE CompanyId = @CompanyId
+                   AND OperatingSystem = @OperatingSystemId";
+
+            this.dbContext.AddParameter("@CompanyId", companyId.ToString());
+            this.dbContext.AddParameter("@OperatingSystemId", operatingSystemId.ToString());
+
+            return GetComputers(sql);
+        }
+        public List<Computer> GetByPriceRangeAndTypeId(int minPrice, int maxPrice, int typeId)
+        {
+            string sql = @"SELECT * FROM [Computer]
+                   WHERE Price >= @MinPrice 
+                   AND Price <= @MaxPrice
+                   AND ComputerTypeId = @TypeId";
+
+            this.dbContext.AddParameter("@MinPrice", minPrice.ToString());
+            this.dbContext.AddParameter("@MaxPrice", maxPrice.ToString());
+            this.dbContext.AddParameter("@TypeId", typeId.ToString());
+
+            return GetComputers(sql);
+        }
+        public List<Computer> GetByPriceRangeAndOperatingSystemId(int minPrice, int maxPrice, int operatingSystemId)
+        {
+            string sql = @"SELECT * FROM [Computer]
+                   WHERE Price >= @MinPrice 
+                   AND Price <= @MaxPrice
+                   AND OperatingSystem = @OperatingSystemId";
+
+            this.dbContext.AddParameter("@MinPrice", minPrice.ToString());
+            this.dbContext.AddParameter("@MaxPrice", maxPrice.ToString());
+            this.dbContext.AddParameter("@OperatingSystemId", operatingSystemId.ToString());
+
+            return GetComputers(sql);
+        }
+        public List<Computer> GetByPriceRangeAndCompanyId(int minPrice, int maxPrice, int companyId)
+        {
+            string sql = @"SELECT * FROM [Computer]
+                   WHERE Price >= @MinPrice 
+                   AND Price <= @MaxPrice
+                   AND CompanyId = @CompanyId";
+
+            this.dbContext.AddParameter("@MinPrice", minPrice.ToString());
+            this.dbContext.AddParameter("@MaxPrice", maxPrice.ToString());
+            this.dbContext.AddParameter("@CompanyId", companyId.ToString());
+
+            return GetComputers(sql);
+        }
+
+        public List<Computer> GetComputersByOperatingSystemIdAndTypeId(int operatingSystemId, int typeId)
+        {
+            string sql = @"SELECT * FROM Computer
+                   WHERE OperatingSystem = @OperatingSystemId
+                   AND ComputerTypeId = @TypeId";
+
+            this.dbContext.AddParameter("@OperatingSystemId", operatingSystemId.ToString());
+            this.dbContext.AddParameter("@TypeId", typeId.ToString());
+
+            return GetComputers(sql);
+        }
+
+        public List<Computer> GetByPriceRangeAndCompanyIdAndOperatingSystemId(int minPrice, int maxPrice, int companyId, int operatingSystemId)
+        {
+            string sql = @"SELECT * FROM Computer
+                   WHERE Price >= @MinPrice 
+                   AND Price <= @MaxPrice
+                   AND CompanyId = @CompanyId
+                   AND OperatingSystem = @OperatingSystemId";
+
+            this.dbContext.AddParameter("@MinPrice", minPrice.ToString());
+            this.dbContext.AddParameter("@MaxPrice", maxPrice.ToString());
+            this.dbContext.AddParameter("@CompanyId", companyId.ToString());
+            this.dbContext.AddParameter("@OperatingSystemId", operatingSystemId.ToString());
+
+            return GetComputers(sql);
+        }
+
+        public List<Computer> GetByPriceRangeAndCompanyIdAndTypeId(int minPrice, int maxPrice, int companyId, int typeId)
+        {
+            string sql = @"SELECT * FROM Computer
+                   WHERE Price >= @MinPrice 
+                   AND Price <= @MaxPrice
+                   AND CompanyId = @CompanyId
+                   AND ComputerTypeId = @TypeId";
+
+            this.dbContext.AddParameter("@MinPrice", minPrice.ToString());
+            this.dbContext.AddParameter("@MaxPrice", maxPrice.ToString());
+            this.dbContext.AddParameter("@CompanyId", companyId.ToString());
+            this.dbContext.AddParameter("@TypeId", typeId.ToString());
+
+            return GetComputers(sql);
+        }
+
+        public List<Computer> GetByPriceRangeAndOperatingSystemIdAndTypeId(int minPrice, int maxPrice, int operatingSystemId, int typeId)
+        {
+            string sql = @"SELECT * FROM Computer
+                   WHERE Price >= @MinPrice 
+                   AND Price <= @MaxPrice
+                   AND OperatingSystem = @OperatingSystemId
+                   AND ComputerTypeId = @TypeId";
+
+            this.dbContext.AddParameter("@MinPrice", minPrice.ToString());
+            this.dbContext.AddParameter("@MaxPrice", maxPrice.ToString());
+            this.dbContext.AddParameter("@OperatingSystemId", operatingSystemId.ToString());
+            this.dbContext.AddParameter("@TypeId", typeId.ToString());
+
+            return GetComputers(sql);
+        }
+
+        public List<Computer> GetByPriceRangeAndCompanyIdAndOperatingSystemIdAndTypeId(
+        int minPrice, int maxPrice, int companyId, int operatingSystemId, int typeId)
+        {
+            string sql = @"SELECT * FROM Computer
+                   WHERE Price >= @MinPrice 
+                   AND Price <= @MaxPrice
+                   AND CompanyId = @CompanyId
+                   AND OperatingSystem = @OperatingSystemId
+                   AND ComputerTypeId = @TypeId";
+
+            this.dbContext.AddParameter("@MinPrice", minPrice.ToString());
+            this.dbContext.AddParameter("@MaxPrice", maxPrice.ToString());
+            this.dbContext.AddParameter("@CompanyId", companyId.ToString());
+            this.dbContext.AddParameter("@OperatingSystemId", operatingSystemId.ToString());
+            this.dbContext.AddParameter("@TypeId", typeId.ToString());
+
+            return GetComputers(sql);
+        }
 
         public bool Update(Computer item)
         {

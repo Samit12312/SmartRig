@@ -42,6 +42,27 @@ namespace SmartRigWeb
             }
             return list;
         }
+        public List<Cart> GetPaidCartByUserId(int userId)
+        {
+            List<Cart> carts = new List<Cart>();
+
+            string sql = @"SELECT * FROM [Cart] 
+                   WHERE UserId = @UserId 
+                   AND IsPayed = True";
+
+            this.dbContext.AddParameter("@UserId", userId.ToString());
+
+            using (IDataReader reader = this.dbContext.Select(sql))
+            {
+                while (reader.Read())
+                {
+                    carts.Add(this.modelsFactory.CartCreator.CreateModel(reader));
+                }
+            }
+
+            return carts;
+        }
+
 
         public Cart GetById(int id)
         {
