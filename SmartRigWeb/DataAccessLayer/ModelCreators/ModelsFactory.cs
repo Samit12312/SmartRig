@@ -20,6 +20,16 @@ namespace SmartRigWeb
         CitiesCreator citiesCreator;
         CaseCreator caseCreator;
         CartCreator cartCreator;
+        CartComputerCreator cartComputer;
+        public CartComputerCreator CartComputerCreator
+        {
+            get
+            {
+                if (this.cartComputer== null) 
+                    this.cartComputer = new CartComputerCreator();
+                return this.cartComputer;
+            }
+        }
 
         public UserCreator UserCreator
         {
