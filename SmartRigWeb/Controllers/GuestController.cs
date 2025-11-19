@@ -129,7 +129,6 @@ namespace SmartRigWeb.Controllers
                 this.repositoryFactory.DisconnectDb();
             }
         }
-
         [HttpGet]
         public ComputerDetailsViewModel GetComputerDetails(int Id)
         {
