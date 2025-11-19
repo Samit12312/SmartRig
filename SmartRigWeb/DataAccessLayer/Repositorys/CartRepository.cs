@@ -28,6 +28,12 @@ namespace SmartRigWeb
             this.dbContext.AddParameter("@CartId", Id);
             return this.dbContext.Delete(sql) > 0;
         }
+        public bool BuyCart(int cartId)
+        {
+            string sql = @"UPDATE Cart SET IsPayed = True WHERE CartId = @CartId";
+            this.dbContext.AddParameter("@CartId", cartId.ToString());
+            return this.dbContext.Update(sql) > 0;
+        }
 
         public List<Cart> GetAll()
         {
@@ -62,6 +68,108 @@ namespace SmartRigWeb
 
             return carts;
         }
+        public bool AddComputer(int cartId, int computerId, int quantity)
+        {
+            string sql = @"INSERT INTO CartComputer (CartId, ComputerId, Quantity) 
+                   VALUES (@CartId, @ComputerId, @Quantity)";
+            this.dbContext.AddParameter("@CartId", cartId.ToString());
+            this.dbContext.AddParameter("@ComputerId", computerId.ToString());
+            this.dbContext.AddParameter("@Quantity", quantity.ToString());
+            return this.dbContext.Insert(sql) > 0;
+        }
+        public bool RemoveComputer(int cartId, int computerId)
+        {
+            string sql = @"DELETE FROM CartComputer 
+                   WHERE CartId = @CartId AND ComputerId = @ComputerId";
+            this.dbContext.AddParameter("@CartId", cartId.ToString());
+            this.dbContext.AddParameter("@ComputerId", computerId.ToString());
+            return this.dbContext.Delete(sql) > 0;
+        }
+
+        public List<CartComputer> GetOrdersByUserId(int userId)
+        {
+            string sql = @"
+        SELECT
+            Cart.UserId,
+            Computer.ComputerId,
+            Computer.ComputerName,
+            Computer.Price,
+            CartComputer.Quantity,
+            Computer.ComputerPicture,
+            Cart.IsPayed
+        FROM
+            Computer
+            INNER JOIN (Cart
+                INNER JOIN CartComputer ON Cart.CartId = CartComputer.CartId)
+                ON Computer.ComputerId = CartComputer.ComputerId
+        WHERE
+            Cart.UserId = @UserId
+            AND Cart.IsPayed = True;
+    ";
+
+            this.dbContext.AddParameter("@UserId", userId.ToString());
+
+            List<CartComputer> orders = new List<CartComputer>();
+
+            using (IDataReader reader = this.dbContext.Select(sql))
+            {
+                while (reader.Read())
+                {
+                    // Use model factory to create CartComputer
+                    CartComputer orderItem = this.modelsFactory.CartComputerCreator.CreateModel(reader);
+
+                    // Map quantity manually
+                    orderItem.computerQuantity = Convert.ToInt16(reader["Quantity"]);
+
+                    orders.Add(orderItem);
+                }
+            }
+
+            return orders;
+        }
+
+        public List<CartComputer> GetCartById(int userId)
+        {
+            string sql = @"
+        SELECT 
+            Computer.ComputerId,
+            Computer.ComputerName,
+            Computer.Price,
+            Computer.ComputerPicture,
+            CartComputer.Quantity,
+            Cart.UserId,
+            Cart.IsPayed
+        FROM 
+            Computer
+            INNER JOIN (Cart
+                INNER JOIN CartComputer ON Cart.CartId = CartComputer.CartId)
+                ON Computer.ComputerId = CartComputer.ComputerId
+        WHERE 
+            Cart.UserId = @UserId
+            AND Cart.IsPayed = False;
+    ";
+
+            this.dbContext.AddParameter("@UserId", userId.ToString());
+
+            List<CartComputer> cartItems = new List<CartComputer>();
+
+            using (IDataReader reader = this.dbContext.Select(sql))
+            {
+                while (reader.Read())
+                {
+                    // Create CartComputer using your model factory
+                    CartComputer cartComputer = this.modelsFactory.CartComputerCreator.CreateModel(reader);
+
+                    // Map quantity manually if needed
+                    cartComputer.computerQuantity = Convert.ToInt16(reader["Quantity"]);
+
+                    cartItems.Add(cartComputer);
+                }
+            }
+
+            return cartItems;
+        }
+
 
 
         public Cart GetById(int id)

@@ -8,10 +8,10 @@ namespace Models
 {
     public class Cart
     {
-        int cartId;
-        int userId;
-        string date;
-        bool isPayed;
+        public int cartId;
+        public int userId;
+        public string date;
+        public bool isPayed;
 
         public int CartId
         {

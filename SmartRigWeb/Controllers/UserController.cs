@@ -157,7 +157,62 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
+        [HttpGet]
+        public List<CartComputer> GetCart(int userId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.CartRepository.GetCartById(userId); // unpaid cart
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<CartComputer>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+        [HttpGet]
+        public List<CartComputer> GetOrdersHistory(int userId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.CartRepository.GetOrdersByUserId(userId); // IsPayed = true
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<CartComputer>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
 
 
+        [HttpPost]
+        public bool UpdateProfile(User user)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.UserRepository.Update(user);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+        
     }
 }
