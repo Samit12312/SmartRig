@@ -5,7 +5,7 @@ using Models;
 
 namespace SmartRigWeb
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -213,6 +213,5 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
-        
     }
 }

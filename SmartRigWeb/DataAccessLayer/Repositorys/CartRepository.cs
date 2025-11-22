@@ -198,5 +198,73 @@ namespace SmartRigWeb
 
             return this.dbContext.Update(sql) > 0;
         }
+        public decimal GetTotalRevenue(string fromDate, string toDate)
+        {
+            string sql = @"
+        SELECT SUM(CartComputer.Price * CartComputer.Quantity) AS TotalRevenue
+        FROM Cart
+        INNER JOIN CartComputer ON Cart.CartId = CartComputer.CartId
+        WHERE CDate(Cart.[Date]) BETWEEN CDate(@FromDate) AND CDate(@ToDate)
+          AND Cart.IsPayed = True;
+    ";
+
+            this.dbContext.AddParameter("@FromDate", fromDate);
+            this.dbContext.AddParameter("@ToDate", toDate);
+
+            decimal totalRevenue = 0;
+
+            using (IDataReader reader = this.dbContext.Select(sql))
+            {
+                if (reader.Read() && reader["TotalRevenue"] != DBNull.Value)
+                {
+                    totalRevenue = Convert.ToDecimal(reader["TotalRevenue"]);
+                }
+            }
+
+            return totalRevenue;
+        }
+        public CartComputer GetMostSoldComputer()
+        {
+            CartComputer mostSold = null;
+
+            try
+            {
+                string sql = @"
+            SELECT TOP 1
+                Computer.ComputerId,
+                Computer.ComputerName,
+                Computer.ComputerPicture,
+                SUM(CartComputer.Quantity) AS TotalSold
+            FROM (Computer
+                INNER JOIN CartComputer ON Computer.ComputerId = CartComputer.ComputerId)
+                INNER JOIN Cart ON Cart.CartId = CartComputer.CartId
+            WHERE Cart.IsPayed = True
+            GROUP BY
+                Computer.ComputerId,
+                Computer.ComputerName,
+                Computer.ComputerPicture
+            ORDER BY SUM(CartComputer.Quantity) DESC;
+        ";
+
+                using (IDataReader reader = this.dbContext.Select(sql))
+                {
+                    if (reader.Read())
+                    {
+                        mostSold = this.modelsFactory.CartComputerCreator.CreateModel(reader);
+                        mostSold.computerQuantity = Convert.ToInt16(reader["TotalSold"]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return mostSold;
+        }
+
+
+
+
     }
 }
