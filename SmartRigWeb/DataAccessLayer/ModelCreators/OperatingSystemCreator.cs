@@ -12,7 +12,7 @@ namespace SmartRigWeb
                 OperatingSystemId = Convert.ToInt16(reader["OperatingSystemId"]),
                 OperatingSystemName = Convert.ToString(reader["OperatingSystemName"]),
                 OperatingSystemPrice = Convert.ToInt16(reader["OperatingSystemPrice"]),
-                OperatingSystemCompanyId = Convert.ToInt16(reader["OperatingSystemCompanyId"])
+                OperatingSystemCompanyId = Convert.ToInt16(reader["OperatingSystemCompany"])
             };
         }
     }

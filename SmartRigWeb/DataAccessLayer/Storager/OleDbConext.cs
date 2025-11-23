@@ -11,7 +11,7 @@ namespace SmartRigWeb
         public OleDbConext()
         {
             this.connection = new OleDbConnection();
-            this.connection.ConnectionString = $@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={Directory.GetCurrentDirectory}\App_Data\Computers.accdb";
+            this.connection.ConnectionString = $@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={Directory.GetCurrentDirectory()}\App_Data\Computers.accdb";
             this.command = new OleDbCommand();
             this.command.Connection = this.connection;
         }

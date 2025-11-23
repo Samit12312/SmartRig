@@ -12,7 +12,7 @@ namespace Models
         string computerName;
         int computerTypeId;
         int companyId;
-        int stroageId;
+        int storageId;
         int ramId;
         int cpuId;
         int gpuId;
@@ -48,10 +48,10 @@ namespace Models
             set { this.companyId = value; }
         }
 
-        public int StroageId
+        public int StorageId
         {
-            get { return this.stroageId; }
-            set { this.stroageId = value; }
+            get { return this.storageId; }
+            set { this.storageId = value; }
         }
 
         public int RamId

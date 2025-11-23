@@ -2,7 +2,7 @@
 using System.Data;
 using Models;
 
-namespace SmartRigWeb.ModelCreator
+namespace SmartRigWeb
 {
     public class ComputerCreator : IModelCreator<Computer>
     {
@@ -14,7 +14,7 @@ namespace SmartRigWeb.ModelCreator
                 ComputerName = Convert.ToString(reader["ComputerName"]),
                 ComputerTypeId = Convert.ToInt16(reader["ComputerTypeId"]),
                 CompanyId = Convert.ToInt16(reader["CompanyId"]),
-                StroageId = Convert.ToInt16(reader["StroageId"]),
+                StorageId = Convert.ToInt16(reader["StorageId"]),
                 RamId = Convert.ToInt16(reader["RamId"]),
                 CpuId = Convert.ToInt16(reader["CpuId"]),
                 GpuId = Convert.ToInt16(reader["GpuId"]),

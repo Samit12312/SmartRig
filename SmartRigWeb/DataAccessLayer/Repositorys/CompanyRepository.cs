@@ -53,12 +53,18 @@ namespace SmartRigWeb
             this.dbContext.AddParameter("@CompanyId", id.ToString());
             using (IDataReader reader = this.dbContext.Select(sql))
             {
-                reader.Read();
-                return new Company
+                if (reader.Read()) // Check if a row exists
                 {
-                    CompanyId = Convert.ToInt32(reader["CompanyId"]),
-                    CompanyName = reader["CompanyName"].ToString()
-                };
+                    return new Company
+                    {
+                        CompanyId = Convert.ToInt32(reader["CompanyId"]),
+                        CompanyName = reader["CompanyName"].ToString()
+                    };
+                }
+                else
+                {
+                    return null; // Or throw an exception if you prefer
+                }
             }
         }
 

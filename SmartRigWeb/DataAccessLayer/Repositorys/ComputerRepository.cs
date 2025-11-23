@@ -25,7 +25,7 @@ namespace SmartRigWeb
             this.dbContext.AddParameter("@ComputerName", item.ComputerName);
             this.dbContext.AddParameter("@ComputerTypeId", item.ComputerTypeId.ToString());
             this.dbContext.AddParameter("@CompanyId", item.CompanyId.ToString());
-            this.dbContext.AddParameter("@StroageId", item.StroageId.ToString());
+            this.dbContext.AddParameter("@StroageId", item.StorageId.ToString());
             this.dbContext.AddParameter("@RamId", item.RamId.ToString());
             this.dbContext.AddParameter("@CpuId", item.CpuId.ToString());
             this.dbContext.AddParameter("@GpuId", item.GpuId.ToString());
@@ -56,7 +56,7 @@ namespace SmartRigWeb
         }
         public List<Computer> GetComputerByType(int TypeId)
         {
-            string sql = $@"SELECT Computer.ComputerId, Computer.ComputerName, Computer.ComputerTypeId, Computer.CompanyId, Computer.StorageId, Computer.RamId, Computer.CpuId, Computer.GpuId, Computer.Price, Computer.OperatingSystem, Computer.CaseId, Computer.PowerSupplyId, Computer.CpuFanId, Computer.MotherBoardId, Computer.ComputerPicture
+            string sql = $@"SELECT Computer.ComputerId, Computer.ComputerName, Computer.ComputerTypeId, Computer.CompanyId, Computer.StorageId, Computer.RamId, Computer.CpuId, Computer.GpuId, Computer.Price, Computer.OperatingSystemId, Computer.CaseId, Computer.PowerSupplyId, Computer.CpuFanId, Computer.MotherBoardId, Computer.ComputerPicture
                     FROM Type INNER JOIN Computer ON (Type.TypeId = Computer.ComputerTypeId) AND (Type.TypeId = Computer.ComputerTypeId)
                     WHERE Computer.ComputerTypeId=@TypeId;";
             this.dbContext.AddParameter("@TypeId", TypeId.ToString()); // Add parameter for TypeId
@@ -64,20 +64,22 @@ namespace SmartRigWeb
         }
         public List<Computer> GetComputersByCompanyId(int CompanyId)
         {
-            string sql = @"SELECT Computer.ComputerId, Computer.ComputerName, Computer.ComputerTypeId, Computer.CompanyId, Computer.StorageId, Computer.RamId, Computer.CpuId, Computer.GpuId, Computer.Price, Computer.OperatingSystem, Computer.CaseId, Computer.PowerSupplyId, Computer.CpuFanId, Computer.MotherBoardId, Computer.ComputerPicture
-                   FROM Company INNER JOIN Computer 
-                   ON Company.CompanyId = Computer.CompanyId
-                   WHERE Computer.CompanyId = @CompanyId;";
+            string sql = @"SELECT ComputerId, ComputerName, ComputerTypeId, CompanyId,
+                          StorageId, RamId, CpuId, GpuId, Price, OperatingSystemId,
+                          CaseId, PowerSupplyId, CpuFanId, MotherBoardId, ComputerPicture
+                   FROM Computer
+                   WHERE CompanyId = @CompanyId;";
 
-            this.dbContext.AddParameter("@CompanyId", CompanyId.ToString()); // Add parameter for CompanyId
+            this.dbContext.AddParameter("@CompanyId", CompanyId.ToString());
             return GetComputers(sql);
         }
+
         public List<Computer> GetComputersByOperatingSystemId(int OperatingSystemId)
         {
-            string sql = @"SELECT Computer.ComputerId, Computer.ComputerName, Computer.ComputerTypeId, Computer.CompanyId, Computer.StorageId, Computer.RamId, Computer.CpuId, Computer.GpuId, Computer.Price, Computer.OperatingSystem, Computer.CaseId, Computer.PowerSupplyId, Computer.CpuFanId, Computer.MotherBoardId, Computer.ComputerPicture
+            string sql = @"SELECT Computer.ComputerId, Computer.ComputerName, Computer.ComputerTypeId, Computer.CompanyId, Computer.StorageId, Computer.RamId, Computer.CpuId, Computer.GpuId, Computer.Price, Computer.OperatingSystemId, Computer.CaseId, Computer.PowerSupplyId, Computer.CpuFanId, Computer.MotherBoardId, Computer.ComputerPicture
                    FROM OperatingSystem INNER JOIN Computer 
-                   ON OperatingSystem.OperatingSystemId = Computer.OperatingSystem
-                   WHERE Computer.OperatingSystem = @OperatingSystemId;";
+                   ON OperatingSystem.OperatingSystemId = Computer.OperatingSystemId
+                   WHERE Computer.OperatingSystemId = @OperatingSystemId;";
 
             this.dbContext.AddParameter("@OperatingSystemId", OperatingSystemId.ToString()); // Add parameter for OperatingSystemId
             return GetComputers(sql);
@@ -86,7 +88,7 @@ namespace SmartRigWeb
         {
             string sql = @"SELECT Computer.ComputerId, Computer.ComputerName, Computer.ComputerTypeId, Computer.CompanyId, 
                           Computer.StorageId, Computer.RamId, Computer.CpuId, Computer.GpuId, Computer.Price, 
-                          Computer.OperatingSystem, Computer.CaseId, Computer.PowerSupplyId, Computer.CpuFanId, 
+                          Computer.OperatingSystemId, Computer.CaseId, Computer.PowerSupplyId, Computer.CpuFanId, 
                           Computer.MotherBoardId, Computer.ComputerPicture
                    FROM Computer 
                    INNER JOIN CartItem 
@@ -97,7 +99,7 @@ namespace SmartRigWeb
             return GetComputers(sql);
         }
 
-        private List<Computer> GetComputers(string sql)
+        public List<Computer> GetComputers(string sql)
         {
             List<Computer> list = new List<Computer>();
             using (IDataReader reader = this.dbContext.Select(sql))
@@ -157,7 +159,7 @@ namespace SmartRigWeb
         {
             string sql = @"SELECT * FROM Computer
                    WHERE CompanyId = @CompanyId
-                   AND OperatingSystem = @OperatingSystemId";
+                   AND OperatingSystemId = @OperatingSystemId";
 
             this.dbContext.AddParameter("@CompanyId", companyId.ToString());
             this.dbContext.AddParameter("@OperatingSystemId", operatingSystemId.ToString());
@@ -182,7 +184,7 @@ namespace SmartRigWeb
             string sql = @"SELECT * FROM [Computer]
                    WHERE Price >= @MinPrice 
                    AND Price <= @MaxPrice
-                   AND OperatingSystem = @OperatingSystemId";
+                   AND OperatingSystemId = @OperatingSystemId";
 
             this.dbContext.AddParameter("@MinPrice", minPrice.ToString());
             this.dbContext.AddParameter("@MaxPrice", maxPrice.ToString());
@@ -207,7 +209,7 @@ namespace SmartRigWeb
         public List<Computer> GetComputersByOperatingSystemIdAndTypeId(int operatingSystemId, int typeId)
         {
             string sql = @"SELECT * FROM Computer
-                   WHERE OperatingSystem = @OperatingSystemId
+                   WHERE OperatingSystemId = @OperatingSystemId
                    AND ComputerTypeId = @TypeId";
 
             this.dbContext.AddParameter("@OperatingSystemId", operatingSystemId.ToString());
@@ -222,7 +224,7 @@ namespace SmartRigWeb
                    WHERE Price >= @MinPrice 
                    AND Price <= @MaxPrice
                    AND CompanyId = @CompanyId
-                   AND OperatingSystem = @OperatingSystemId";
+                   AND OperatingSystemId = @OperatingSystemId";
 
             this.dbContext.AddParameter("@MinPrice", minPrice.ToString());
             this.dbContext.AddParameter("@MaxPrice", maxPrice.ToString());
@@ -253,7 +255,7 @@ namespace SmartRigWeb
             string sql = @"SELECT * FROM Computer
                    WHERE Price >= @MinPrice 
                    AND Price <= @MaxPrice
-                   AND OperatingSystem = @OperatingSystemId
+                   AND OperatingSystemId = @OperatingSystemId
                    AND ComputerTypeId = @TypeId";
 
             this.dbContext.AddParameter("@MinPrice", minPrice.ToString());
@@ -271,7 +273,7 @@ namespace SmartRigWeb
                    WHERE Price >= @MinPrice 
                    AND Price <= @MaxPrice
                    AND CompanyId = @CompanyId
-                   AND OperatingSystem = @OperatingSystemId
+                   AND OperatingSystemId = @OperatingSystemId
                    AND ComputerTypeId = @TypeId";
 
             this.dbContext.AddParameter("@MinPrice", minPrice.ToString());
@@ -305,7 +307,7 @@ namespace SmartRigWeb
             this.dbContext.AddParameter("@ComputerName", item.ComputerName);
             this.dbContext.AddParameter("@ComputerTypeId", item.ComputerTypeId.ToString());
             this.dbContext.AddParameter("@CompanyId", item.CompanyId.ToString());
-            this.dbContext.AddParameter("@StroageId", item.StroageId.ToString());
+            this.dbContext.AddParameter("@StroageId", item.StorageId.ToString());
             this.dbContext.AddParameter("@RamId", item.RamId.ToString());
             this.dbContext.AddParameter("@CpuId", item.CpuId.ToString());
             this.dbContext.AddParameter("@GpuId", item.GpuId.ToString());
