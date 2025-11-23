@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Security.Principal;
 
 namespace SmartRigWeb
 {
@@ -183,18 +184,11 @@ namespace SmartRigWeb
             }
         }
 
-        public bool Update(Cart item)
+        public bool Update(Cart cart)
         {
-            string sql = @"UPDATE [Cart] 
-                           SET UserId = @UserId, 
-                               Date = @Date, 
-                               IsPayed = @IsPayed 
-                           WHERE CartId = @CartId";
-
-            this.dbContext.AddParameter("@UserId", item.UserId.ToString());
-            this.dbContext.AddParameter("@Date", item.Date);
-            this.dbContext.AddParameter("@IsPayed", item.IsPayed.ToString());
-            this.dbContext.AddParameter("@CartId", item.CartId.ToString());
+            string sql = @$"UPDATE [Cart] 
+                            SET IsPayed = {cart.IsPayed}
+                            WHERE CartId = {cart.CartId};";
 
             return this.dbContext.Update(sql) > 0;
         }
