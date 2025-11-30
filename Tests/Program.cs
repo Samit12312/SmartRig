@@ -21,11 +21,11 @@ namespace Tests
             int to = int.Parse(Console.ReadLine());
             Console.Write("insert sum");
             int sum = int.Parse(Console.ReadLine());
-            result result2 = GetResult(list[from - 1].symbol,list[to - 1].symbol, sum).Result;
-            Console.WriteLine($"{result2.amountToConvert} {result2.from} = {result2.convertedAmount} {result2.to}");
+            ConvertResult r = GetResult(list[from - 1].symbol,list[to - 1].symbol, sum).Result;
+            Console.WriteLine($"{r.result.amountToConvert} {r.result.from} = {r.result.convertedAmount} {r.result.to}");
             Console.ReadLine();
         }
-        static async Task<result> GetResult(string from, string to, double amount)
+        static async Task<ConvertResult> GetResult(string from, string to, double amount)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage
@@ -42,8 +42,7 @@ namespace Tests
             {
                 response.EnsureSuccessStatusCode();
                 var body = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(body);
-                return JsonSerializer.Deserialize<result>(body);
+                return JsonSerializer.Deserialize<ConvertResult>(body);
             }
         }
         static void ModelValidation()

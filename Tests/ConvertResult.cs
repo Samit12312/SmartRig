@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Tests
 {
-    public class result
+    public class ConvertResult
     {
-            public string from {  get; set; }
-            public string to {  get; set; }
-            public double amountToConvert {  get; set; }
-            public double convertedAmount {  get; set; }
+        public bool sucess {  get; set; }
+        public List<string> validationMassage { get; set; }
+        public result result { get; set; }
+
     }
 }
