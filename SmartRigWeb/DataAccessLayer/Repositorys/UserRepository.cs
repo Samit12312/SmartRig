@@ -1,5 +1,6 @@
 ﻿using Models;
 using System.Data;
+using System.Security.Cryptography;
 
 namespace SmartRigWeb
 {
@@ -13,8 +14,8 @@ namespace SmartRigWeb
         public bool Create(User item)
         {
             string sql = $@"INSERT INTO [User] 
-                    (UserName, UserEmail, UserPassword, UserAdress, CityId, UserPhoneNumber, Manager)
-                    VALUES (@UserName, @UserEmail, @UserPassword, @UserAdress, @CityId, @UserPhoneNumber, @Manager)";
+                    (UserName, UserEmail, UserPassword, UserAdress, CityId, UserPhoneNumber, Manager, UserSalt)
+                    VALUES (@UserName, @UserEmail, @UserPassword, @UserAdress, @CityId, @UserPhoneNumber, @Manager, @UserSalt)";
 
             this.dbContext.AddParameter("@UserName", item.UserName);
             this.dbContext.AddParameter("@UserEmail", item.UserEmail);
@@ -23,8 +24,15 @@ namespace SmartRigWeb
             this.dbContext.AddParameter("@CityId", item.CityId.ToString());
             this.dbContext.AddParameter("@UserPhoneNumber", item.UserPhoneNumber);
             this.dbContext.AddParameter("@Manager", item.Manager.ToString());
+            this.dbContext.AddParameter("@UserSalt", GenerateSalt());
 
             return this.dbContext.Insert(sql) > 0;
+        }
+        private string GenerateSalt() // generateing salt for the food :D
+        {
+            byte[] saltBytes = new byte[32];
+            RandomNumberGenerator.Fill(saltBytes);
+            return Convert.ToBase64String(saltBytes);
         }
 
 
