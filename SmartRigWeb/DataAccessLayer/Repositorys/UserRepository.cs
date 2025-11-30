@@ -24,7 +24,8 @@ namespace SmartRigWeb
             this.dbContext.AddParameter("@CityId", item.CityId.ToString());
             this.dbContext.AddParameter("@UserPhoneNumber", item.UserPhoneNumber);
             this.dbContext.AddParameter("@Manager", item.Manager.ToString());
-            this.dbContext.AddParameter("@UserSalt", GenerateSalt());
+            string salt = GenerateSalt();
+            this.dbContext.AddParameter("@UserSalt", salt);
 
             return this.dbContext.Insert(sql) > 0;
         }
