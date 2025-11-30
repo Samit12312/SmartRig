@@ -166,25 +166,6 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
-        public ComputerDetailsViewModel ComputerDetailsViewModel(int id)
-        {
-            try
-            {
-                this.repositoryFactory.ConnectDbContext();
-                Computer computer = this.repositoryFactory.ComputerRepository.GetById(id);
-                Ram ram = this.repositoryFactory.RamRepository.GetById(computer.RamId);
-                PowerSupply PS = this.repositoryFactory.PowerSupplyRepository.GetById(computer.PowerSupplyId);
-                Models.Type type = this.repositoryFactory.TypeRepository.GetById(computer.ComputerTypeId);
-                Storage storage = this.repositoryFactory.StorageRepository.GetById(computer.StorageId);
-                Gpu Gpu = this.repositoryFactory.GpuRepository.GetById(computer.GpuId);
-                MotherBoard motherboard = this.repositoryFactory.MotherBoardRepository.GetById(computer.MotherBoardId);
-                Models.OperatingSystem OS = this.repositoryFactory.OperatingSystemRepository.GetById(computer.OperatingSystemId);
-                CpuFan cpuFan = this.repositoryFactory.CpuFanRepository.GetById(computer.CpuFanId);
-                Company company = this.repositoryFactory.CompanyRepository.GetById(computer.CompanyId);
-                Case cs = this.repositoryFactory.CaseRepository.GetById(computer.CaseId);
-                Cpu cpu = this.repositoryFactory.CpuRepository.GetById(computer.CpuId);
-            }
-        }
 
     }
 }
