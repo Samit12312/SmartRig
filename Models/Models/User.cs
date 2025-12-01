@@ -50,8 +50,8 @@ namespace Models
         }
 
         [Required(ErrorMessage = "You must enter your password")]
-        [StringLength(25, MinimumLength = 5, ErrorMessage = "Password must be between 4 and 25 characters.")]
-        [RegularExpression(@"^(?=.*\d)", ErrorMessage = "Password must contain at least one number.")]
+        [StringLength(25, MinimumLength = 4, ErrorMessage = "Password must be between 4 and 25 characters.")]
+        [RegularExpression(@"^(?=.*\d).+$", ErrorMessage = "Password must contain at least one number.")]
         public string UserPassword
         {
             get { return userPassword; }

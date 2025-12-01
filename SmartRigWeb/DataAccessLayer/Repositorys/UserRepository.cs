@@ -13,16 +13,17 @@ namespace SmartRigWeb
         public bool Create(User item)
         {
             string sql = $@"INSERT INTO [User] 
-                    (UserName, UserEmail, UserPassword, UserAdress, CityId, UserPhoneNumber, Manager)
-                    VALUES (@UserName, @UserEmail, @UserPassword, @UserAdress, @CityId, @UserPhoneNumber, @Manager)";
+                    (UserName, UserEmail, UserPassword, UserAddress, CityId, UserPhoneNumber, Manager)
+                    VALUES (@UserName, @UserEmail, @UserPassword, @UserAddress, @CityId, @UserPhoneNumber, @Manager)";
 
             this.dbContext.AddParameter("@UserName", item.UserName);
             this.dbContext.AddParameter("@UserEmail", item.UserEmail);
             this.dbContext.AddParameter("@UserPassword", item.UserPassword);
-            this.dbContext.AddParameter("@UserAdress", item.UserAddress);
+            this.dbContext.AddParameter("@UserAddress", item.UserAddress);
             this.dbContext.AddParameter("@CityId", item.CityId.ToString());
             this.dbContext.AddParameter("@UserPhoneNumber", item.UserPhoneNumber);
-            this.dbContext.AddParameter("@Manager", item.Manager.ToString());
+            int managerValue = item.Manager ? -1 : 0;
+            this.dbContext.AddParameter("@Manager", managerValue.ToString());
 
             return this.dbContext.Insert(sql) > 0;
         }

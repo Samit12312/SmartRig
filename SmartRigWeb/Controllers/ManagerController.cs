@@ -71,28 +71,24 @@ namespace SmartRigWeb
             }
         }
         [HttpPost]
-        public bool ChangeCartStatus(Cart cart)
+        public bool ChangeCartStatus(int cartId, bool isPayed)
         {
             try
             {
-                // Connect to the database
                 this.repositoryFactory.ConnectDbContext();
-
-                // Call the Update method on CartRepository, passing the cartId and isPayed status
-                return this.repositoryFactory.CartRepository.Update(cart);
+                return this.repositoryFactory.CartRepository.UpdateCartStatus(cartId, isPayed);
             }
             catch (Exception ex)
             {
-                // Log the error message to console
-                Console.WriteLine($"{ex.Message}");
+                Console.WriteLine(ex.Message);
                 return false;
             }
             finally
             {
-                // Ensure the database connection is closed
                 this.repositoryFactory.DisconnectDb();
             }
         }
+
 
         [HttpGet]
         public List<Computer> GetAllComputers()
@@ -105,7 +101,25 @@ namespace SmartRigWeb
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return new List<Computer>();
+                return null;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+        [HttpGet]
+        public List<CartComputer> GetOrderById(int userId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.CartRepository.GetOrdersByUserId(userId); 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<CartComputer>();
             }
             finally
             {
@@ -118,7 +132,7 @@ namespace SmartRigWeb
             try
             {
                 this.repositoryFactory.ConnectDbContext();
-                return this.repositoryFactory.CartRepository.GetOrdersByUserId(0); // maybe create a function for all users
+                return this.repositoryFactory.CartRepository.GetAllOrders();
             }
             catch (Exception ex)
             {
@@ -166,25 +180,7 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
-        public ComputerDetailsViewModel ComputerDetailsViewModel(int id)
-        {
-            try
-            {
-                this.repositoryFactory.ConnectDbContext();
-                Computer computer = this.repositoryFactory.ComputerRepository.GetById(id);
-                Ram ram = this.repositoryFactory.RamRepository.GetById(computer.RamId);
-                PowerSupply PS = this.repositoryFactory.PowerSupplyRepository.GetById(computer.PowerSupplyId);
-                Models.Type type = this.repositoryFactory.TypeRepository.GetById(computer.ComputerTypeId);
-                Storage storage = this.repositoryFactory.StorageRepository.GetById(computer.StorageId);
-                Gpu Gpu = this.repositoryFactory.GpuRepository.GetById(computer.GpuId);
-                MotherBoard motherboard = this.repositoryFactory.MotherBoardRepository.GetById(computer.MotherBoardId);
-                Models.OperatingSystem OS = this.repositoryFactory.OperatingSystemRepository.GetById(computer.OperatingSystemId);
-                CpuFan cpuFan = this.repositoryFactory.CpuFanRepository.GetById(computer.CpuFanId);
-                Company company = this.repositoryFactory.CompanyRepository.GetById(computer.CompanyId);
-                Case cs = this.repositoryFactory.CaseRepository.GetById(computer.CaseId);
-                Cpu cpu = this.repositoryFactory.CpuRepository.GetById(computer.CpuId);
-            }
-        }
+
 
     }
 }

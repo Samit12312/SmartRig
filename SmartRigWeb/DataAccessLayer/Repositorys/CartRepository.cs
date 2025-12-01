@@ -86,28 +86,67 @@ namespace SmartRigWeb
             this.dbContext.AddParameter("@ComputerId", computerId.ToString());
             return this.dbContext.Delete(sql) > 0;
         }
-
-        public List<CartComputer> GetOrdersByUserId(int userId)
+        public List<CartComputer> GetAllOrders()
         {
             string sql = @"
         SELECT
-            Cart.UserId,
-            Computer.ComputerId,
-            Computer.ComputerName,
-            Computer.Price,
+            CartComputer.CartId,
+            CartComputer.ComputerId,
             CartComputer.Quantity,
-            Computer.ComputerPicture,
-            Cart.IsPayed
+            CartComputer.Price AS ComputerPrice,
+            Computer.ComputerName,
+            Computer.ComputerPicture
         FROM
-            Computer
-            INNER JOIN (Cart
-                INNER JOIN CartComputer ON Cart.CartId = CartComputer.CartId)
-                ON Computer.ComputerId = CartComputer.ComputerId
+            (Cart
+            INNER JOIN CartComputer ON Cart.CartId = CartComputer.CartId)
+            INNER JOIN Computer ON Computer.ComputerId = CartComputer.ComputerId
         WHERE
-            Cart.UserId = @UserId
-            AND Cart.IsPayed = True;
+            Cart.IsPayed = True
     ";
 
+            List<CartComputer> orders = new List<CartComputer>();
+
+            using (IDataReader reader = this.dbContext.Select(sql))
+            {
+                while (reader.Read())
+                {
+                    CartComputer orderItem = new CartComputer();
+
+                    orderItem.ComputerId = Convert.ToInt16(reader["ComputerId"]);
+                    orderItem.ComputerName = reader["ComputerName"].ToString();
+                    orderItem.ComputerPrice = Convert.ToInt16(reader["ComputerPrice"]);
+                    orderItem.ComputerQuantity = Convert.ToInt16(reader["Quantity"]);
+                    orderItem.ComputerPicture = reader["ComputerPicture"].ToString();
+
+                    orders.Add(orderItem);
+                }
+            }
+
+            return orders;
+        }
+
+        public List<CartComputer> GetOrdersByUserId(int userId)
+        {
+            // SQL query selects all necessary columns and aliases them to match model
+            string sql = @"
+        SELECT
+            CartComputer.ComputerId,
+            Computer.ComputerName,
+            CartComputer.Price AS ComputerPrice,
+            CartComputer.Quantity AS ComputerQuantity,
+            Computer.ComputerPicture,
+            Cart.UserId,
+            Cart.IsPayed
+        FROM
+            (CartComputer
+            INNER JOIN Computer ON Computer.ComputerId = CartComputer.ComputerId)
+            INNER JOIN Cart ON Cart.CartId = CartComputer.CartId
+        WHERE
+            (@UserId = 0 OR Cart.UserId = @UserId)
+            AND Cart.IsPayed = True
+    ";
+
+            // Add userId parameter (0 means all users)
             this.dbContext.AddParameter("@UserId", userId.ToString());
 
             List<CartComputer> orders = new List<CartComputer>();
@@ -116,11 +155,12 @@ namespace SmartRigWeb
             {
                 while (reader.Read())
                 {
-                    // Use model factory to create CartComputer
+                    // Create CartComputer using model factory
                     CartComputer orderItem = this.modelsFactory.CartComputerCreator.CreateModel(reader);
 
-                    // Map quantity manually
-                    orderItem.computerQuantity = Convert.ToInt16(reader["Quantity"]);
+                    // Map aliased columns manually to ensure correct property assignment
+                    orderItem.ComputerPrice = Convert.ToInt16(reader["ComputerPrice"]);
+                    orderItem.ComputerQuantity = Convert.ToInt16(reader["ComputerQuantity"]);
 
                     orders.Add(orderItem);
                 }
@@ -128,6 +168,7 @@ namespace SmartRigWeb
 
             return orders;
         }
+
 
         public List<CartComputer> GetCartById(int userId)
         {
@@ -184,14 +225,38 @@ namespace SmartRigWeb
             }
         }
 
+        // This satisfies the interface
         public bool Update(Cart cart)
         {
-            string sql = @$"UPDATE [Cart] 
-                            SET IsPayed = {cart.IsPayed}
-                            WHERE CartId = {cart.CartId};";
+            string sql = @"UPDATE Cart
+                   SET UserId = @UserId,
+                       [Date] = @Date,
+                       IsPayed = @IsPayed
+                   WHERE CartId = @CartId";
+
+            this.dbContext.AddParameter("@UserId", cart.UserId.ToString());
+            this.dbContext.AddParameter("@Date", cart.Date);
+            this.dbContext.AddParameter("@IsPayed", cart.IsPayed.ToString());
+            this.dbContext.AddParameter("@CartId", cart.CartId.ToString());
 
             return this.dbContext.Update(sql) > 0;
         }
+
+        public bool UpdateCartStatus(int cartId, bool isPayed)
+        {
+            string sql = @"UPDATE Cart
+                   SET IsPayed = @IsPayed
+                   WHERE CartId = @CartId";
+
+            // Convert to string because your dbContext.AddParameter expects string
+            this.dbContext.AddParameter("@IsPayed", (isPayed ? -1 : 0).ToString());
+            this.dbContext.AddParameter("@CartId", cartId.ToString());
+
+            return this.dbContext.Update(sql) > 0;
+        }
+
+
+
         public decimal GetTotalRevenue(string fromDate, string toDate)
         {
             string sql = @"
@@ -224,38 +289,44 @@ namespace SmartRigWeb
             try
             {
                 string sql = @"
-            SELECT TOP 1
-                Computer.ComputerId,
-                Computer.ComputerName,
-                Computer.ComputerPicture,
-                SUM(CartComputer.Quantity) AS TotalSold
-            FROM (Computer
-                INNER JOIN CartComputer ON Computer.ComputerId = CartComputer.ComputerId)
-                INNER JOIN Cart ON Cart.CartId = CartComputer.CartId
-            WHERE Cart.IsPayed = True
-            GROUP BY
-                Computer.ComputerId,
-                Computer.ComputerName,
-                Computer.ComputerPicture
-            ORDER BY SUM(CartComputer.Quantity) DESC;
+        SELECT TOP 1
+            Computer.ComputerId,
+            Computer.ComputerName,
+            Computer.ComputerPicture,
+            Computer.Price,
+            SUM(CartComputer.Quantity) AS TotalSold
+        FROM (Computer 
+            INNER JOIN CartComputer ON Computer.ComputerId = CartComputer.ComputerId)
+            INNER JOIN Cart ON Cart.CartId = CartComputer.CartId
+        WHERE Cart.IsPayed = True
+        GROUP BY Computer.ComputerId, Computer.ComputerName, Computer.ComputerPicture, Computer.Price
+        ORDER BY SUM(CartComputer.Quantity) DESC;
         ";
 
                 using (IDataReader reader = this.dbContext.Select(sql))
                 {
                     if (reader.Read())
                     {
-                        mostSold = this.modelsFactory.CartComputerCreator.CreateModel(reader);
-                        mostSold.computerQuantity = Convert.ToInt16(reader["TotalSold"]);
+                        mostSold = new CartComputer
+                        {
+                            ComputerId = Convert.ToInt16(reader["ComputerId"]),
+                            ComputerName = reader["ComputerName"].ToString(),
+                            ComputerPicture = reader["ComputerPicture"].ToString(),
+                            computerPrice = Convert.ToInt16(reader["Price"]),
+                            computerQuantity = Convert.ToInt16(reader["TotalSold"])
+                        };
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Error fetching most sold computer: {ex.Message}");
             }
 
             return mostSold;
         }
+
+
 
 
 

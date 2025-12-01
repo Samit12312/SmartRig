@@ -16,16 +16,16 @@ namespace SmartRigWeb
         public bool Create(Computer item)
         {
             string sql = @"INSERT INTO [Computer] 
-                           (ComputerName, ComputerTypeId, CompanyId, StroageId, RamId, CpuId, GpuId, Price, 
+                           (ComputerName, ComputerTypeId, CompanyId, StorageId, RamId, CpuId, GpuId, Price, 
                             OperatingSystemId, CaseId, PowerSupplyId, CpuFanId, MotherBoardId, ComputerPicture)
-                           VALUES (@ComputerName, @ComputerTypeId, @CompanyId, @StroageId, @RamId, @CpuId, 
+                           VALUES (@ComputerName, @ComputerTypeId, @CompanyId, @StorageId, @RamId, @CpuId, 
                                    @GpuId, @Price, @OperatingSystemId, @CaseId, @PowerSupplyId, @CpuFanId, 
                                    @MotherBoardId, @ComputerPicture)";
 
             this.dbContext.AddParameter("@ComputerName", item.ComputerName);
             this.dbContext.AddParameter("@ComputerTypeId", item.ComputerTypeId.ToString());
             this.dbContext.AddParameter("@CompanyId", item.CompanyId.ToString());
-            this.dbContext.AddParameter("@StroageId", item.StorageId.ToString());
+            this.dbContext.AddParameter("@StorageId", item.StorageId.ToString());
             this.dbContext.AddParameter("@RamId", item.RamId.ToString());
             this.dbContext.AddParameter("@CpuId", item.CpuId.ToString());
             this.dbContext.AddParameter("@GpuId", item.GpuId.ToString());
@@ -291,7 +291,7 @@ namespace SmartRigWeb
                            SET ComputerName = @ComputerName,
                                ComputerTypeId = @ComputerTypeId,
                                CompanyId = @CompanyId,
-                               StroageId = @StroageId,
+                               StorageId = @StorageId,
                                RamId = @RamId,
                                CpuId = @CpuId,
                                GpuId = @GpuId,
@@ -307,7 +307,7 @@ namespace SmartRigWeb
             this.dbContext.AddParameter("@ComputerName", item.ComputerName);
             this.dbContext.AddParameter("@ComputerTypeId", item.ComputerTypeId.ToString());
             this.dbContext.AddParameter("@CompanyId", item.CompanyId.ToString());
-            this.dbContext.AddParameter("@StroageId", item.StorageId.ToString());
+            this.dbContext.AddParameter("@StorageId", item.StorageId.ToString());
             this.dbContext.AddParameter("@RamId", item.RamId.ToString());
             this.dbContext.AddParameter("@CpuId", item.CpuId.ToString());
             this.dbContext.AddParameter("@GpuId", item.GpuId.ToString());
