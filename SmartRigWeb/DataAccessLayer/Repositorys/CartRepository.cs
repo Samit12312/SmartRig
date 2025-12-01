@@ -176,11 +176,9 @@ namespace SmartRigWeb
         SELECT 
             Computer.ComputerId,
             Computer.ComputerName,
-            Computer.Price,
-            Computer.ComputerPicture,
-            CartComputer.Quantity,
-            Cart.UserId,
-            Cart.IsPayed
+            Computer.Price AS ComputerPrice,
+            CartComputer.Quantity AS ComputerQuantity,
+            Computer.ComputerPicture
         FROM 
             Computer
             INNER JOIN (Cart
@@ -193,23 +191,22 @@ namespace SmartRigWeb
 
             this.dbContext.AddParameter("@UserId", userId.ToString());
 
-            List<CartComputer> cartItems = new List<CartComputer>();
+            List<CartComputer> items = new List<CartComputer>();
 
             using (IDataReader reader = this.dbContext.Select(sql))
             {
                 while (reader.Read())
                 {
-                    // Create CartComputer using your model factory
-                    CartComputer cartComputer = this.modelsFactory.CartComputerCreator.CreateModel(reader);
+                    CartComputer cartItem = this.modelsFactory.CartComputerCreator.CreateModel(reader);
 
-                    // Map quantity manually if needed
-                    cartComputer.computerQuantity = Convert.ToInt16(reader["Quantity"]);
+                    cartItem.ComputerQuantity = Convert.ToInt16(reader["ComputerQuantity"]);
+                    cartItem.ComputerPrice = Convert.ToInt16(reader["ComputerPrice"]);
 
-                    cartItems.Add(cartComputer);
+                    items.Add(cartItem);
                 }
             }
 
-            return cartItems;
+            return items;
         }
 
 

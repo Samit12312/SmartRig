@@ -134,24 +134,36 @@ namespace SmartRigWeb
             }
         }
         [HttpGet]
-        public ComputerDetailsViewModel GetComputerDetails(int Id)
+        public ComputerDetailsViewModel ComputerDetailsViewModel(int id)
         {
-            ComputerDetailsViewModel cDVM = new ComputerDetailsViewModel(); // cDVM = ComputerDetailsViewModel
-
-            //open connection :O
+            ComputerDetailsViewModel cDVM = new ComputerDetailsViewModel();
             try
             {
                 this.repositoryFactory.ConnectDbContext();
-                cDVM.computer = this.repositoryFactory.ComputerRepository.GetById(Id);
-                cDVM.company = this.repositoryFactory.CompanyRepository.GetById(Id);
-                cDVM.type = this.repositoryFactory.TypeRepository.GetById(Id);
-                cDVM.operatingSystem = this.repositoryFactory.OperatingSystemRepository.GetById(Id);
-                cDVM.cpu = this.repositoryFactory.CpuRepository.GetById(Id);
-                cDVM.gpu = this.repositoryFactory.GpuRepository.GetById(Id);
-                cDVM.ram = this.repositoryFactory.RamRepository.GetById(Id);
-                cDVM.powerSupply = this.repositoryFactory.PowerSupplyRepository.GetById(Id);
-                cDVM.cpuFan = this.repositoryFactory.CpuFanRepository.GetById(Id);
-                cDVM.computerCase = this.repositoryFactory.CaseRepository.GetById(Id);
+                Computer computer = this.repositoryFactory.ComputerRepository.GetById(id);
+                Ram ram = this.repositoryFactory.RamRepository.GetById(computer.RamId);
+                PowerSupply PS = this.repositoryFactory.PowerSupplyRepository.GetById(computer.PowerSupplyId);
+                Models.Type type = this.repositoryFactory.TypeRepository.GetById(computer.ComputerTypeId);
+                Storage storage = this.repositoryFactory.StorageRepository.GetById(computer.StorageId);
+                Gpu Gpu = this.repositoryFactory.GpuRepository.GetById(computer.GpuId);
+                MotherBoard motherboard = this.repositoryFactory.MotherBoardRepository.GetById(computer.MotherBoardId);
+                Models.OperatingSystem OS = this.repositoryFactory.OperatingSystemRepository.GetById(computer.OperatingSystemId);
+                CpuFan cpuFan = this.repositoryFactory.CpuFanRepository.GetById(computer.CpuFanId);
+                Company company = this.repositoryFactory.CompanyRepository.GetById(computer.CompanyId);
+                Case computerCase = this.repositoryFactory.CaseRepository.GetById(computer.CaseId);
+                Cpu cpu = this.repositoryFactory.CpuRepository.GetById(computer.CpuId);
+
+
+                cDVM.computer = computer;
+                cDVM.type = type;
+                cDVM.cpuFan = cpuFan;
+                cDVM.cpu = cpu;
+                cDVM.company = company;
+                cDVM.gpu = Gpu;
+                cDVM.computerCase = computerCase;
+                cDVM.motherBoard = motherboard;
+                cDVM.powerSupply = PS;
+                cDVM.ram = ram;
                 return cDVM;
             }
             catch (Exception ex)
@@ -161,7 +173,6 @@ namespace SmartRigWeb
             }
             finally
             {
-                //close connection :D
                 this.repositoryFactory.DisconnectDb();
             }
         }

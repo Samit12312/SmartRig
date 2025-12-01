@@ -1,5 +1,6 @@
 ﻿using Models;
 using System.Data;
+using System.Security.Cryptography;
 
 namespace SmartRigWeb
 {
@@ -13,19 +14,26 @@ namespace SmartRigWeb
         public bool Create(User item)
         {
             string sql = $@"INSERT INTO [User] 
-                    (UserName, UserEmail, UserPassword, UserAddress, CityId, UserPhoneNumber, Manager)
-                    VALUES (@UserName, @UserEmail, @UserPassword, @UserAddress, @CityId, @UserPhoneNumber, @Manager)";
+                    (UserName, UserEmail, UserPassword, UserAdress, CityId, UserPhoneNumber, Manager, UserSalt)
+                    VALUES (@UserName, @UserEmail, @UserPassword, @UserAdress, @CityId, @UserPhoneNumber, @Manager, @UserSalt)";
 
             this.dbContext.AddParameter("@UserName", item.UserName);
             this.dbContext.AddParameter("@UserEmail", item.UserEmail);
             this.dbContext.AddParameter("@UserPassword", item.UserPassword);
-            this.dbContext.AddParameter("@UserAddress", item.UserAddress);
+            this.dbContext.AddParameter("@UserAdress", item.UserAddress);
             this.dbContext.AddParameter("@CityId", item.CityId.ToString());
             this.dbContext.AddParameter("@UserPhoneNumber", item.UserPhoneNumber);
-            int managerValue = item.Manager ? -1 : 0;
-            this.dbContext.AddParameter("@Manager", managerValue.ToString());
+            this.dbContext.AddParameter("@Manager", item.Manager.ToString());
+            string salt = GenerateSalt();
+            this.dbContext.AddParameter("@UserSalt", salt);
 
             return this.dbContext.Insert(sql) > 0;
+        }
+        private string GenerateSalt() // generateing salt for the food :D
+        {
+            byte[] saltBytes = new byte[32];
+            RandomNumberGenerator.Fill(saltBytes);
+            return Convert.ToBase64String(saltBytes);
         }
 
 
@@ -65,30 +73,35 @@ namespace SmartRigWeb
 
         public bool Update(User item)
         {
-            string sql = $@"
-        UPDATE [User]
-        SET 
-            UserName = @UserName,
-            UserEmail = @UserEmail,
-            UserPassword = @UserPassword,
-            UserAdress = @UserAdress,
-            CityId = @CityId,
-            UserPhoneNumber = @UserPhoneNumber,
-            Manager = @Manager
-        WHERE 
-            UserId = @UserId";
+            string sql = @"
+    UPDATE [User]
+    SET 
+        UserName = @UserName,
+        UserEmail = @UserEmail,
+        UserPassword = @UserPassword,
+        UserAddress = @UserAddress,
+        CityId = @CityId,
+        UserPhoneNumber = @UserPhoneNumber,
+        Manager = @Manager
+    WHERE 
+        UserId = @UserId";
 
             this.dbContext.AddParameter("@UserName", item.UserName);
             this.dbContext.AddParameter("@UserEmail", item.UserEmail);
             this.dbContext.AddParameter("@UserPassword", item.UserPassword);
-            this.dbContext.AddParameter("@UserAdress", item.UserAddress);
+            this.dbContext.AddParameter("@UserAddress", item.UserAddress);
+
             this.dbContext.AddParameter("@CityId", item.CityId.ToString());
             this.dbContext.AddParameter("@UserPhoneNumber", item.UserPhoneNumber);
-            this.dbContext.AddParameter("@Manager", item.Manager.ToString());
+
+            // IMPORTANT FIX HERE:
+            this.dbContext.AddParameter("@Manager", item.Manager ? "-1" : "0");
+
             this.dbContext.AddParameter("@UserId", item.UserId.ToString());
 
             return this.dbContext.Update(sql) > 0;
         }
+
         public string Login(string userEmail, string userPassword)
         {
             string sql = @"SELECT UserId, UserName, UserEmail, UserPassword 
