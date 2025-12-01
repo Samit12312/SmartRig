@@ -24,7 +24,6 @@ namespace Models
             get { return userId; }
             set { userId = value; }
         }
-        public string UserSalt { get; set; }
 
         [Required(ErrorMessage = "You must enter your name")]
         [StringLength(15, MinimumLength = 2, ErrorMessage = "First name cannot be longer than 15 characters and less than 2")]
