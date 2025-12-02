@@ -1,5 +1,8 @@
-﻿using Models;
+﻿using Microsoft.Extensions.Configuration.UserSecrets;
+using Microsoft.OpenApi.Any;
+using Models;
 using System.Data;
+using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
 
 namespace SmartRigWeb
@@ -19,12 +22,12 @@ namespace SmartRigWeb
 
             this.dbContext.AddParameter("@UserName", item.UserName);
             this.dbContext.AddParameter("@UserEmail", item.UserEmail);
-            this.dbContext.AddParameter("@UserPassword", item.UserPassword);
             this.dbContext.AddParameter("@UserAdress", item.UserAddress);
             this.dbContext.AddParameter("@CityId", item.CityId.ToString());
             this.dbContext.AddParameter("@UserPhoneNumber", item.UserPhoneNumber);
             this.dbContext.AddParameter("@Manager", item.Manager.ToString());
             string salt = GenerateSalt();
+            this.dbContext.AddParameter("@UserPassword", CaculateHash(salt, item.UserPassword));
             this.dbContext.AddParameter("@UserSalt", salt);
 
             return this.dbContext.Insert(sql) > 0;
@@ -35,7 +38,16 @@ namespace SmartRigWeb
             RandomNumberGenerator.Fill(saltBytes);
             return Convert.ToBase64String(saltBytes);
         }
-
+        private string CaculateHash(string password, string salt)
+        {
+            string s = password + salt;
+            byte[] pass = System.Text.Encoding.UTF8.GetBytes(s);
+            using (SHA256 sha256 =  SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(pass);
+                return Convert.ToBase64String(bytes);
+            }
+        }
 
         public bool Delete(string Id)
         {
@@ -104,13 +116,28 @@ namespace SmartRigWeb
 
         public string Login(string userEmail, string userPassword)
         {
-            string sql = @"SELECT UserId, UserName, UserEmail, UserPassword 
+            string sql = @"SELECT UserId, UserPassword, UserSalt
                    FROM [User] 
-                   WHERE UserEmail = @UserEmail AND UserPassword = @UserPassword";
+                   WHERE UserEmail = @UserEmail";
 
             // Add parameters to the query to avoid SQL injection
             this.dbContext.AddParameter("@UserEmail", userEmail);
-            this.dbContext.AddParameter("@UserPassword", userPassword);
+            string salt = string.Empty;
+            string hash = string.Empty;
+            string userId = string.Empty;
+            using (IDataReader reader = this.dbContext.Select(sql))
+            {
+                if(reader.Read() == true)
+                {
+                    hash = reader["UserPassword"].ToString();
+                    salt = reader["UserSalt"].ToString();
+                    userId = reader["userId"].ToString();
+                }
+                if (hash == CaculateHash(userPassword, salt))
+                    return userId;
+                return null;
+            }
+
             return this.dbContext.GetValue(sql).ToString();
 
         }

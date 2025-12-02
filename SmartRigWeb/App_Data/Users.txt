@@ -1,0 +1,54 @@
+﻿1
+
+Password: Slave123
+Salt: 98QgkImsRCSmOVbU6eTegibHonRgWQAALJ/CfUFsRNA=
+Hash: aQfKPu0v++dr/qi7pwlUNk+J+j2LhTaESdzNFn4Udq4=
+
+2
+
+Password: Slave1234
+Salt: qVEEiUFST0er2TWF2dcYJOKrNiG7Yf8QFSCYmamHcsU=
+Hash: LPjplfASPZum/VnrTWPjvaNRsTt6A1Rw8OfdXT5/Adk=
+
+3
+
+Password: Slave12345
+Salt: LFC1wB3vcufPf1HPYHbwKJIldfBWXLqmRbDAYIe91no=
+Hash: GZh5IW6eQ1RLrKEBfsBAIyyf6m0XlkszObPg/NPIYMA=
+
+4
+
+Password: Slave123456
+Salt: lrOnzJbkaSbVZ+969bEn0fkQ3I8EI+DDRyW9bn0SGqc=
+Hash: 3Os2l6mB96hptbgQiVk2y8FgmIQHFNGCPLxohERDs9w=
+
+5
+
+Password: Slave1234567
+Salt: gHQJe9rKN0RqR4YfZXC4C3fDPEPFcgl6yIrRH5ah1A8=
+Hash: pieJgEE8n1vOFg/LfJyhFxLKTP4F8d89CaOGHP58Fjs=
+
+6
+
+Password: Slave12345678
+Salt: DwV/vdHW81UB7nVXtm9EcR1kCzRucnUKnWH2W5XB16c=
+Hash: nYRoKiuEmIlfojRVXzutabsi+RyXHZp7D3H+6I1xEAc=
+
+7
+
+Password: Slave123456789
+Salt: lXAKgr3zsuQxFormhPyIsllnMN3QW0Tca86KLyPtlQg=
+Hash: jG/kakgEcxIxSK+iS0vmsnPlTIrIkulAUynJUd4GBw4=
+
+8
+Enter password: zivzona123
+Enter salt: zivzona123
+Hash #1: 6Eg9jZn9IVSF/e14VRjo+flNP29uIlGcTGpRpB25f5Q=
+9
+Enter password: Smolic123
+Enter salt: Smolic123
+Hash #2: 1i5uriOSNy/f1qCR4lEN7OYxRh9rezPjpolKDZN68Iw=
+10
+Enter password: 1234
+Enter salt: 1234
+Hash #3: FxjCSxCuuAmeP8RJYKtpSat2omc1JFnyA+oQNr7DgsI=

@@ -1,11 +1,18 @@
 ﻿using Models;
+using System.Data;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Text.Json;
 namespace Tests
 {
     internal class Program
     {
         static void Main(string[] args)
+        {
+            ViewHash();
+
+        }
+        static void CurrencyTest()
         {
             List<Currency> list = CurrencyTestList().Result;
             int count = 1;
@@ -23,7 +30,39 @@ namespace Tests
             int sum = int.Parse(Console.ReadLine());
             ConvertResult r = GetResult(list[from - 1].symbol, list[to - 1].symbol, sum).Result;
             Console.WriteLine($"{r.result.amountToConvert} {r.result.from} = {r.result.convertedAmount} {r.result.to}");
-            Console.ReadLine();
+        }
+        static void ViewHash()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                Console.Write("Enter password: ");
+                string pass = Console.ReadLine();
+
+                Console.Write("Enter salt: ");
+                string salt = Console.ReadLine();
+
+                string hash = CaculateHash(pass, salt);
+                Console.WriteLine($"Hash #{i + 1}: {hash}");
+
+                Console.WriteLine(); // spacing
+            }
+        }
+
+        static string GenerateSalt() // generateing salt for the food :D
+        {
+            byte[] saltBytes = new byte[32];
+            RandomNumberGenerator.Fill(saltBytes);
+            return Convert.ToBase64String(saltBytes);
+        }
+        static string CaculateHash(string password, string salt)
+        {
+            string s = password + salt;
+            byte[] pass = System.Text.Encoding.UTF8.GetBytes(s);
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(pass);
+                return Convert.ToBase64String(bytes);
+            }
         }
         static async Task<ConvertResult> GetResult(string from, string to, double amount)
         {
