@@ -106,9 +106,27 @@ namespace ApiClient
             }
         }
 
-        public bool Post(T data, List<FileStream> file)
+        public bool Post(T data, List<FileStream> files)
         {
-            throw new NotImplementedException();
+            using (HttpRequestMessage requestMessage = new HttpRequestMessage())
+            {
+                requestMessage.Method = HttpMethod.Post;// post שיטת שליחת בקשה
+                requestMessage.RequestUri = this.uriBuilder.Uri; // מגדיר את כתובת הבקשה
+                MultipartFormDataContent multipartFormDataContent = new MultipartFormDataContent();
+                string jsonData = JsonSerializer.Serialize(data);
+                StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                multipartFormDataContent.Add(stringContent, "data");
+                foreach (var file in files)
+                {
+                    StreamContent fileContent = new StreamContent(file);
+                    multipartFormDataContent.Add(fileContent, "file", "fileName");
+                }
+                requestMessage.Content = multipartFormDataContent;
+                using (HttpResponseMessage responseMessage = this.httpClient.SendAsync(requestMessage).Result)
+                {
+                    return responseMessage.IsSuccessStatusCode;
+                }
+            }
         }
 
         public bool Post(T data, FileStream file)
@@ -120,23 +138,72 @@ namespace ApiClient
                 MultipartFormDataContent multipartFormDataContent = new MultipartFormDataContent();
                 string jsonData = JsonSerializer.Serialize(data);
                 StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                multipartFormDataContent.Add(stringContent);
+                multipartFormDataContent.Add(stringContent, "data");
+                StreamContent fileContent = new StreamContent(file);
+                multipartFormDataContent.Add(fileContent, "file", "fileName");
+                requestMessage.Content = multipartFormDataContent;
+                using (HttpResponseMessage responseMessage = this.httpClient.SendAsync(requestMessage).Result)
+                {
+                    return responseMessage.IsSuccessStatusCode;
+                }
             }
         }
 
-        public Task<T> PostAsync(T data)
+        public async Task<bool> PostAsync(T data)
         {
-            throw new NotImplementedException();
+            using (HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, this.uriBuilder.Uri))
+            {
+                requestMessage.Method = HttpMethod.Post;// post שיטת שליחת בקשה
+                requestMessage.RequestUri = this.uriBuilder.Uri; // מגדיר את כתובת הבקשה
+                string jsonData = JsonSerializer.Serialize(data);
+                requestMessage.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                using (HttpResponseMessage responseMessage = await this.httpClient.SendAsync(requestMessage))
+                    return responseMessage.IsSuccessStatusCode;
+            }
         }
 
-        public Task<T> PostAsync(T data, FileStream file)
+        public async Task<bool> PostAsync(T data, FileStream file)
         {
-            throw new NotImplementedException();
+            using (HttpRequestMessage requestMessage = new HttpRequestMessage())
+            {
+                requestMessage.Method = HttpMethod.Post;// post שיטת שליחת בקשה
+                requestMessage.RequestUri = this.uriBuilder.Uri; // מגדיר את כתובת הבקשה
+                MultipartFormDataContent multipartFormDataContent = new MultipartFormDataContent();
+                string jsonData = JsonSerializer.Serialize(data);
+                StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                multipartFormDataContent.Add(stringContent, "data");
+                StreamContent fileContent = new StreamContent(file);
+                multipartFormDataContent.Add(fileContent, "file", "fileName");
+                requestMessage.Content = multipartFormDataContent;
+                using (HttpResponseMessage responseMessage = await this.httpClient.SendAsync(requestMessage))
+                {
+                    return responseMessage.IsSuccessStatusCode;
+
+                }
+            }
         }
 
-        public Task<bool> PostAsync(T data, List<FileStream> file)
+        public async Task<bool> PostAsync(T data, List<FileStream> files)
         {
-            throw new NotImplementedException();
+            using (HttpRequestMessage requestMessage = new HttpRequestMessage())
+            {
+                requestMessage.Method = HttpMethod.Post;// post שיטת שליחת בקשה
+                requestMessage.RequestUri = this.uriBuilder.Uri; // מגדיר את כתובת הבקשה
+                MultipartFormDataContent multipartFormDataContent = new MultipartFormDataContent();
+                string jsonData = JsonSerializer.Serialize(data);
+                StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                multipartFormDataContent.Add(stringContent, "data");
+                foreach (var file in files)
+                {
+                    StreamContent fileContent = new StreamContent(file);
+                    multipartFormDataContent.Add(fileContent, "file", "fileName");
+                }
+                requestMessage.Content = multipartFormDataContent;
+                using (HttpResponseMessage responseMessage = await this.httpClient.SendAsync(requestMessage))
+                {
+                    return responseMessage.IsSuccessStatusCode;
+                }
+            }
         }
     }
 }

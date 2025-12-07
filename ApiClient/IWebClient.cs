@@ -16,8 +16,8 @@ namespace ApiClient
         bool Post(T data, FileStream file);
         bool Post(T data, List<FileStream> file);
         //asyncronous 
-        Task<T> PostAsync(T data);
-        Task<T> PostAsync(T data, FileStream file);
+        Task<bool> PostAsync(T data);
+        Task<bool> PostAsync(T data, FileStream file);
         Task<bool> PostAsync(T data, List<FileStream> file);
 
     }
