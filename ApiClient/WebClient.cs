@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ApiClient
 {
-    internal class WebClient<T> : IWebClient<T>
+    public class WebClient<T> : IWebClient<T>
     {
         HttpClient httpClient;
         HttpRequestMessage requestMessage;

@@ -3,13 +3,31 @@ using System.Data;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text.Json;
+using ApiClient;
+using System.Net;
+using Models.ViewModels;
 namespace Tests
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            ViewHash();
+            Console.ReadLine();
+            TestWebClient();
+            Console.ReadLine();
+        }
+        static void TestWebClient()
+        {
+            WebClient<ComputerDetailsViewModel> webClient = new WebClient<ComputerDetailsViewModel>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 7249;
+            webClient.Path = "api/GuestController/GetComputerDetails";
+            webClient.AddParameter("id", "14");
+            ComputerDetailsViewModel computer = webClient.Get();
+            Console.WriteLine(computer);
+
+            
 
         }
         static void CurrencyTest()

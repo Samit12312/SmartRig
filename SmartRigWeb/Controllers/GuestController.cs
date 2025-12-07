@@ -137,7 +137,7 @@ namespace SmartRigWeb
             }
         }
         [HttpGet]
-        public ComputerDetailsViewModel ComputerDetailsViewModel(int id)
+        public ComputerDetailsViewModel GetComputerDetails(int id)
         {
             ComputerDetailsViewModel cDVM = new ComputerDetailsViewModel();
             try
