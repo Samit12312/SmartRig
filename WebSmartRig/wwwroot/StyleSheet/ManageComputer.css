@@ -1,0 +1,67 @@
+﻿
+
+
+/* top controls (search + add) */
+.top-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+    .top-controls input {
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        width: 250px;
+    }
+
+/* computers list grid */
+.computers-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    justify-items: center;
+    width: 100%;
+}
+
+/* computer card */
+.computer-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+    width: 250px;
+}
+
+    .computer-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .computer-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .computer-card h4 {
+        margin: 10px 0 5px;
+        color: #2c3e50;
+    }
+
+    .computer-card p {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+/* Edit/Remove buttons */
+.card-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}

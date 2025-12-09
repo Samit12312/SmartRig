@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartRigWeb", "SmartRigWeb\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiClient", "ApiClient\ApiClient.csproj", "{92A81923-630A-45AB-B6BA-793930052932}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSmartRig", "WebSmartRig\WebSmartRig.csproj", "{5FE727BE-809F-46A1-AE55-DB40C752E62F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{92A81923-630A-45AB-B6BA-793930052932}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92A81923-630A-45AB-B6BA-793930052932}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92A81923-630A-45AB-B6BA-793930052932}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FE727BE-809F-46A1-AE55-DB40C752E62F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FE727BE-809F-46A1-AE55-DB40C752E62F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FE727BE-809F-46A1-AE55-DB40C752E62F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FE727BE-809F-46A1-AE55-DB40C752E62F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

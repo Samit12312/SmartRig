@@ -1,0 +1,99 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    overflow-x: hidden; /* removes horizontal scroll */
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #2c3e50;
+    padding: 10px 20px;
+    position: relative;
+    color: white;
+}
+
+/* Logo */
+.logo img {
+    height: 40px;
+    width: auto;
+}
+
+/* Center links (SmartRig + HomePage) */
+.center-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+    .center-links div, .center-links a {
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+        .center-links a:hover {
+            text-decoration: underline;
+        }
+
+/* Catalog link near manager username */
+.catalog-link {
+    position: absolute;
+    right: 180px; /* adjust distance from username */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+    .catalog-link a {
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+        .catalog-link a:hover {
+            text-decoration: underline;
+        }
+
+/* Manager username top-right */
+.manager-username {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+}
+
+/* Main manager container */
+.manager-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 60px);
+    gap: 40px;
+}
+
+/* Buttons */
+.manager-btn {
+    width: 250px;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #2c3e50;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .manager-btn:hover {
+        background-color: #34495e;
+        transform: translateY(-4px);
+    }

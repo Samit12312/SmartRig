@@ -1,0 +1,54 @@
+﻿/* report sections */
+.report-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+/* income controls (date inputs + button) */
+.income-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+    .income-controls input {
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+/* most selling card */
+.most-selling-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+    .most-selling-card img {
+        width: 200px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .most-selling-card h4 {
+        margin: 5px 0;
+        color: #2c3e50;
+    }
+
+    .most-selling-card p {
+        margin: 0;
+        color: #555;
+    }
+.manager-container h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+}
