@@ -156,7 +156,6 @@ namespace SmartRigWeb
                 Case computerCase = this.repositoryFactory.CaseRepository.GetById(computer.CaseId);
                 Cpu cpu = this.repositoryFactory.CpuRepository.GetById(computer.CpuId);
 
-
                 cDVM.computer = computer;
                 cDVM.type = type;
                 cDVM.cpuFan = cpuFan;

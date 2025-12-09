@@ -56,20 +56,23 @@ namespace ApiClient
         }
         public T Get()
         {
-            using (HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, this.uriBuilder.Uri))
+            using (HttpRequestMessage requestMessage = new HttpRequestMessage())
             {
                 requestMessage.Method = HttpMethod.Get;// get שיטת שליחת בקשה
                 requestMessage.RequestUri = this.uriBuilder.Uri; // מגדיר את כתובת הבקשה
-                using (HttpResponseMessage respondMessage = this.httpClient.SendAsync(requestMessage).Result) //בעזרתhttpclient שולחים בקשה לשרת
+                using (HttpResponseMessage responseMessage = this.httpClient.SendAsync(requestMessage).Result) //בעזרתhttpclient שולחים בקשה לשרת
                 {
-                    if (responseMessage.IsSuccessStatusCode == true)
+                    if (responseMessage.IsSuccessStatusCode)
                     {
                         string result = responseMessage.Content.ReadAsStringAsync().Result;
-                        T data = JsonSerializer.Deserialize<T>(result);
+                        JsonSerializerOptions options = new JsonSerializerOptions()
+                        {
+                            PropertyNameCaseInsensitive = true
+                        };
+                        T data = JsonSerializer.Deserialize<T>(result,options);
                         return data;
                     }
-                    else
-                        return default(T);
+                    else return default(T);
                 }
             }
         }
@@ -79,16 +82,19 @@ namespace ApiClient
             {
                 requestMessage.Method = HttpMethod.Get;// get שיטת שליחת בקשה
                 requestMessage.RequestUri = this.uriBuilder.Uri; // מגדיר את כתובת הבקשה
-                using (HttpResponseMessage respondMessage = await this.httpClient.SendAsync(requestMessage)) //בעזרתhttpclient שולחים בקשה לשרת
+                using (HttpResponseMessage responseMessage = await this.httpClient.SendAsync(requestMessage)) //בעזרתhttpclient שולחים בקשה לשרת
                 {
-                    if (responseMessage.IsSuccessStatusCode == true)
+                    if (responseMessage.IsSuccessStatusCode)
                     {
                         string result = await responseMessage.Content.ReadAsStringAsync();
-                        T data = JsonSerializer.Deserialize<T>(result);
+                        JsonSerializerOptions options = new JsonSerializerOptions()
+                        {
+                            PropertyNameCaseInsensitive = true
+                        };
+                        T data = JsonSerializer.Deserialize<T>(result, options);
                         return data;
                     }
-                    else
-                        return default(T);
+                    else return default(T);
                 }
             }
         }

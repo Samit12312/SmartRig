@@ -17,19 +17,17 @@ namespace Tests
             Console.ReadLine();
         }
         static void TestWebClient()
-        {
+        { 
             WebClient<ComputerDetailsViewModel> webClient = new WebClient<ComputerDetailsViewModel>();
             webClient.Schema = "http";
             webClient.Host = "localhost";
             webClient.Port = 7249;
-            webClient.Path = "api/GuestController/GetComputerDetails";
+            webClient.Path = "api/Guest/GetComputerDetails";
             webClient.AddParameter("id", "14");
             ComputerDetailsViewModel computer = webClient.Get();
-            Console.WriteLine(computer);
-
-            
-
+            Console.WriteLine(computer.computer.ComputerName);
         }
+
         static void CurrencyTest()
         {
             List<Currency> list = CurrencyTestList().Result;
