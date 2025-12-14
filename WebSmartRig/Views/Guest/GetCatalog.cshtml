@@ -1,0 +1,67 @@
+﻿@using Models
+@model CatalogViewModel
+@{
+    ViewData["Title"] = "ComputersCatalog";
+    Layout = "~/Views/Shared/MasterPage.cshtml";
+}
+<link href="~/stylesheet/computercatalog.css" rel="stylesheet" />
+<div class="catalog-container">
+    <aside class="filters">
+        <h3>Filters</h3>
+        <label>Computer Type</label>
+        <select>
+            <option>All</option>
+            <option>Laptop</option>
+            <option>Gaming</option>
+            <option>Workstation</option>
+        </select>
+
+        <label>Price Range</label>
+        <input type="number" placeholder="Min $">
+        <input type="number" placeholder="Max $">
+
+        <label>Order by Price</label>
+        <select>
+            <option>Default</option>
+            <option>Low to High</option>
+            <option>High to Low</option>
+        </select>
+
+        <label>Operating System</label>
+        <select>
+            <option>All</option>
+            <option>Windows</option>
+            <option>Linux</option>
+            <option>MacOS</option>
+        </select>
+
+        <label>Company</label>
+        <select>
+            <option>All</option>
+            <option>Dell</option>
+            <option>HP</option>
+            <option>ASUS</option>
+            <option>SmartRig</option>
+        </select>
+
+        <button class="filter-btn">Apply Filters</button>
+    </aside>
+
+    <main class="computers">
+        @foreach(Computer computer in Model.Computers)
+        {
+            <div class="computer-card">
+                <img src="computer.ComputerPicture" alt="PC 1">
+                <h1>@computer.ComputerName</h1>
+                <p>@computer.CpuId @computer.GpuId</p>
+                <span class="price">@computer.Price</span>
+            </div>
+        }
+        <div class="computer-card">
+            <img src="pc1.jpg" alt="PC 1">
+            <h4>SmartRig Gamer X</h4>
+            <p>Intel i7 | RTX 4070 | 16GB RAM</p>
+            <span class="price">$1,199</span>
+        </div>
+    </main> 
+</div>

@@ -24,7 +24,7 @@ namespace WebSmartRig
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Guest}/{action=HomePage}/{id?}");
 
             app.Run();
         }

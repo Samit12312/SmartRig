@@ -45,7 +45,7 @@ nav a {
     left: 0;
     height: 100%;
     width: 100%;
-    background: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80');
+    background-image: url('../images/homepage.jpg');
     background-size: cover;
     display: flex;
     flex-direction: column;

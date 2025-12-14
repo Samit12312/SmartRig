@@ -19,7 +19,7 @@ namespace Tests
         static void TestWebClient()
         { 
             WebClient<ComputerDetailsViewModel> webClient = new WebClient<ComputerDetailsViewModel>();
-            webClient.Schema = "http";
+            webClient.Schema = "https";
             webClient.Host = "localhost";
             webClient.Port = 7249;
             webClient.Path = "api/Guest/GetComputerDetails";

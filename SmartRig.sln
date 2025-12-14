@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartRigWeb", "SmartRigWeb\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiClient", "ApiClient\ApiClient.csproj", "{92A81923-630A-45AB-B6BA-793930052932}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSmartRig", "WebSmartRig\WebSmartRig.csproj", "{5FE727BE-809F-46A1-AE55-DB40C752E62F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppSmartRig", "WebSmartRig\WebAppSmartRig.csproj", "{5FE727BE-809F-46A1-AE55-DB40C752E62F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
