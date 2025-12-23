@@ -25,6 +25,20 @@ namespace WebSmartRig.Controllers
             
             return View(viewModel);
         }
+        [HttpGet]
+        public IActionResult GetComputer(string computerId)
+        {
+            // 1. get data from webservice
+            // 2. 
+            WebClient<Computer> webClient = new WebClient<Computer>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 7249;
+            webClient.Path = "api/Guest/GetComputerDetails";
+            Computer computer = webClient.Get();
+
+            return View(computer);
+        }
 
     }
 }

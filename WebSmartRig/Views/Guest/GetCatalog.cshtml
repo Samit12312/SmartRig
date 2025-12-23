@@ -51,7 +51,7 @@
         @foreach(Computer computer in Model.Computers)
         {
             <div class="computer-card">
-                <img src="computer.ComputerPicture" alt="PC 1">
+                <img src="http://localhost:7249/Images/Computers/@computer.ComputerPicture" alt="PC 1">
                 <h1>@computer.ComputerName</h1>
                 <p>@computer.CpuId @computer.GpuId</p>
                 <span class="price">@computer.Price</span>
