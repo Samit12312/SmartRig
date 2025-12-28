@@ -1,8 +1,32 @@
-﻿
+﻿@using Models;
+@model ComputerDetailsViewModel
 @{
     ViewData["Title"] = "GetComputer";
     Layout = "~/Views/Shared/MasterPage.cshtml";
 }
+<link href="~/stylesheet/computerpage.css" rel="stylesheet" />
+<div class="computer-container">
+    <div class="computer-image">
+        <img src="http://localhost:7249/Images/Computers/@Model.computer.ComputerPicture" alt="Computer Image">
+    </div>
+    
+    <div class="computer-details">
+        <h2></h2>
+        <ul>
+            <li><strong>Price:</strong>@Model.computer.Price</li>
+            <li><strong>Company:</strong>@Model.company.CompanyName</li>
+            <li><strong>Computer Type:</strong>@Model.type.TypeName</li>
+            <li><strong>Operating System:</strong>@Model.operatingSystem.OperatingSystemName</li>
+            <li><strong>CPU:</strong>@Model.cpu.CpuName</li>
+            <li><strong>GPU:</strong>@Model.gpu.GpuName</li>
+            <li><strong>RAM:</strong>@Model.ram.RamName @Model.ram.RamSpeed @Model.ram.RamSize</li>
+            <li><strong>Storage:</strong>@Model.storage.StorageName</li>
+            <li><strong>Power Supply:</strong>@Model.powerSupply.PowerSupplyName</li>
+            <li><strong>Motherboard:</strong>@Model.motherBoard.MotherBoardName</li>
+            <li><strong>CPU Fan:</strong>@Model.cpuFan.CpuFanName</li>
+            <li><strong>Case:</strong>@Model.computerCase.CaseName</li>
 
-<h1>GetComputer</h1>
-
+        </ul>
+        <button class="buy-btn">Buy Now</button>
+    </div>
+</div>

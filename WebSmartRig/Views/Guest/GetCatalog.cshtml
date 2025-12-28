@@ -10,10 +10,9 @@
         <h3>Filters</h3>
         <label>Computer Type</label>
         <select>
-            <option>All</option>
-            <option>Laptop</option>
-            <option>Gaming</option>
-            <option>Workstation</option>
+            @foreach(Models.Type type in Model.types){
+                <option>@type.TypeName </option>
+            }
         </select>
 
         <label>Price Range</label>
@@ -29,19 +28,16 @@
 
         <label>Operating System</label>
         <select>
-            <option>All</option>
-            <option>Windows</option>
-            <option>Linux</option>
-            <option>MacOS</option>
+            @foreach(Models.OperatingSystem operatingSystem in Model.operatingSystems){
+                <option>@operatingSystem.OperatingSystemName</option>
+            }
         </select>
 
         <label>Company</label>
         <select>
-            <option>All</option>
-            <option>Dell</option>
-            <option>HP</option>
-            <option>ASUS</option>
-            <option>SmartRig</option>
+            @foreach(Company company in Model.Companys){
+                <option>@company.CompanyName</option>
+            }
         </select>
 
         <button class="filter-btn">Apply Filters</button>
@@ -51,7 +47,10 @@
         @foreach(Computer computer in Model.Computers)
         {
             <div class="computer-card">
-                <img src="http://localhost:7249/Images/Computers/@computer.ComputerPicture" alt="PC 1">
+
+                <a href="http://localhost:5036/Guest/GetComputer/?computerId=@computer.ComputerId">
+                    <img src="http://localhost:7249/Images/Computers/@computer.ComputerPicture" alt="PC 1">
+                </a>
                 <h1>@computer.ComputerName</h1>
                 <p>@computer.CpuId @computer.GpuId</p>
                 <span class="price">@computer.Price</span>

@@ -26,18 +26,19 @@ namespace WebSmartRig.Controllers
             return View(viewModel);
         }
         [HttpGet]
-        public IActionResult GetComputer(string computerId)
+        public IActionResult GetComputer(string computerId, string? operatingSystem = null, string? typeId = null, int? minPrice = null,int? maxPrice = null, )
         {
             // 1. get data from webservice
             // 2. 
-            WebClient<Computer> webClient = new WebClient<Computer>();
+            WebClient<ComputerDetailsViewModel> webClient = new WebClient<ComputerDetailsViewModel>();
             webClient.Schema = "http";
             webClient.Host = "localhost";
             webClient.Port = 7249;
             webClient.Path = "api/Guest/GetComputerDetails";
-            Computer computer = webClient.Get();
+            webClient.AddParameter("computerId", computerId);
+            ComputerDetailsViewModel computerDetailsViewModel = webClient.Get();
 
-            return View(computer);
+            return View(computerDetailsViewModel);
         }
 
     }

@@ -18,7 +18,7 @@ namespace SmartRigWeb
         }
 
         [HttpGet]
-        public CatalogViewModel GetCatalog(int? minPrice = null, int? maxPrice = null, int? companyId = null, int? operatingSystemId = null, int? typeId = null)
+        public CatalogViewModel GetCatalog(int? minPrice = null, int? maxPrice = null, int? companyId = null, int? operatingSystemId = null, int? typeId = null,int?priceSort = null )
         {
             CatalogViewModel catalogViewModel = new CatalogViewModel();
 
@@ -137,13 +137,13 @@ namespace SmartRigWeb
             }
         }
         [HttpGet]
-        public ComputerDetailsViewModel GetComputerDetails(int id)
+        public ComputerDetailsViewModel GetComputerDetails(int computerId)
         {
             ComputerDetailsViewModel cDVM = new ComputerDetailsViewModel();
             try
             {
                 this.repositoryFactory.ConnectDbContext();
-                Computer computer = this.repositoryFactory.ComputerRepository.GetById(id);
+                Computer computer = this.repositoryFactory.ComputerRepository.GetById(computerId);
                 Ram ram = this.repositoryFactory.RamRepository.GetById(computer.RamId);
                 PowerSupply PS = this.repositoryFactory.PowerSupplyRepository.GetById(computer.PowerSupplyId);
                 Models.Type type = this.repositoryFactory.TypeRepository.GetById(computer.ComputerTypeId);
@@ -159,6 +159,8 @@ namespace SmartRigWeb
                 cDVM.computer = computer;
                 cDVM.type = type;
                 cDVM.cpuFan = cpuFan;
+                cDVM.operatingSystem = OS;
+                cDVM.storage = storage;
                 cDVM.cpu = cpu;
                 cDVM.company = company;
                 cDVM.gpu = Gpu;
