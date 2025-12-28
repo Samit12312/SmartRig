@@ -4,17 +4,34 @@
     ViewData["Title"] = "ComputersCatalog";
     Layout = "~/Views/Shared/MasterPage.cshtml";
 }
+<script>
+    function GoLink()
+    {
+        document.forms[0].submit();
+    }
+</script>
 <link href="~/stylesheet/computercatalog.css" rel="stylesheet" />
 <div class="catalog-container">
     <aside class="filters">
+        <form action="http://localhost:5036/Guest/GetCatalog/" method="get">
         <h3>Filters</h3>
         <label>Computer Type</label>
-        <select>
-            @foreach(Models.Type type in Model.types){
-                <option>@type.TypeName </option>
-            }
-        </select>
+            <select name="typeId" id="type" onchange="GoLink()">
+                <option value="-1">All Types</option>
+                @foreach (Models.Type type in Model.Types)
+                {
+                    if (type.TypeId == Model.TypeId)
+                    {
+                        <option value="@type.TypeId" selected>@type.TypeName</option>
+                    }
+                    else
+                    {
+                        <option value="@type.TypeId">@type.TypeName</option>
+                    }
+                }
+            </select>
 
+        </form>
         <label>Price Range</label>
         <input type="number" placeholder="Min $">
         <input type="number" placeholder="Max $">
@@ -22,25 +39,27 @@
         <label>Order by Price</label>
         <select>
             <option>Default</option>
-            <option>Low to High</option>
-            <option>High to Low</option>
+            <option value ="1" selected>Low to High</option>
+            <option value="2" selected>High to Low</option>
         </select>
 
         <label>Operating System</label>
         <select>
+            <option>All</option>
             @foreach(Models.OperatingSystem operatingSystem in Model.operatingSystems){
-                <option>@operatingSystem.OperatingSystemName</option>
+                <option value="@operatingSystem.OperatingSystemId" selected>@operatingSystem.OperatingSystemName</option>
             }
         </select>
 
         <label>Company</label>
         <select>
+            <option>AllCompanys</option>
             @foreach(Company company in Model.Companys){
                 <option>@company.CompanyName</option>
             }
         </select>
 
-        <button class="filter-btn">Apply Filters</button>
+        <button type="sub" class="filter-btn">Apply Filters</button>
     </aside>
 
     <main class="computers">

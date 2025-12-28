@@ -23,7 +23,7 @@ namespace SmartRigWeb
             {
                 this.repositoryFactory.ConnectDbContext();
 
-                catalogViewModel.types = this.repositoryFactory.TypeRepository.GetAllByTypeCode(1);
+                catalogViewModel.Types = this.repositoryFactory.TypeRepository.GetAllByTypeCode(1);
                 catalogViewModel.Companys = this.repositoryFactory.CompanyRepository.GetAll();
                 catalogViewModel.operatingSystems = this.repositoryFactory.OperatingSystemRepository.GetAll();
 
