@@ -48,15 +48,27 @@
     </aside>
 
     <main class="computers">
-        @foreach(Computer computer in Model.Computers)
+        @foreach (var computer in Model.Computers)
         {
             <div class="computer-card">
+
                 <img src="http://localhost:7249/Images/Computers/@computer.ComputerPicture" alt="PC 1">
-                <h1>@computer.ComputerName</h1>
-                <p>@computer.CpuId @computer.GpuId</p>
-                <span class="price">@computer.Price</span>
+
+                <h2>@computer.ComputerName</h2>
+
+                <p>
+                    CPU: @computer.Cpu <br />
+                    GPU: @computer.Gpu <br />
+                    RAM: @computer.Ram <br />
+                    Storage: @computer.Storage <br />
+                    OS: @computer.OperatingSystem
+                </p>
+
+                <span class="price">₪@computer.Price</span>
             </div>
         }
+
+
         <div class="computer-card">
             <img src="pc1.jpg" alt="PC 1">
             <h4>SmartRig Gamer X</h4>

@@ -27,7 +27,10 @@ namespace Tests
             ComputerDetailsViewModel computer = webClient.Get();
             Console.WriteLine(computer.computer.ComputerName);
         }
+        static void gs()
+        {
 
+        }
         static void CurrencyTest()
         {
             List<Currency> list = CurrencyTestList().Result;
