@@ -18,7 +18,13 @@ namespace SmartRigWeb
         }
 
         [HttpGet]
-        public CatalogViewModel GetCatalog(int? minPrice = null, int? maxPrice = null, int? companyId = null, int? operatingSystemId = null, int? typeId = null)
+        public CatalogViewModel GetCatalog(
+            int? minPrice = null,
+            int? maxPrice = null,
+            int? companyId = null,
+            int? operatingSystemId = null,
+            int? typeId = null,
+            int? priceSort = null) // 1 = ascending, 2 = descending
         {
             CatalogViewModel catalogViewModel = new CatalogViewModel();
 
@@ -27,135 +33,92 @@ namespace SmartRigWeb
                 this.repositoryFactory.ConnectDbContext();
 
                 catalogViewModel.Types = this.repositoryFactory.TypeRepository.GetAllByTypeCode(1);
-                catalogViewModel.Companies = this.repositoryFactory.CompanyRepository.GetAll();
-                catalogViewModel.OperatingSystems = this.repositoryFactory.OperatingSystemRepository.GetAll();
+                catalogViewModel.Companys = this.repositoryFactory.CompanyRepository.GetAll();
+                catalogViewModel.operatingSystems = this.repositoryFactory.OperatingSystemRepository.GetAll();
 
-                // Initialize computer list
                 List<Computer> computers = new List<Computer>();
 
-                // Filters
-                if (minPrice.HasValue && maxPrice.HasValue &&
-                    !companyId.HasValue && !operatingSystemId.HasValue &&
-                    !typeId.HasValue)
-                {
+                // Determine which filter to use
+                if (minPrice.HasValue && maxPrice.HasValue && !companyId.HasValue && !operatingSystemId.HasValue && !typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRange(minPrice.Value, maxPrice.Value);
-                }
-                else if (!minPrice.HasValue && !maxPrice.HasValue &&
-                    companyId.HasValue && !operatingSystemId.HasValue &&
-                    !typeId.HasValue)
-                {
+
+                else if (!minPrice.HasValue && !maxPrice.HasValue && companyId.HasValue && !operatingSystemId.HasValue && !typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetComputersByCompanyId(companyId.Value);
-                }
-                else if (!minPrice.HasValue && !maxPrice.HasValue &&
-                    !companyId.HasValue && operatingSystemId.HasValue &&
-                    !typeId.HasValue)
-                {
+
+                else if (!minPrice.HasValue && !maxPrice.HasValue && !companyId.HasValue && operatingSystemId.HasValue && !typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetComputersByOperatingSystemId(operatingSystemId.Value);
-                }
-                else if (!minPrice.HasValue && !maxPrice.HasValue &&
-                    !companyId.HasValue && !operatingSystemId.HasValue &&
-                    typeId.HasValue)
-                {
+
+                else if (!minPrice.HasValue && !maxPrice.HasValue && !companyId.HasValue && !operatingSystemId.HasValue && typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetComputerByType(typeId.Value);
-                }
-                else if (minPrice.HasValue && maxPrice.HasValue &&
-                    companyId.HasValue && !operatingSystemId.HasValue &&
-                    !typeId.HasValue)
-                {
+
+                // Combinations: Price + Company, Price + OS, Price + Type
+                else if (minPrice.HasValue && maxPrice.HasValue && companyId.HasValue && !operatingSystemId.HasValue && !typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyId(minPrice.Value, maxPrice.Value, companyId.Value);
-                }
-                else if (minPrice.HasValue && maxPrice.HasValue &&
-                    !companyId.HasValue && operatingSystemId.HasValue &&
-                    !typeId.HasValue)
-                {
+
+                else if (minPrice.HasValue && maxPrice.HasValue && !companyId.HasValue && operatingSystemId.HasValue && !typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndOperatingSystemId(minPrice.Value, maxPrice.Value, operatingSystemId.Value);
-                }
-                else if (minPrice.HasValue && maxPrice.HasValue &&
-                    !companyId.HasValue && !operatingSystemId.HasValue &&
-                    typeId.HasValue)
-                {
+
+                else if (minPrice.HasValue && maxPrice.HasValue && !companyId.HasValue && !operatingSystemId.HasValue && typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndTypeId(minPrice.Value, maxPrice.Value, typeId.Value);
-                }
-                else if (!minPrice.HasValue && !maxPrice.HasValue &&
-                    companyId.HasValue && operatingSystemId.HasValue &&
-                    !typeId.HasValue)
-                {
+
+                // Company + OS, Company + Type, OS + Type
+                else if (!minPrice.HasValue && !maxPrice.HasValue && companyId.HasValue && operatingSystemId.HasValue && !typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetComputersByCompanyIdAndOperatingSystemId(companyId.Value, operatingSystemId.Value);
-                }
-                else if (!minPrice.HasValue && !maxPrice.HasValue &&
-                    companyId.HasValue && !operatingSystemId.HasValue &&
-                    typeId.HasValue)
-                {
+
+                else if (!minPrice.HasValue && !maxPrice.HasValue && companyId.HasValue && !operatingSystemId.HasValue && typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetComputersByCompanyIdAndTypeId(companyId.Value, typeId.Value);
-                }
-                else if (!minPrice.HasValue && !maxPrice.HasValue &&
-                    !companyId.HasValue && operatingSystemId.HasValue &&
-                    typeId.HasValue)
-                {
+
+                else if (!minPrice.HasValue && !maxPrice.HasValue && !companyId.HasValue && operatingSystemId.HasValue && typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetComputersByOperatingSystemIdAndTypeId(operatingSystemId.Value, typeId.Value);
-                }
-                else if (minPrice.HasValue && maxPrice.HasValue &&
-                    companyId.HasValue && operatingSystemId.HasValue &&
-                    !typeId.HasValue)
-                {
+
+                // Price + Company + OS, Price + Company + Type, Price + OS + Type
+                else if (minPrice.HasValue && maxPrice.HasValue && companyId.HasValue && operatingSystemId.HasValue && !typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyIdAndOperatingSystemId(minPrice.Value, maxPrice.Value, companyId.Value, operatingSystemId.Value);
-                }
-                else if (minPrice.HasValue && maxPrice.HasValue &&
-                    companyId.HasValue && !operatingSystemId.HasValue &&
-                    typeId.HasValue)
-                {
+
+                else if (minPrice.HasValue && maxPrice.HasValue && companyId.HasValue && !operatingSystemId.HasValue && typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyIdAndTypeId(minPrice.Value, maxPrice.Value, companyId.Value, typeId.Value);
-                }
-                else if (minPrice.HasValue && maxPrice.HasValue &&
-                    !companyId.HasValue && operatingSystemId.HasValue &&
-                    typeId.HasValue)
-                {
+
+                else if (minPrice.HasValue && maxPrice.HasValue && !companyId.HasValue && operatingSystemId.HasValue && typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndOperatingSystemIdAndTypeId(minPrice.Value, maxPrice.Value, operatingSystemId.Value, typeId.Value);
-                }
-                else if (minPrice.HasValue && maxPrice.HasValue &&
-                    companyId.HasValue && operatingSystemId.HasValue &&
-                    typeId.HasValue)
-                {
+
+                // Price + Company + OS + Type
+                else if (minPrice.HasValue && maxPrice.HasValue && companyId.HasValue && operatingSystemId.HasValue && typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyIdAndOperatingSystemIdAndTypeId(minPrice.Value, maxPrice.Value, companyId.Value, operatingSystemId.Value, typeId.Value);
-                }
+
+                // No filters
                 else
-                {
                     computers = this.repositoryFactory.ComputerRepository.GetAll();
-                }
 
-                // Map computers to ComputerCatalogViewModel with real specs
-                catalogViewModel.Computers = new List<ComputerCatalogViewModel>();
-
-                foreach (Computer computer in computers)
+                // ---- Manual sorting by price (ascending/descending) ----
+                if (priceSort.HasValue)
                 {
-                    // Load full objects
-                    Ram ram = this.repositoryFactory.RamRepository.GetById(computer.RamId);
-                    PowerSupply powerSupply = this.repositoryFactory.PowerSupplyRepository.GetById(computer.PowerSupplyId);
-                    Models.Type type = this.repositoryFactory.TypeRepository.GetById(computer.ComputerTypeId);
-                    Storage storage = this.repositoryFactory.StorageRepository.GetById(computer.StorageId);
-                    Gpu gpu = this.repositoryFactory.GpuRepository.GetById(computer.GpuId);
-                    MotherBoard motherboard = this.repositoryFactory.MotherBoardRepository.GetById(computer.MotherBoardId);
-                    Models.OperatingSystem os = this.repositoryFactory.OperatingSystemRepository.GetById(computer.OperatingSystemId);
-                    CpuFan cpuFan = this.repositoryFactory.CpuFanRepository.GetById(computer.CpuFanId);
-                    Company company = this.repositoryFactory.CompanyRepository.GetById(computer.CompanyId);
-                    Case computerCase = this.repositoryFactory.CaseRepository.GetById(computer.CaseId);
-                    Cpu cpu = this.repositoryFactory.CpuRepository.GetById(computer.CpuId);
-
-                    // Map to view model
-                    ComputerCatalogViewModel computerCatalogViewModel = new ComputerCatalogViewModel();
-                    computerCatalogViewModel.Id = computer.ComputerId;
-                    computerCatalogViewModel.ComputerName = computer.ComputerName;
-                    computerCatalogViewModel.ComputerPicture = computer.ComputerPicture;
-                    computerCatalogViewModel.Cpu = cpu.CpuName;
-                    computerCatalogViewModel.Gpu = gpu.GpuName;
-                    computerCatalogViewModel.Ram = ram.RamName;
-                    computerCatalogViewModel.Storage = storage.StorageName;
-                    computerCatalogViewModel.OperatingSystem = os.OperatingSystemName;
-                    computerCatalogViewModel.Price = computer.Price;
-
-                    catalogViewModel.Computers.Add(computerCatalogViewModel);
+                    for (int i = 0; i < computers.Count - 1; i++)
+                    {
+                        for (int j = i + 1; j < computers.Count; j++)
+                        {
+                            if (priceSort.Value == 1) // ascending
+                            {
+                                if (computers[i].Price > computers[j].Price)
+                                {
+                                    Computer temp = computers[i];
+                                    computers[i] = computers[j];
+                                    computers[j] = temp;
+                                }
+                            }
+                            else if (priceSort.Value == 2) // descending
+                            {
+                                if (computers[i].Price < computers[j].Price)
+                                {
+                                    Computer temp = computers[i];
+                                    computers[i] = computers[j];
+                                    computers[j] = temp;
+                                }
+                            }
+                        }
+                    }
                 }
 
+                catalogViewModel.Computers = computers;
                 return catalogViewModel;
             }
             catch (Exception ex)
@@ -170,13 +133,13 @@ namespace SmartRigWeb
         }
 
         [HttpGet]
-        public ComputerDetailsViewModel GetComputerDetails(int id)
+        public ComputerDetailsViewModel GetComputerDetails(int computerId)
         {
             ComputerDetailsViewModel cDVM = new ComputerDetailsViewModel();
             try
             {
                 this.repositoryFactory.ConnectDbContext();
-                Computer computer = this.repositoryFactory.ComputerRepository.GetById(id);
+                Computer computer = this.repositoryFactory.ComputerRepository.GetById(computerId);
                 Ram ram = this.repositoryFactory.RamRepository.GetById(computer.RamId);
                 PowerSupply PS = this.repositoryFactory.PowerSupplyRepository.GetById(computer.PowerSupplyId);
                 Models.Type type = this.repositoryFactory.TypeRepository.GetById(computer.ComputerTypeId);
@@ -192,6 +155,8 @@ namespace SmartRigWeb
                 cDVM.computer = computer;
                 cDVM.type = type;
                 cDVM.cpuFan = cpuFan;
+                cDVM.operatingSystem = OS;
+                cDVM.storage = storage;
                 cDVM.cpu = cpu;
                 cDVM.company = company;
                 cDVM.gpu = Gpu;

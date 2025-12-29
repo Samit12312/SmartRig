@@ -19,5 +19,6 @@ namespace Models
         public MotherBoard motherBoard { get; set; }
         public Case computerCase { get; set; }
         public Type type { get; set; }
+        public Storage storage { get; set; }
     }
 }

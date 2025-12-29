@@ -4,18 +4,34 @@
     ViewData["Title"] = "ComputersCatalog";
     Layout = "~/Views/Shared/MasterPage.cshtml";
 }
+<script>
+    function GoLink()
+    {
+        document.forms[0].submit();
+    }
+</script>
 <link href="~/stylesheet/computercatalog.css" rel="stylesheet" />
 <div class="catalog-container">
     <aside class="filters">
+        <form action="http://localhost:5036/Guest/GetCatalog/" method="get">
         <h3>Filters</h3>
         <label>Computer Type</label>
-        <select>
-            <option>All</option>
-            <option>Laptop</option>
-            <option>Gaming</option>
-            <option>Workstation</option>
-        </select>
+            <select name="typeId" id="type" onchange="GoLink()">
+                <option value="-1">All Types</option>
+                @foreach (Models.Type type in Model.Types)
+                {
+                    if (type.TypeId == Model.TypeId)
+                    {
+                        <option value="@type.TypeId" selected>@type.TypeName</option>
+                    }
+                    else
+                    {
+                        <option value="@type.TypeId">@type.TypeName</option>
+                    }
+                }
+            </select>
 
+        </form>
         <label>Price Range</label>
         <input type="number" placeholder="Min $">
         <input type="number" placeholder="Max $">
@@ -23,52 +39,42 @@
         <label>Order by Price</label>
         <select>
             <option>Default</option>
-            <option>Low to High</option>
-            <option>High to Low</option>
+            <option value ="1" selected>Low to High</option>
+            <option value="2" selected>High to Low</option>
         </select>
 
         <label>Operating System</label>
         <select>
             <option>All</option>
-            <option>Windows</option>
-            <option>Linux</option>
-            <option>MacOS</option>
+            @foreach(Models.OperatingSystem operatingSystem in Model.operatingSystems){
+                <option value="@operatingSystem.OperatingSystemId" selected>@operatingSystem.OperatingSystemName</option>
+            }
         </select>
 
         <label>Company</label>
         <select>
-            <option>All</option>
-            <option>Dell</option>
-            <option>HP</option>
-            <option>ASUS</option>
-            <option>SmartRig</option>
+            <option>AllCompanys</option>
+            @foreach(Company company in Model.Companys){
+                <option>@company.CompanyName</option>
+            }
         </select>
 
-        <button class="filter-btn">Apply Filters</button>
+        <button type="sub" class="filter-btn">Apply Filters</button>
     </aside>
 
     <main class="computers">
-        @foreach (var computer in Model.Computers)
+        @foreach(Computer computer in Model.Computers)
         {
             <div class="computer-card">
 
-                <img src="http://localhost:7249/Images/Computers/@computer.ComputerPicture" alt="PC 1">
-
-                <h2>@computer.ComputerName</h2>
-
-                <p>
-                    CPU: @computer.Cpu <br />
-                    GPU: @computer.Gpu <br />
-                    RAM: @computer.Ram <br />
-                    Storage: @computer.Storage <br />
-                    OS: @computer.OperatingSystem
-                </p>
-
-                <span class="price">₪@computer.Price</span>
+                <a href="http://localhost:5036/Guest/GetComputer/?computerId=@computer.ComputerId">
+                    <img src="http://localhost:7249/Images/Computers/@computer.ComputerPicture" alt="PC 1">
+                </a>
+                <h1>@computer.ComputerName</h1>
+                <p>@computer.CpuId @computer.GpuId</p>
+                <span class="price">@computer.Price</span>
             </div>
         }
-
-
         <div class="computer-card">
             <img src="pc1.jpg" alt="PC 1">
             <h4>SmartRig Gamer X</h4>
