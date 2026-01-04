@@ -82,7 +82,7 @@ namespace WebSmartRig.Controllers
             webClient.Path = "api/Guest/RegistrationViewModel";
             RegistrationViewModel vm = webClient.Get();
             vm.User = user;
-            return View("ViewRegistrationForm");
+            return View("ViewRegistrationForm",vm);
             }
 
             return View();
