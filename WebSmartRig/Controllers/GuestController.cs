@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Models;
 using ApiClient;
+using System.Net;
 
 namespace WebSmartRig.Controllers
 {
@@ -57,6 +58,34 @@ namespace WebSmartRig.Controllers
             ComputerDetailsViewModel computerDetailsViewModel = webClient.Get();
 
             return View(computerDetailsViewModel);
+        }
+        [HttpGet]
+        public IActionResult ViewRegistrationForm()
+        {
+            WebClient<RegistrationViewModel> webClient = new WebClient<RegistrationViewModel>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 7249;
+            webClient.Path = "api/Guest/RegistrationViewModel";
+            RegistrationViewModel vm= webClient.Get();
+            return View(vm);
+        }
+        [HttpPost]
+        public IActionResult Registrations(User user) // can add iformfile to add pictures
+        {
+            if(ModelState.IsValid == false)
+            {
+                            WebClient<RegistrationViewModel> webClient = new WebClient<RegistrationViewModel>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 7249;
+            webClient.Path = "api/Guest/RegistrationViewModel";
+            RegistrationViewModel vm = webClient.Get();
+            vm.User = user;
+            return View("ViewRegistrationForm");
+            }
+
+            return View();
         }
     }
 }

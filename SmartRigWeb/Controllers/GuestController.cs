@@ -195,5 +195,27 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
+        [HttpGet]
+        public RegistrationViewModel RegistrationViewModel()
+        {
+            List<Cities> cities = new List<Cities>();
+            RegistrationViewModel viewModel = new RegistrationViewModel();
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                viewModel.User = null;
+                viewModel.Cities = this.repositoryFactory.CitiesRepository.GetAll();
+                return viewModel;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
     }
 }
