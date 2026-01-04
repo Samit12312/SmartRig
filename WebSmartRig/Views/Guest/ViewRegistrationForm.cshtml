@@ -35,13 +35,10 @@
 
             <li>
                 <label>City</label>
-                <select id="CityId" asp-for="User.CityId" required>
+                <select asp-for="User.CityId" asp-items="@(new SelectList(Model.Cities, "CityId", "CityName"))">
                     <option value="">Select City</option>
-                    @foreach (Cities cities in Model.Cities)
-                    {
-                        <option value="@cities.CityId">@cities.CityName</option>
-                    }
                 </select>
+
                 <span id="CityIdError" asp-validation-for="User.CityId" class="error-message"></span>
             </li>
 
