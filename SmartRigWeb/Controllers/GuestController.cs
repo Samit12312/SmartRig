@@ -117,8 +117,8 @@ namespace SmartRigWeb
                         }
                     }
                 }
-
-                catalogViewModel.Computers = computers;
+                
+               
                 return catalogViewModel;
             }
             catch (Exception ex)

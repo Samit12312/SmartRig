@@ -4,7 +4,6 @@ namespace Models
 {
     public class CatalogViewModel
     {
-        // 🔥 CHANGE THIS LINE
         public List<ComputerCatalogViewModel>? Computers { get; set; }
 
         public List<Type>? Types { get; set; }
