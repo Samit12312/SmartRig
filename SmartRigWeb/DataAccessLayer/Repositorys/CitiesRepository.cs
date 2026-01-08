@@ -33,7 +33,9 @@ namespace SmartRigWeb
         public List<Cities> GetAll()
         {
             List<Cities> list = new List<Cities>();
-            string sql = @"SELECT * FROM [Cities]";
+
+            string sql = @"SELECT * FROM [City]";
+
             using (IDataReader reader = this.dbContext.Select(sql))
             {
                 while (reader.Read())
@@ -41,8 +43,11 @@ namespace SmartRigWeb
                     list.Add(this.modelsFactory.CitiesCreator.CreateModel(reader));
                 }
             }
+
             return list;
         }
+
+
 
         public Cities GetById(int id)
         {
