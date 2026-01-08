@@ -17,7 +17,7 @@
         <h3>Filters</h3>
         <label>Computer Type</label>
             <select name="typeId" id="type" onchange="GoLink()">
-                <option value="-1">All Types</option>
+                <option value="">All Types</option>
                 @foreach (Models.Type type in Model.Types)
                 {
                     if (type.TypeId == Model.TypeId)
@@ -63,18 +63,28 @@
     </aside>
 
     <main class="computers">
-        @foreach(Computer computer in Model.Computers)
+        @foreach (ComputerCatalogViewModel computer in Model.Computers)
         {
             <div class="computer-card">
 
-                <a href="http://localhost:5036/Guest/GetComputer/?computerId=@computer.ComputerId">
-                    <img src="http://localhost:7249/Images/Computers/@computer.ComputerPicture" alt="PC 1">
+                <a href="http://localhost:5036/Guest/GetComputer/?computerId=@computer.Id">
+                    <img src="http://localhost:7249/Images/Computers/@computer.ComputerPicture" />
                 </a>
+
                 <h1>@computer.ComputerName</h1>
-                <p>@computer.CpuId @computer.GpuId</p>
+
+                <p>
+                    CPU: @computer.Cpu <br />
+                    GPU: @computer.Gpu <br />
+                    RAM: @computer.Ram <br />
+                    Storage: @computer.Storage <br />
+                    OS: @computer.OperatingSystem
+                </p>
+
                 <span class="price">@computer.Price</span>
             </div>
         }
+
         <div class="computer-card">
             <img src="pc1.jpg" alt="PC 1">
             <h4>SmartRig Gamer X</h4>

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Models
 {
     public class CatalogViewModel
     {
-        public List<Computer>? Computers { get; set; }
+        // 🔥 CHANGE THIS LINE
+        public List<ComputerCatalogViewModel>? Computers { get; set; }
+
         public List<Type>? Types { get; set; }
         public int? TypeId { get; set; }
         public List<Company>? Companys { get; set; }
