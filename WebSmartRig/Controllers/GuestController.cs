@@ -13,7 +13,8 @@ namespace WebSmartRig.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult GetCatalog(string? operatingSystem = null, string? typeId = null, int? minPrice = null, int? maxPrice = null, int? priceSort = null)
+        public IActionResult GetCatalog(string? operatingSystemId = null, string? typeId = null, int? minPrice = null, int? maxPrice = null
+            , int? priceSort = null,int? companyId = null)
         {
             // 1. get data from webservice
             // 2. 
@@ -24,9 +25,13 @@ namespace WebSmartRig.Controllers
             webClient.Path = "api/Guest/GetCatalog";
 
             // 3. Add optional filters if they are provided
-            if (operatingSystem != null)
-                webClient.AddParameter("operatingSystem", operatingSystem);
+            if (operatingSystemId != null)
+                webClient.AddParameter("operatingSystemId", operatingSystemId);
 
+            if (companyId.HasValue)
+            {
+                webClient.AddParameter("companyId", companyId.ToString());
+            }
             if (typeId != null)
                 webClient.AddParameter("typeId", typeId);
 
@@ -75,17 +80,37 @@ namespace WebSmartRig.Controllers
         {
             if(ModelState.IsValid == false)
             {
-                            WebClient<RegistrationViewModel> webClient = new WebClient<RegistrationViewModel>();
+            return View("ViewRegistrationForm", GetRegistrationView(user));
+            }
+            bool ok = PostUser(user);
+            if (ok)
+            {
+                HttpContext.Session.SetString("userId", user.UserId.ToString());
+                return RedirectToAction("GetCatalog", "guest");
+            }
+            ViewBag.Massage = "Registration failed. Try again";
+            return View(GetRegistrationView(user));
+        }
+        private RegistrationViewModel GetRegistrationView(User user)
+        {
+            
+            WebClient<RegistrationViewModel> webClient = new WebClient<RegistrationViewModel>();
             webClient.Schema = "http";
             webClient.Host = "localhost";
             webClient.Port = 7249;
             webClient.Path = "api/Guest/RegistrationViewModel";
             RegistrationViewModel vm = webClient.Get();
             vm.User = user;
-            return View("ViewRegistrationForm",vm);
-            }
-
-            return View();
+            return vm;
+        }
+        private bool PostUser(User user)
+        {
+            WebClient<User> clientUser = new WebClient<User>();
+            clientUser.Schema = "http";
+            clientUser.Host = "localhost";
+            clientUser.Port = 7249;
+            clientUser.Path = "api/Guest/Registration";
+            return clientUser.Post(user);
         }
     }
 }

@@ -201,7 +201,7 @@ namespace SmartRigWeb
         }
 
         [HttpPost]
-        public bool Registration(User user)
+        public bool Registration([FromBody] User user)
         {
             try
             {

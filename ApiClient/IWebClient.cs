@@ -13,12 +13,12 @@ namespace ApiClient
         T Get();
         Task<T> GetAsync();
         bool Post(T data);
-        bool Post(T data, FileStream file);
-        bool Post(T data, List<FileStream> file);
+        bool Post(T data, Stream file);
+        bool Post(T data, List<Stream> file);
         //asyncronous 
         Task<bool> PostAsync(T data);
-        Task<bool> PostAsync(T data, FileStream file);
-        Task<bool> PostAsync(T data, List<FileStream> file);
+        Task<bool> PostAsync(T data, Stream file);
+        Task<bool> PostAsync(T data, List<Stream> file);
 
     }
 }

@@ -18,7 +18,7 @@ namespace Models
         string userPhoneNumber;
         bool manager;
 
-        public string UserSalt { get; set; }
+        public string UserSalt { get; set; } = "";
         public int UserId
         {
             get { return userId; }

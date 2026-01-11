@@ -7,36 +7,40 @@
 <link href="~/stylesheet/register-login.css" rel="stylesheet" />
 <div class="register-container">
     <h2>Register</h2>
-    <form asp-controller="Guest" asp-action="Registrations">
+    <form asp-controller="Guest" asp-action="Registrations" method="post">
         <ul>
             <li>
                 <label>Full Name</label>
-                <input id="UserName" asp-for="User.UserName" placeholder="Full Name" required />
-                <span id="UserNameError" asp-validation-for="User.UserName" class="error-message"></span>
+                <input asp-for="User.UserName" placeholder="Full Name" required 
+                value="AMJokers" />
+                <span  asp-validation-for="User.UserName" class="error-message"></span>
             </li>
 
             <li>
                 <label>Email</label>
-                <input id="UserEmail" asp-for="User.UserEmail" type="email" placeholder="Email" required />
+                <input id="UserEmail" asp-for="User.UserEmail" type="email" placeholder="Email" 
+                value="amjokers2007@gmail.com" required />
                 <span id="UserEmailError" asp-validation-for="User.UserEmail" class="error-message"></span>
             </li>
 
             <li>
                 <label>Password</label>
-                <input id="UserPassword" asp-for="User.UserPassword" type="password" placeholder="Password" required />
+                <input id="UserPassword" asp-for="User.UserPassword" type="password" placeholder="Password"
+                value="AMJokers2007" required />
                 <span id="UserPasswordError" asp-validation-for="User.UserPassword" class="error-message"></span>
             </li>
 
             <li>
                 <label>Address</label>
-                <input id="UserAddress" asp-for="User.UserAddress" placeholder="Address" required />
+                <input id="UserAddress" asp-for="User.UserAddress" placeholder="Address"
+                value="Ashkelon" required />
                 <span id="UserAddressError" asp-validation-for="User.UserAddress" class="error-message"></span>
             </li>
 
             <li>
                 <label>City</label>
                 <select asp-for="User.CityId" asp-items="@(new SelectList(Model.Cities, "CityId", "CityName"))">
-                    <option value="">Select City</option>
+                    <option value="5">Select City</option>
                 </select>
 
                 <span id="CityIdError" asp-validation-for="User.CityId" class="error-message"></span>
@@ -44,7 +48,8 @@
 
             <li>
                 <label>Phone Number</label>
-                <input id="UserPhoneNumber" asp-for="User.UserPhoneNumber" placeholder="Phone Number" required />
+                <input id="UserPhoneNumber" asp-for="User.UserPhoneNumber" placeholder="Phone Number"
+                       value="0553067833" required />
                 <span id="UserPhoneNumberError" asp-validation-for="User.UserPhoneNumber" class="error-message"></span>
             </li>
 
