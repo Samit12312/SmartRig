@@ -1,33 +1,40 @@
 ﻿@{
     ViewData["Title"] = "MasterPage";
 }
-
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
-    <link href="~/stylesheet/header.css" rel="stylesheet" />
+    <link href="~/StyleSheet/header.css" rel="stylesheet" />
 </head>
 <body>
-
+    @using Microsoft.AspNetCore.Http
     <header>
         <div class="logo">
-            <img src="~/images/Mundo.png" alt="Mundo Logo" />
+            <img src="~/Images/Mundo.png" alt="Mundo Logo">
         </div>
-
         <div class="center-links">
             <div>SmartRig</div>
-            <a href="/HomePage.html">Home</a>
+            <a href="http://localhost:5036/Guest/HomePage">HomePage</a>
         </div>
-
         <div class="right-links">
-            <a href="/ShopingCart.html">ShoppingCart</a>
-            <a href="/Login.html">Login</a>
-            <a href="http://localhost:5036/Guest/ViewRegistrationForm">Register</a>
+            @if (Context.Session.GetString("userName") != null)
+            {
+                <div class="user-dropdown">
+                    <span class="user-name">@Context.Session.GetString("userName")</span>
+                    <div class="dropdown-content">
+                        <a href="http://localhost:5036/Guest/Profile">Profile</a>
+                        <a href="http://localhost:5036/Guest/Logout">Logout</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <a class="aa" href="http://localhost:5036/Guest/ViewLoginForm">Login</a>
+                <a class="aa" href="http://localhost:5036/Guest/ViewRegistrationForm">Register</a>
+            }
         </div>
     </header>
-
     @RenderBody()
-
 </body>
 </html>

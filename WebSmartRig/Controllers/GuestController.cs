@@ -65,6 +65,77 @@ namespace WebSmartRig.Controllers
             return View(computerDetailsViewModel);
         }
         [HttpGet]
+        public IActionResult ViewLoginForm()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Login(string email, string password)
+        {
+            if (email != null || password != null)
+            {
+                ViewBag.Message = "Email and password are required";
+                return View("ViewLoginForm");
+            }
+
+            LoginResponse response = GetLoginResponse(email, password); // Changed to get full response
+
+            if (response != null && response.Success)
+            {
+                HttpContext.Session.SetString("userId", response.UserId);
+                HttpContext.Session.SetString("userName", response.UserName); // Store username
+                return RedirectToAction("GetCatalog", "Guest");
+            }
+
+            ViewBag.Message = "Invalid email or password";
+            return View("ViewLoginForm");
+        }
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("HomePage", "Guest");
+        }
+
+        [HttpGet]
+        public IActionResult Profile()
+        {
+            // You can implement this later for user profile editing
+            string userId = HttpContext.Session.GetString("userId");
+            if (userId != null)
+            {
+                return RedirectToAction("ViewLoginForm");
+            }
+
+            // TODO: Get user data and show profile page
+            return View();
+        }
+        private LoginResponse GetLoginResponse(string email, string password)
+        {
+            try
+            {
+                WebClient<LoginResponse> webClient = new WebClient<LoginResponse>();
+                webClient.Schema = "http";
+                webClient.Host = "localhost";
+                webClient.Port = 7249;
+                webClient.Path = "api/Guest/Login";
+                webClient.AddParameter("email", email);
+                webClient.AddParameter("password", password);
+
+                LoginResponse response = webClient.Get();
+
+                if (response != null && response.Success)
+                    return response;
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return null;
+            }
+        }
+        [HttpGet]
         public IActionResult ViewRegistrationForm()
         {
             WebClient<RegistrationViewModel> webClient = new WebClient<RegistrationViewModel>();
@@ -112,5 +183,6 @@ namespace WebSmartRig.Controllers
             clientUser.Path = "api/Guest/Registration";
             return clientUser.Post(user);
         }
+
     }
 }

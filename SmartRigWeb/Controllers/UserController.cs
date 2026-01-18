@@ -222,8 +222,6 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
-
-
         [HttpPost]
         public bool UpdateProfile(User user)
         {

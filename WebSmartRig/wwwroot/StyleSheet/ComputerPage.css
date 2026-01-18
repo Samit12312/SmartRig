@@ -104,4 +104,5 @@ header {
 
     .buy-btn:hover {
         background-color: #34495e;
+        text-decoration: none;
     }

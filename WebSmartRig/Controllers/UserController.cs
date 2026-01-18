@@ -42,5 +42,6 @@ namespace WebAppSmartRig.Controllers
 
             return View(viewModel);
         }
+
     }
 }

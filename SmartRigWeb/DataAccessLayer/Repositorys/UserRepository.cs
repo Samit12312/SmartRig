@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration.UserSecrets;
+﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.OpenApi.Any;
 using Models;
 using System.Data;
@@ -17,24 +18,25 @@ namespace SmartRigWeb
         public bool Create(User item)
         {
             string sql = $@"INSERT INTO [User] 
-                    (UserName, UserEmail, UserPassword, UserAdress, CityId, UserPhoneNumber, Manager, UserSalt)
-                    VALUES (@UserName, @UserEmail, @UserPassword, @UserAdress, @CityId, @UserPhoneNumber, @Manager, @UserSalt)";
+                    (UserName, UserEmail, UserPassword, UserAddress, CityId, UserPhoneNumber, Manager, UserSalt)
+                    VALUES (@UserName, @UserEmail, @UserPassword, @UserAddress, @CityId, @UserPhoneNumber, @Manager, @UserSalt)";
 
+            string salt = GenerateSalt();
             this.dbContext.AddParameter("@UserName", item.UserName);
             this.dbContext.AddParameter("@UserEmail", item.UserEmail);
-            this.dbContext.AddParameter("@UserAdress", item.UserAddress);
+            this.dbContext.AddParameter("@UserPassword", CaculateHash(item.UserPassword, salt));
+            this.dbContext.AddParameter("@UserAddress", item.UserAddress);
             this.dbContext.AddParameter("@CityId", item.CityId.ToString());
             this.dbContext.AddParameter("@UserPhoneNumber", item.UserPhoneNumber);
-            this.dbContext.AddParameter("@Manager", item.Manager.ToString());
-            string salt = GenerateSalt();
-            this.dbContext.AddParameter("@UserPassword", CaculateHash(salt, item.UserPassword));
+            this.dbContext.AddParameter("@Manager", item.Manager ? "1" : "0");
+
             this.dbContext.AddParameter("@UserSalt", salt);
 
             return this.dbContext.Insert(sql) > 0;
         }
         private string GenerateSalt() // generateing salt for the food :D
         {
-            byte[] saltBytes = new byte[32];
+            byte[] saltBytes = new byte[16];
             RandomNumberGenerator.Fill(saltBytes);
             return Convert.ToBase64String(saltBytes);
         }
@@ -114,33 +116,30 @@ namespace SmartRigWeb
             return this.dbContext.Update(sql) > 0;
         }
 
-        public string Login(string userEmail, string userPassword)
-        {
-            string sql = @"SELECT UserId, UserPassword, UserSalt
-                   FROM [User] 
-                   WHERE UserEmail = @UserEmail";
-
-            // Add parameters to the query to avoid SQL injection
-            this.dbContext.AddParameter("@UserEmail", userEmail);
-            string salt = string.Empty;
-            string hash = string.Empty;
-            string userId = string.Empty;
-            using (IDataReader reader = this.dbContext.Select(sql))
+            public string Login(string userEmail, string userPassword)
             {
-                if(reader.Read() == true)
+                string sql = @"SELECT UserId, UserPassword, UserSalt
+                       FROM [User] 
+                       WHERE UserEmail = @UserEmail";
+
+                this.dbContext.AddParameter("@UserEmail", userEmail);
+
+                using (IDataReader reader = this.dbContext.Select(sql))
                 {
-                    hash = reader["UserPassword"].ToString();
-                    salt = reader["UserSalt"].ToString();
-                    userId = reader["userId"].ToString();
+                    if (reader.Read())
+                    {
+                        string hash = reader["UserPassword"].ToString();
+                        string salt = reader["UserSalt"].ToString();
+                        string userId = reader["UserId"].ToString();
+
+                        // Fix: swap the parameters to match Create method
+                        if (hash == CaculateHash(userPassword, salt))
+                            return userId;
+                    }
                 }
-                if (hash == CaculateHash(userPassword, salt))
-                    return userId;
+
                 return null;
             }
-
-            return this.dbContext.GetValue(sql).ToString();
-
-        }
 
     }
 }

@@ -4,8 +4,7 @@
     ViewData["Title"] = "ComputersCatalog";
     Layout = "~/Views/Shared/MasterPage.cshtml";
 }
-<link href="~/stylesheet/computercatalog.css" rel="stylesheet" />
-
+<link href="~/StyleSheet/computercatalog.css" rel="stylesheet" />
 <script>
     function GoLink() {
         document.getElementById("filterForm").submit();
@@ -99,6 +98,7 @@
                     OS: @computer.OperatingSystem
                 </p>
                 <span class="price">$@computer.Price</span>
+                <button class="cartButton">Add to Cart</button>
             </div>
         }
     </main>

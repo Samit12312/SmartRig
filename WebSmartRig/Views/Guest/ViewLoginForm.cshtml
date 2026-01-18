@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewData["Title"] = "ViewLoginForm";
+    Layout = "~/Views/Shared/MasterPage.cshtml";
+}
+@{
+    ViewData["Title"] = "Login";
+}
+<link href="~/stylesheet/login.css" rel="stylesheet" />
+<div class="login-container">
+    <h2>Login</h2>
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Message
+        </div>
+    }
+
+    <form asp-action="Login" asp-controller="Guest" method="post">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required />
+        </div>
+
+        <button type="submit">Login</button>
+
+        <div class="register-link">
+            Don't have an account? <a href="http://localhost:5036/Guest/ViewRegistrationForm">Register here</a>
+        </div>
+    </form>
+</div>

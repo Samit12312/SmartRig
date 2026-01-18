@@ -201,7 +201,7 @@ namespace SmartRigWeb
         }
 
         [HttpPost]
-        public bool Registration([FromBody] User user)
+        public bool Registration(User user)
         {
             try
             {
@@ -240,5 +240,43 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
+        [HttpGet]
+        public LoginResponse Login(string email, string password)
+        {
+            LoginResponse lR = new LoginResponse();
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                lR.UserId = this.repositoryFactory.UserRepository.Login(email, password);
+
+                if (lR.UserId != null)
+                {
+                    User user = this.repositoryFactory.UserRepository.GetById(int.Parse(lR.UserId));
+                    lR.Success = true;
+                    lR.UserName = user.UserName;
+                }
+                else
+                {
+                    lR.Success = false;
+                    lR.UserName = null;
+                }
+
+                return lR;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                lR.Success = false;
+                lR.UserId = null;
+                lR.UserName = null;
+                return lR;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+
     }
 }

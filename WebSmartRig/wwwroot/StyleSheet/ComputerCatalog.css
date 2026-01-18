@@ -5,45 +5,6 @@
     background-color: #f4f6f8;
     overflow-x: hidden; /* removes horizontal scroll */
 }
-
-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #2c3e50;
-    padding: 10px 20px;
-    color: white;
-}
-
-.logo img {
-    height: 40px;
-    width: auto;
-    vertical-align: middle;
-}
-
-.center-links {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    flex: 1;
-    justify-content: center;
-}
-
-.right-links {
-    display: flex;
-    gap: 20px;
-}
-
-    .right-links a, .center-links a {
-        color: white;
-        text-decoration: none;
-        font-weight: bold;
-    }
-
-        .right-links a:hover, .center-links a:hover {
-            text-decoration: underline;
-        }
-
 .catalog-container {
     display: flex;
     max-width: 1200px;
@@ -139,4 +100,13 @@ header {
     font-size: 18px;
     font-weight: bold;
     color: #27ae60;
+}
+.cartButton {
+    background-color: #26898f;
+    color: black;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
 }

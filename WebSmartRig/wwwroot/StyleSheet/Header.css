@@ -1,4 +1,11 @@
-﻿/* ===== HEADER (CATALOG STYLE) ===== */
+﻿body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    overflow-x: hidden;
+}
+
 header {
     display: flex;
     align-items: center;
@@ -25,16 +32,59 @@ header {
 .right-links {
     display: flex;
     gap: 20px;
+    align-items: center;
 }
 
-    .center-links a,
-    .right-links a {
+    .right-links a, .center-links a {
         color: white;
         text-decoration: none;
         font-weight: bold;
     }
 
-        .center-links a:hover,
-        .right-links a:hover {
+        .right-links a:hover, .center-links a:hover {
             text-decoration: underline;
         }
+
+.user-dropdown {
+    position: relative;
+}
+
+.user-name {
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 8px 12px;
+}
+
+    .user-name:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+    }
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    min-width: 180px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    border-radius: 6px;
+    margin-top: 8px;
+    z-index: 1000;
+}
+
+    .dropdown-content a {
+        color: black !important;
+        padding: 14px 20px;
+        text-decoration: none;
+        display: block;
+        font-weight: bold;
+    }
+
+        .dropdown-content a:hover {
+            background-color: #f8f9fa;
+        }
+
+.user-dropdown:hover .dropdown-content {
+    display: block;
+}
