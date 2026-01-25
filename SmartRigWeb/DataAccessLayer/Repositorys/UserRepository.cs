@@ -92,7 +92,6 @@ namespace SmartRigWeb
     SET 
         UserName = @UserName,
         UserEmail = @UserEmail,
-        UserPassword = @UserPassword,
         UserAddress = @UserAddress,
         CityId = @CityId,
         UserPhoneNumber = @UserPhoneNumber,
@@ -102,7 +101,6 @@ namespace SmartRigWeb
 
             this.dbContext.AddParameter("@UserName", item.UserName);
             this.dbContext.AddParameter("@UserEmail", item.UserEmail);
-            this.dbContext.AddParameter("@UserPassword", item.UserPassword);
             this.dbContext.AddParameter("@UserAddress", item.UserAddress);
 
             this.dbContext.AddParameter("@CityId", item.CityId.ToString());

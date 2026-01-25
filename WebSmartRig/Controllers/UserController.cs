@@ -1,6 +1,7 @@
 ﻿using ApiClient;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using System.Text.Json;
 
 namespace WebAppSmartRig.Controllers
 {
@@ -10,6 +11,59 @@ namespace WebAppSmartRig.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("HomePage", "Guest");
+        }
+
+        [HttpPost]
+        public IActionResult UpdateProfile(User user)
+        {
+            // Remove password validation (we're not changing it)
+            ModelState.Remove("user.UserPassword");
+
+            if (!ModelState.IsValid)
+            {
+                // Save the user in TempData to reload if validation fails
+                TempData["user"] = JsonSerializer.Serialize(user);
+                return RedirectToAction("UpdateProfile", "User");
+            }
+
+            // Dummy password required by API / DB validation
+            user.UserPassword = "XXXXX5";
+
+            // Make sure the correct user is updated from session
+            string userIdStr = HttpContext.Session.GetString("userId");
+            if (string.IsNullOrEmpty(userIdStr))
+            {
+                return RedirectToAction("ViewLoginForm", "Guest");
+            }
+            user.UserId = Convert.ToInt32(userIdStr);
+
+            // Call API
+            WebClient<User> webClient = new WebClient<User>
+            {
+                Schema = "http",
+                Host = "localhost",
+                Port = 7249,
+                Path = "api/User/UpdateProfile"
+            };
+
+            bool ok = webClient.Post(user);
+
+            if (ok)
+            {
+                // Update session with new username
+                HttpContext.Session.SetString("userName", user.UserName);
+                return RedirectToAction("GetCatalog", "Guest");
+            }
+
+            ViewBag.Error = true;
+            return RedirectToAction("UpdateProfile", "User");
+        }
+
         [HttpGet]
         public IActionResult GetCatalog(string? operatingSystem = null, string? typeId = null, int? minPrice = null, int? maxPrice = null, int? priceSort = null)
         {

@@ -222,6 +222,32 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
+        [HttpGet]
+        public RegistrationViewModel GetUpdateProfileViewModel(int userId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+
+                RegistrationViewModel vm = new RegistrationViewModel
+                {
+                    User = this.repositoryFactory.UserRepository.GetById(userId),
+                    Cities = this.repositoryFactory.CitiesRepository.GetAll()
+                };
+
+                return vm;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
         [HttpPost]
         public bool UpdateProfile(User user)
         {
@@ -240,5 +266,6 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
+
     }
 }

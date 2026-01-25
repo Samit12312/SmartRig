@@ -72,44 +72,36 @@ namespace WebSmartRig.Controllers
         [HttpPost]
         public IActionResult Login(string email, string password)
         {
-            if (email != null || password != null)
+            if (email == null || password == null)
             {
                 ViewBag.Message = "Email and password are required";
                 return View("ViewLoginForm");
             }
 
             LoginResponse response = GetLoginResponse(email, password); // Changed to get full response
-
             if (response != null && response.Success)
             {
-                HttpContext.Session.SetString("userId", response.UserId);
-                HttpContext.Session.SetString("userName", response.UserName); // Store username
+                HttpContext.Session.SetString("userId", response.UserId.ToString());
+                HttpContext.Session.SetString("userName", response.UserName);
                 return RedirectToAction("GetCatalog", "Guest");
             }
 
+
             ViewBag.Message = "Invalid email or password";
             return View("ViewLoginForm");
-        }
-        [HttpGet]
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Clear();
-            return RedirectToAction("HomePage", "Guest");
         }
 
         [HttpGet]
         public IActionResult Profile()
         {
-            // You can implement this later for user profile editing
-            string userId = HttpContext.Session.GetString("userId");
-            if (userId != null)
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
             {
                 return RedirectToAction("ViewLoginForm");
             }
-
-            // TODO: Get user data and show profile page
             return View();
         }
+
         private LoginResponse GetLoginResponse(string email, string password)
         {
             try
@@ -143,8 +135,18 @@ namespace WebSmartRig.Controllers
             webClient.Host = "localhost";
             webClient.Port = 7249;
             webClient.Path = "api/Guest/RegistrationViewModel";
-            RegistrationViewModel vm= webClient.Get();
-            return View(vm);
+            string sessionId = HttpContext.Session.GetString("userId");
+            if (sessionId != null)
+            {
+                webClient.Path = "api/User/GetUpdateProfileViewModel";
+                webClient.AddParameter("userId", sessionId);
+            }
+            RegistrationViewModel ufvm = webClient.Get();
+            if (ViewBag.ErrorMessage != null)
+            {
+                ufvm.User = TempData["user"] as User;
+            }
+            return View("ViewRegistrationForm", ufvm);
         }
         [HttpPost]
         public IActionResult Registrations(User user) // can add iformfile to add pictures

@@ -4,59 +4,89 @@
     ViewData["Title"] = "ViewRegistrationForm";
     Layout = "~/Views/Shared/MasterPage.cshtml";
 }
+
 <link href="~/stylesheet/register-login.css" rel="stylesheet" />
+
 <div class="register-container">
-    <h2>Register</h2>
-    <form asp-controller="Guest" asp-action="Registrations" method="post">
-        <ul>
-            <li>
-                <label>Full Name</label>
-                <input asp-for="User.UserName" placeholder="Full Name" required 
-                value="AMJokers" />
-                <span  asp-validation-for="User.UserName" class="error-message"></span>
+
+    @{
+        bool isNotNull = Model.User != null;
+    }
+
+    <h2 class="form-title">@((isNotNull) ? "Update Profile" : "Register")</h2>
+
+    <form asp-controller="@(isNotNull ? "User" : "Guest")"
+          asp-action="@(isNotNull ? "UpdateProfile" : "Registrations")"
+          method="post" class="Signup">
+
+        <ul class="fields">
+            <!-- Full Name -->
+            <li class="field">
+                <label asp-for="User.UserName">Full Name</label>
+                <input asp-for="User.UserName" placeholder="Full Name" required />
+                <span asp-validation-for="User.UserName" class="error-message"></span>
             </li>
 
-            <li>
-                <label>Email</label>
-                <input id="UserEmail" asp-for="User.UserEmail" type="email" placeholder="Email" 
-                value="amjokers2007@gmail.com" required />
-                <span id="UserEmailError" asp-validation-for="User.UserEmail" class="error-message"></span>
+            <!-- Email -->
+            <li class="field">
+                <label asp-for="User.UserEmail">Email</label>
+                <input asp-for="User.UserEmail" type="email" placeholder="Email" required />
+                <span asp-validation-for="User.UserEmail" class="error-message"></span>
             </li>
 
-            <li>
-                <label>Password</label>
-                <input id="UserPassword" asp-for="User.UserPassword" type="password" placeholder="Password"
-                value="AMJokers2007" required />
-                <span id="UserPasswordError" asp-validation-for="User.UserPassword" class="error-message"></span>
+            <!-- Password -->
+            @if (!isNotNull)
+            {
+                <li class="field">
+                    <label asp-for="User.UserPassword">Password</label>
+                    <input asp-for="User.UserPassword" type="password" placeholder="Password" required />
+                    <span asp-validation-for="User.UserPassword" class="error-message"></span>
+                </li>
+            }
+            else
+            {
+                <!-- Hidden password for updates -->    
+                <input asp-for="User.UserPassword" type="hidden" value="dummy" />
+            }   
+
+            <!-- Address -->
+            <li class="field">
+                <label asp-for="User.UserAddress">Address</label>
+                <input asp-for="User.UserAddress" type="text" placeholder="Address" required />
+                <span asp-validation-for="User.UserAddress" class="error-message"></span>
             </li>
 
-            <li>
-                <label>Address</label>
-                <input id="UserAddress" asp-for="User.UserAddress" placeholder="Address"
-                value="Ashkelon" required />
-                <span id="UserAddressError" asp-validation-for="User.UserAddress" class="error-message"></span>
-            </li>
-
-            <li>
-                <label>City</label>
-                <select asp-for="User.CityId" asp-items="@(new SelectList(Model.Cities, "CityId", "CityName"))">
-                    <option value="5">Select City</option>
+            <!-- City -->
+            <li class="field">
+                <label asp-for="User.CityId">City</label>
+                <select asp-for="User.CityId" asp-items="@(new SelectList(Model.Cities, "CityId", "CityName", Model.User?.CityId))">
+                    <option value="">Select City</option>
                 </select>
-
-                <span id="CityIdError" asp-validation-for="User.CityId" class="error-message"></span>
+                <span asp-validation-for="User.CityId" class="error-message"></span>
             </li>
 
-            <li>
-                <label>Phone Number</label>
-                <input id="UserPhoneNumber" asp-for="User.UserPhoneNumber" placeholder="Phone Number"
-                       value="0553067833" required />
-                <span id="UserPhoneNumberError" asp-validation-for="User.UserPhoneNumber" class="error-message"></span>
+            <!-- Phone Number -->
+            <li class="field">
+                <label asp-for="User.UserPhoneNumber">Phone Number</label>
+                <input asp-for="User.UserPhoneNumber" type="text" placeholder="Phone Number" required />
+                <span asp-validation-for="User.UserPhoneNumber" class="error-message"></span>
             </li>
 
-            <li>
-                <button id="RegisterButton" type="submit">Register</button>
+            <!-- Buttons -->
+            <li class="field buttons">
+                <button type="reset" class="buttonReset">Reset</button>
+                <button type="submit" class="buttonSignUp">
+                    @(isNotNull ? "Save Changes" : "Register")
+                </button>
             </li>
         </ul>
+
+        @if (!isNotNull)
+        {
+            <div class="login-link">
+                <p>Already have an account? <a href="~/Guest/ViewLoginForm">Login</a></p>
+            </div>
+        }
 
     </form>
 </div>
