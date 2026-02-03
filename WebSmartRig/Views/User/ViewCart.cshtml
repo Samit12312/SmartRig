@@ -1,0 +1,36 @@
+﻿@model Models.CartViewModel
+@{
+    ViewData["Title"] = "Shopping Cart";
+    Layout = "~/Views/Shared/MasterPage.cshtml";
+}
+<link href="~/StyleSheet/shopingcart.css" rel="stylesheet" />
+<div class="catalog-container">
+    <aside class="filters">
+        <h3>Cart Options</h3>
+        <a href="http://localhost:5036/User/BuyCart" class="filter-btn">Proceed to Checkout</a>
+    </aside>
+
+    <main class="computers">
+        @if (Model == null || Model.Computers == null || Model.Computers.Count == 0)
+        {
+            <p>Your cart is empty</p>
+        }
+        else
+        {
+            @foreach (var item in Model.Computers)
+            {
+                <div class="computer-card">
+                    <img src="http://localhost:7249/Images/Computers/@item.ComputerPicture" alt="@item.ComputerName">
+                    <h4>@item.ComputerName</h4>
+                    <p>Quantity: @item.ComputerQuantity</p>
+                    <span class="price">$@(item.ComputerPrice * item.ComputerQuantity)</span>
+                    <a href="http://localhost:5036/User/RemoveFromCart?computerId=@item.ComputerId" class="filter-btn">Remove</a>
+                </div>
+            }
+        }
+    </main>
+</div>
+
+<div class="cart-summary">
+    <h3>Total: $@Model.Total</h3>
+</div>

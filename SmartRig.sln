@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiClient", "ApiClient\ApiC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppSmartRig", "WebSmartRig\WebAppSmartRig.csproj", "{5FE727BE-809F-46A1-AE55-DB40C752E62F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartRigWPF", "SmartRigWPF\SmartRigWPF.csproj", "{B3E48ABB-1AC7-4457-B732-5778BEFC21B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{5FE727BE-809F-46A1-AE55-DB40C752E62F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FE727BE-809F-46A1-AE55-DB40C752E62F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FE727BE-809F-46A1-AE55-DB40C752E62F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3E48ABB-1AC7-4457-B732-5778BEFC21B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3E48ABB-1AC7-4457-B732-5778BEFC21B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3E48ABB-1AC7-4457-B732-5778BEFC21B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3E48ABB-1AC7-4457-B732-5778BEFC21B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

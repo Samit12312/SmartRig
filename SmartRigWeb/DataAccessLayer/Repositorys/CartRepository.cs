@@ -124,7 +124,19 @@ namespace SmartRigWeb
 
             return orders;
         }
-
+        public Cart GetUnpaidCart(int userId)
+        {
+            string sql = @"SELECT * FROM [Cart] WHERE UserId = @UserId AND IsPayed = False";
+            this.dbContext.AddParameter("@UserId", userId.ToString());
+            using (IDataReader reader = this.dbContext.Select(sql))
+            {
+                if (reader.Read())
+                {
+                    return this.modelsFactory.CartCreator.CreateModel(reader);
+                }
+            }
+            return null;
+        }
         public List<CartComputer> GetOrdersByUserId(int userId)
         {
             // SQL query selects all necessary columns and aliases them to match model

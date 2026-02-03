@@ -47,7 +47,7 @@ namespace WebAppSmartRig.Controllers
             {
                 Schema = "http",
                 Host = "localhost",
-                Port = 7249,
+                Port = 5195,
                 Path = "api/User/UpdateProfile"
             };
 
@@ -72,7 +72,7 @@ namespace WebAppSmartRig.Controllers
             WebClient<CatalogViewModel> webClient = new WebClient<CatalogViewModel>();
             webClient.Schema = "http";
             webClient.Host = "localhost";
-            webClient.Port = 7249;
+            webClient.Port = 5195;
             webClient.Path = "api/User/GetCatalog";
 
             // 3. Add optional filters if they are provided
@@ -96,6 +96,86 @@ namespace WebAppSmartRig.Controllers
 
             return View(viewModel);
         }
+        [HttpGet]
+        public IActionResult ViewCart()
+        {
+            string userId = HttpContext.Session.GetString("userId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("ViewLoginForm", "Guest");
+            }
 
+            WebClient<CartViewModel> webClient = new WebClient<CartViewModel>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 5195;
+            webClient.Path = "api/User/GetCart";
+            webClient.AddParameter("userId", userId);
+
+            CartViewModel cart = webClient.Get();
+            return View(cart);
+        }
+
+        [HttpGet]
+        public IActionResult AddToCart(int computerId)
+        {
+            string userId = HttpContext.Session.GetString("userId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("ViewLoginForm", "Guest");
+            }
+
+            WebClient<bool> webClient = new WebClient<bool>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 5195;
+            webClient.Path = "api/User/AddToCart";
+            webClient.AddParameter("userId", userId);
+            webClient.AddParameter("computerId", computerId.ToString());
+
+            webClient.Get();
+            return RedirectToAction("ViewCart");
+        }
+
+        [HttpGet]
+        public IActionResult RemoveFromCart(int computerId)
+        {
+            string userId = HttpContext.Session.GetString("userId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("ViewLoginForm", "Guest");
+            }
+
+            WebClient<bool> webClient = new WebClient<bool>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 5195;
+            webClient.Path = "api/User/RemoveFromCart";
+            webClient.AddParameter("userId", userId);
+            webClient.AddParameter("computerId", computerId.ToString());
+
+            webClient.Get();
+            return RedirectToAction("ViewCart");
+        }
+
+        [HttpGet]
+        public IActionResult BuyCart()
+        {
+            string userId = HttpContext.Session.GetString("userId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("ViewLoginForm", "Guest");
+            }
+
+            WebClient<bool> webClient = new WebClient<bool>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 5195;
+            webClient.Path = "api/User/BuyCart";
+            webClient.AddParameter("userId", userId);
+
+            webClient.Get();
+            return RedirectToAction("GetCatalog", "Guest");
+        }
     }
 }

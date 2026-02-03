@@ -21,7 +21,7 @@ namespace WebSmartRig.Controllers
             WebClient<CatalogViewModel> webClient = new WebClient<CatalogViewModel>();
             webClient.Schema = "http";
             webClient.Host = "localhost";
-            webClient.Port = 7249;
+            webClient.Port = 5195;
             webClient.Path = "api/Guest/GetCatalog";
 
             // 3. Add optional filters if they are provided
@@ -57,7 +57,7 @@ namespace WebSmartRig.Controllers
             WebClient<ComputerDetailsViewModel> webClient = new WebClient<ComputerDetailsViewModel>();
             webClient.Schema = "http";
             webClient.Host = "localhost";
-            webClient.Port = 7249;
+            webClient.Port = 5195;
             webClient.Path = "api/Guest/GetComputerDetails";
             webClient.AddParameter("computerId", computerId);
             ComputerDetailsViewModel computerDetailsViewModel = webClient.Get();
@@ -109,7 +109,7 @@ namespace WebSmartRig.Controllers
                 WebClient<LoginResponse> webClient = new WebClient<LoginResponse>();
                 webClient.Schema = "http";
                 webClient.Host = "localhost";
-                webClient.Port = 7249;
+                webClient.Port = 5195;
                 webClient.Path = "api/Guest/Login";
                 webClient.AddParameter("email", email);
                 webClient.AddParameter("password", password);
@@ -133,7 +133,7 @@ namespace WebSmartRig.Controllers
             WebClient<RegistrationViewModel> webClient = new WebClient<RegistrationViewModel>();
             webClient.Schema = "http";
             webClient.Host = "localhost";
-            webClient.Port = 7249;
+            webClient.Port = 5195;
             webClient.Path = "api/Guest/RegistrationViewModel";
             string sessionId = HttpContext.Session.GetString("userId");
             if (sessionId != null)
@@ -170,7 +170,7 @@ namespace WebSmartRig.Controllers
             WebClient<RegistrationViewModel> webClient = new WebClient<RegistrationViewModel>();
             webClient.Schema = "http";
             webClient.Host = "localhost";
-            webClient.Port = 7249;
+            webClient.Port = 5195;
             webClient.Path = "api/Guest/RegistrationViewModel";
             RegistrationViewModel vm = webClient.Get();
             vm.User = user;
@@ -181,7 +181,7 @@ namespace WebSmartRig.Controllers
             WebClient<User> clientUser = new WebClient<User>();
             clientUser.Schema = "http";
             clientUser.Host = "localhost";
-            clientUser.Port = 7249;
+            clientUser.Port = 5195;
             clientUser.Path = "api/Guest/Registration";
             return clientUser.Post(user);
         }

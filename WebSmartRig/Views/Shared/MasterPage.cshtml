@@ -20,6 +20,7 @@
         <div class="right-links">
             @if (Context.Session.GetString("userName") != null)
             {
+                <a href="http://localhost:5036/User/ViewCart">Cart</a>
                 <div class="user-dropdown">
                     <span class="user-name">@Context.Session.GetString("userName")</span>
                     <div class="dropdown-content">

@@ -187,17 +187,27 @@ namespace SmartRigWeb
             }
         }
         [HttpGet]
-        public List<CartComputer> GetCart(int userId)
+        public CartViewModel GetCart(int userId)
         {
             try
             {
                 this.repositoryFactory.ConnectDbContext();
-                return this.repositoryFactory.CartRepository.GetCartById(userId); // unpaid cart
+                CartViewModel cartViewModel = new CartViewModel();
+
+                cartViewModel.Computers = this.repositoryFactory.CartRepository.GetCartById(userId);
+                cartViewModel.Total = 0;
+
+                foreach (CartComputer item in cartViewModel.Computers)
+                {
+                    cartViewModel.Total += item.ComputerPrice * item.ComputerQuantity;
+                }
+
+                return cartViewModel;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return new List<CartComputer>();
+                return null;
             }
             finally
             {
@@ -266,6 +276,90 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
+        [HttpGet]
+        public bool AddToCart(int userId, int computerId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
 
+                Cart cart = this.repositoryFactory.CartRepository.GetUnpaidCart(userId);
+
+                if (cart == null)
+                {
+                    Cart newCart = new Cart();
+                    newCart.UserId = userId;
+                    newCart.Date = DateTime.Now.ToString("yyyy-MM-dd");
+                    newCart.IsPayed = false;
+                    this.repositoryFactory.CartRepository.Create(newCart);
+                    cart = this.repositoryFactory.CartRepository.GetUnpaidCart(userId);
+                }
+
+                return this.repositoryFactory.CartRepository.AddComputer(cart.CartId, computerId, 1);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public bool RemoveFromCart(int userId, int computerId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+
+                Cart cart = this.repositoryFactory.CartRepository.GetUnpaidCart(userId);
+
+                if (cart != null)
+                {
+                    return this.repositoryFactory.CartRepository.RemoveComputer(cart.CartId, computerId);
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public bool BuyCart(int userId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+
+                Cart cart = this.repositoryFactory.CartRepository.GetUnpaidCart(userId);
+
+                if (cart != null)
+                {
+                    return this.repositoryFactory.CartRepository.BuyCart(cart.CartId);
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
     }
 }
