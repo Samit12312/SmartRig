@@ -20,7 +20,7 @@
             @foreach (var item in Model.Computers)
             {
                 <div class="computer-card">
-                    <img src="http://localhost:7249/Images/Computers/@item.ComputerPicture" alt="@item.ComputerName">
+                    <img src="http://localhost:5195/Images/Computers/@item.ComputerPicture" alt="@item.ComputerName">
                     <h4>@item.ComputerName</h4>
                     <p>Quantity: @item.ComputerQuantity</p>
                     <span class="price">$@(item.ComputerPrice * item.ComputerQuantity)</span>

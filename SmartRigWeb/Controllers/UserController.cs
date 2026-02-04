@@ -361,5 +361,62 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
+        [HttpGet]
+        public OrderHistoryViewModel GetOrderHistory(int userId)
+        {
+            OrderHistoryViewModel viewModel = new OrderHistoryViewModel();
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+
+                // Get all paid carts for this user
+                List<Cart> paidCarts = this.repositoryFactory.CartRepository.GetPaidCartsByUserId(userId);
+
+                viewModel.Orders = new List<OrderViewModel>();
+
+                foreach (Cart cart in paidCarts)
+                {
+                    OrderViewModel order = new OrderViewModel
+                    {
+                        CartId = cart.CartId,
+                        Date = cart.Date,
+                        Items = new List<OrderItemViewModel>(),
+                        TotalPrice = 0
+                    };
+
+                    // Get computers in this cart
+                    List<Computer> computers = this.repositoryFactory.ComputerRepository.GetComputersByCartId(cart.CartId);
+
+                    foreach (Computer computer in computers)
+                    {
+                        OrderItemViewModel orderItem = new OrderItemViewModel
+                        {
+                            ComputerId = computer.ComputerId,
+                            ComputerName = computer.ComputerName,
+                            ComputerPicture = computer.ComputerPicture,
+                            Price = computer.Price,
+                            Quantity = 1 // If you don't track quantity, default to 1
+                        };
+
+                        order.Items.Add(orderItem);
+                        order.TotalPrice += computer.Price;
+                    }
+
+                    viewModel.Orders.Add(order);
+                }
+
+                return viewModel;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+
+        }
     }
 }

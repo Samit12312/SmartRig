@@ -86,43 +86,18 @@ namespace SmartRigWeb
             this.dbContext.AddParameter("@ComputerId", computerId.ToString());
             return this.dbContext.Delete(sql) > 0;
         }
-        public List<CartComputer> GetAllOrders()
+        public List<Cart> GetPaidCartsByUserId(int userId)
         {
-            string sql = @"
-        SELECT
-            CartComputer.CartId,
-            CartComputer.ComputerId,
-            CartComputer.Quantity,
-            CartComputer.Price AS ComputerPrice,
-            Computer.ComputerName,
-            Computer.ComputerPicture
-        FROM
-            (Cart
-            INNER JOIN CartComputer ON Cart.CartId = CartComputer.CartId)
-            INNER JOIN Computer ON Computer.ComputerId = CartComputer.ComputerId
-        WHERE
-            Cart.IsPayed = True
-    ";
+            List<Cart> list = new List<Cart>();
+            string sql = @"SELECT * FROM [Cart] 
+               WHERE UserId = @UserId AND IsPayed = TRUE 
+               ORDER BY [Date] DESC";
 
-            List<CartComputer> orders = new List<CartComputer>();
-
+            this.dbContext.AddParameter("@UserId", userId.ToString());
             using (IDataReader reader = this.dbContext.Select(sql))
-            {
                 while (reader.Read())
-                {
-                    CartComputer orderItem = new CartComputer();
-
-                    orderItem.ComputerId = Convert.ToInt16(reader["ComputerId"]);
-                    orderItem.ComputerName = reader["ComputerName"].ToString();
-                    orderItem.ComputerPrice = Convert.ToInt16(reader["ComputerPrice"]);
-                    orderItem.ComputerQuantity = Convert.ToInt16(reader["Quantity"]);
-                    orderItem.ComputerPicture = reader["ComputerPicture"].ToString();
-
-                    orders.Add(orderItem);
-                }
-            }
-
-            return orders;
+                    list.Add(this.modelsFactory.CartCreator.CreateModel(reader));
+            return list;
         }
         public Cart GetUnpaidCart(int userId)
         {

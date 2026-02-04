@@ -126,24 +126,24 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
-        [HttpGet]
-        public List<CartComputer> GetAllOrders()
-        {
-            try
-            {
-                this.repositoryFactory.ConnectDbContext();
-                return this.repositoryFactory.CartRepository.GetAllOrders();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return new List<CartComputer>();
-            }
-            finally
-            {
-                this.repositoryFactory.DisconnectDb();
-            }
-        }
+        //[HttpGet]
+        //public List<CartComputer> GetAllOrders()
+        //{
+        //    try
+        //    {
+        //        this.repositoryFactory.ConnectDbContext();
+        //        return this.repositoryFactory.CartRepository.GetAllOrders();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //        return new List<CartComputer>();
+        //    }
+        //    finally
+        //    {
+        //        this.repositoryFactory.DisconnectDb();
+        //    }
+        //}
         [HttpGet]
         public CartComputer GetMostSoldComputer()
         {

@@ -86,18 +86,33 @@ namespace SmartRigWeb
         }
         public List<Computer> GetComputersByCartId(int cartId)
         {
-            string sql = @"SELECT Computer.ComputerId, Computer.ComputerName, Computer.ComputerTypeId, Computer.CompanyId, 
-                          Computer.StorageId, Computer.RamId, Computer.CpuId, Computer.GpuId, Computer.Price, 
-                          Computer.OperatingSystemId, Computer.CaseId, Computer.PowerSupplyId, Computer.CpuFanId, 
-                          Computer.MotherBoardId, Computer.ComputerPicture
-                   FROM Computer 
-                   INNER JOIN CartItem 
-                   ON Computer.ComputerId = CartItem.ComputerId
-                   WHERE CartItem.CartId = @CartId;";
+            string sql = @"
+        SELECT
+            Computer.ComputerId,
+            Computer.ComputerName,
+            Computer.ComputerTypeId,
+            Computer.CompanyId,
+            Computer.StorageId,
+            Computer.RamId,
+            Computer.CpuId,
+            Computer.GpuId,
+            Computer.Price,
+            Computer.OperatingSystemId,
+            Computer.CaseId,
+            Computer.PowerSupplyId,
+            Computer.CpuFanId,
+            Computer.MotherBoardId,
+            Computer.ComputerPicture
+        FROM Computer
+        INNER JOIN CartComputer
+            ON Computer.ComputerId = CartComputer.ComputerId
+        WHERE CartComputer.CartId = @CartId;
+    ";
 
             this.dbContext.AddParameter("@CartId", cartId.ToString());
             return GetComputers(sql);
         }
+
 
         public List<Computer> GetComputers(string sql)
         {
@@ -323,4 +338,5 @@ namespace SmartRigWeb
             return this.dbContext.Update(sql) > 0;
         }
     }
+
 }

@@ -5,32 +5,38 @@
     Layout = "~/Views/Shared/MasterPage.cshtml";
 }
 <link href="~/stylesheet/computerpage.css" rel="stylesheet" />
+
+@if (TempData["Message"] != null)
+{
+    <div class="success-message">@TempData["Message"]</div>
+}
+
 <div class="computer-container">
     <div class="computer-image">
-        <img src="http://localhost:7249/Images/Computers/@Model.computer.ComputerPicture" alt="Computer Image">
+        <img src="http://localhost:5195/Images/Computers/@Model.computer.ComputerPicture" alt="Computer Image">
     </div>
-    
-    <div class="computer-details">
-        <h2></h2>
-        <ul>
-            <li><strong>Price:</strong>@Model.computer.Price</li>
-            <li><strong>Company:</strong>@Model.company.CompanyName</li>
-            <li><strong>Computer Type:</strong>@Model.type.TypeName</li>
-            <li><strong>Operating System:</strong>@Model.operatingSystem.OperatingSystemName</li>
-            <li><strong>CPU:</strong>@Model.cpu.CpuName</li>
-            <li><strong>GPU:</strong>@Model.gpu.GpuName</li>
-            <li><strong>RAM:</strong>@Model.ram.RamName @Model.ram.RamSpeed @Model.ram.RamSize</li>
-            <li><strong>Storage:</strong>@Model.storage.StorageName</li>
-            <li><strong>Power Supply:</strong>@Model.powerSupply.PowerSupplyName</li>
-            <li><strong>Motherboard:</strong>@Model.motherBoard.MotherBoardName</li>
-            <li><strong>CPU Fan:</strong>@Model.cpuFan.CpuFanName</li>
-            <li><strong>Case:</strong>@Model.computerCase.CaseName</li>
 
+    <div class="computer-details">
+        <h2>@Model.computer.ComputerName</h2>
+        <ul>
+            <li>Price: $@Model.computer.Price</li>
+            <li>Company: @Model.company.CompanyName</li>
+            <li>Computer Type: @Model.type.TypeName</li>
+            <li>Operating System: @Model.operatingSystem.OperatingSystemName</li>
+            <li>CPU: @Model.cpu.CpuName</li>
+            <li>GPU: @Model.gpu.GpuName</li>
+            <li>RAM: @Model.ram.RamName @Model.ram.RamSpeed @Model.ram.RamSize</li>
+            <li>Storage: @Model.storage.StorageName</li>
+            <li>Power Supply: @Model.powerSupply.PowerSupplyName</li>
+            <li>Motherboard: @Model.motherBoard.MotherBoardName</li>
+            <li>CPU Fan: @Model.cpuFan.CpuFanName</li>
+            <li>Case: @Model.computerCase.CaseName</li>
         </ul>
-        <button class="buy-btn">Buy Now</button>
+        <a href="@Url.Action("AddToCart", "User", new { computerId = Model.computer.ComputerId })" class="buy-btn">
+            Add to Cart
+        </a>
         <a href="http://localhost:5036/Guest/GetCatalog/" class="buy-btn">
             Back To Catalog
-        </a>    
-
+        </a>
     </div>
 </div>

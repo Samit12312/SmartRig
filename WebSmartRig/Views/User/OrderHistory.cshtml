@@ -1,0 +1,50 @@
+﻿
+@{
+    ViewData["Title"] = "OrderHistory";
+    Layout = "~/Views/Shared/MasterPage.cshtml";
+}
+
+<link href="~/stylesheet/order-history.css" rel="stylesheet" />
+
+<div class="order-history-container">
+    <h2>Order History</h2>
+
+    @if (Model.Orders == null || Model.Orders.Count == 0)
+    {
+        <p class="no-orders">You haven't placed any orders yet.</p>
+    }
+    else
+    {
+        @foreach (var order in Model.Orders)
+        {
+            <div class="order-card">
+                <div class="order-header">
+                    <h3>Order #@order.CartId</h3>
+                    <span class="order-date">
+                        @order.Date
+                    </span>
+                </div>
+
+                <div class="order-items">
+                    @foreach (var item in order.Items)
+                    {
+                        <div class="order-item">
+                            <img src="http://localhost:5195/Images/Computers/@item.ComputerPicture" alt="@item.ComputerName" />
+                            <div class="item-details">
+                                <h4>@item.ComputerName</h4>
+                                <p>Quantity: @item.Quantity</p>
+                                <p class="item-price">$@item.Price</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="order-total">
+                    <span>Total: $@order.TotalPrice</span>
+                </div>
+            </div>
+        }
+    }
+
+    <a href="@Url.Action("GetCatalog", "Guest")" class="back-btn">Continue Shopping</a>
+</div>

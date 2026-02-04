@@ -11,6 +11,11 @@
     }
 </script>
 
+@if (TempData["Message"] != null)
+{
+    <div class="success-message">@TempData["Message"]</div>
+}
+
 <div class="catalog-container">
     <aside class="filters">
         <form action="http://localhost:5036/Guest/GetCatalog/" method="get" id="filterForm">
@@ -32,35 +37,48 @@
 
             </select>
 
-                <h3>Company</h3>
-                <select name="companyId" onchange="GoLink()">
-                    <option value="">All Companies</option>
-                    @foreach (Company company in Model.Companys)
+            <h3>Company</h3>
+            <select name="companyId" onchange="GoLink()">
+                <option value="">All Companies</option>
+                @foreach (Company company in Model.Companys)
+                {
+                    if (Model.CompanyId == company.CompanyId)
                     {
-                        if (Model.CompanyId == company.CompanyId)
-                        {
-                            <option value="@company.CompanyId" selected="selected">@company.CompanyName</option>
-                        }
-                        else
-                        {
-                            <option value="@company.CompanyId">@company.CompanyName</option>
-                        }
+                        <option value="@company.CompanyId" selected="selected">@company.CompanyName</option>
                     }
-                </select>
+                    else
+                    {
+                        <option value="@company.CompanyId">@company.CompanyName</option>
+                    }
+                }
+            </select>
 
             <h3>Operating System</h3>
             <select name="operatingSystemId" onchange="GoLink()">
                 <option value="">All OS</option>
-                @foreach (Models.OperatingSystem os in Model.operatingSystems)
+                @if (Model.OperatingSystemId == 10)
                 {
-                    if (Model.OperatingSystemId == os.OperatingSystemId)
-                    {
-                        <option value="@os.OperatingSystemId" selected="selected">@os.OperatingSystemName</option>
-                    }
-                    else
-                    {
-                        <option value="@os.OperatingSystemId">@os.OperatingSystemName</option>
-                    }
+                    <option value="10" selected="selected">Windows</option>
+                }
+                else
+                {
+                    <option value="10">Windows</option>
+                }
+                @if (Model.OperatingSystemId == 9)
+                {
+                    <option value="9" selected="selected">Linux</option>
+                }
+                else
+                {
+                    <option value="9">Linux</option>
+                }
+                @if (Model.OperatingSystemId == 8)
+                {
+                    <option value="8" selected="selected">Ubuntu</option>
+                }
+                else
+                {
+                    <option value="8">Ubuntu</option>
                 }
             </select>
 
@@ -98,7 +116,7 @@
                     OS: @computer.OperatingSystem
                 </p>
                 <span class="price">$@computer.Price</span>
-                <button class="cartButton">Add to Cart</button>
+                <a href="@Url.Action("AddToCart", "User", new { computerId = computer.Id })" class="cartButton">Add to Cart</a>
             </div>
         }
     </main>

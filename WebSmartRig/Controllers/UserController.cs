@@ -134,7 +134,9 @@ namespace WebAppSmartRig.Controllers
             webClient.AddParameter("computerId", computerId.ToString());
 
             webClient.Get();
-            return RedirectToAction("ViewCart");
+
+            TempData["Message"] = "Added to cart!";
+            return RedirectToAction("GetCatalog", "Guest");
         }
 
         [HttpGet]
@@ -176,6 +178,25 @@ namespace WebAppSmartRig.Controllers
 
             webClient.Get();
             return RedirectToAction("GetCatalog", "Guest");
+        }
+        [HttpGet]
+        public IActionResult OrderHistory()
+        {
+            string userId = HttpContext.Session.GetString("userId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("ViewLoginForm", "Guest");
+            }
+
+            WebClient<OrderHistoryViewModel> webClient = new WebClient<OrderHistoryViewModel>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 5195;
+            webClient.Path = "api/User/GetOrderHistory";
+            webClient.AddParameter("userId", userId);
+
+            OrderHistoryViewModel viewModel = webClient.Get();
+            return View(viewModel);
         }
     }
 }
