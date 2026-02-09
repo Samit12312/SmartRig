@@ -19,6 +19,11 @@ namespace SmartRigWPF
     {
         StartPage startPage;
         LoginPage loginPage;
+        ManageUsers manageUsers;
+        ManageComputers manageComputers;
+        ManageComponents manageComponents;
+        ManageOrders manageOrders;
+        ManageReports manageReports;
         public MainWindow()
         {
             InitializeComponent();
@@ -35,13 +40,48 @@ namespace SmartRigWPF
                 this.loginPage = new LoginPage();
             this.ContentFrame.Content = this.loginPage;
         }
+
         public void ViewStartPage()
         {
-            if(this.startPage == null)
+            if (this.startPage == null)
                 this.startPage = new StartPage();
             this.ContentFrame.Content = this.startPage;
         }
 
+        public void ViewManageUsers()
+        {
+            if (this.manageUsers == null)
+                this.manageUsers = new ManageUsers();
+            this.ContentFrame.Content = this.manageUsers;
+        }
+
+        public void ViewManageComputers()
+        {
+            if (this.manageComputers == null)
+                this.manageComputers = new ManageComputers();
+            this.ContentFrame.Content = this.manageComputers;
+        }
+
+        public void ViewManageComponents()
+        {
+            if (this.manageComponents == null)
+                this.manageComponents = new ManageComponents();
+            this.ContentFrame.Content = this.manageComponents;
+        }
+
+        public void ViewManageOrders()
+        {
+            if (this.manageOrders == null)
+                this.manageOrders = new ManageOrders();
+            this.ContentFrame.Content = this.manageOrders;
+        }
+
+        public void ViewManageReports()
+        {
+            if (this.manageReports == null)
+                this.manageReports = new ManageReports();
+            this.ContentFrame.Content = this.manageReports;
+        }
         private void Login_Click(object sender, RoutedEventArgs e)
         {
             ViewLoginPage();
@@ -57,9 +97,29 @@ namespace SmartRigWPF
 
         }
 
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            ViewManageOrders();
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            ViewManageComponents();
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            ViewManageComputers();
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            ViewManageUsers();
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ViewLoginPage();
+            ViewManageReports();
         }
     }
 }

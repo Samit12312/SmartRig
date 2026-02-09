@@ -3,30 +3,27 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="SmartRig"
         Height="600"
-        Width="800"
+        Width="1000"
         Background="#F5F6FA">
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="80"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
+        
         <!-- HEADER -->
-        <Grid Grid.Row="0" Background="#6460D5">
+        <Grid Grid.Row="0" Grid.ColumnSpan="2" Background="#6460D5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-
             <!-- LEFT NAV -->
             <StackPanel Grid.Column="0"
                         Orientation="Horizontal"
                         VerticalAlignment="Center"
                         Margin="20,0">
                 <Image Source="/Images/Mundo.png" Width="128" Height="64" VerticalAlignment="Center"/>
-
                 <Button Content="Home"
                         Width="80"
                         Height="32"
@@ -36,7 +33,6 @@
                         BorderBrush="White"
                         Margin="0,0,10,0"/>
             </StackPanel>
-
             <!-- TITLE -->
             <Label Grid.Column="1"
                    Content="SmartRig | Admin"
@@ -45,7 +41,6 @@
                    Foreground="White"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"/>
-
             <!-- RIGHT ACTION -->
             <Button Grid.Column="2"
                     Content="Login"
@@ -58,19 +53,96 @@
                     Foreground="#6460D5"
                     BorderThickness="0"/>
         </Grid>
-
-        <!-- CONTENT AREA -->
-        <Border Grid.Row="1"
-                Margin="15"
-                Background="White"
-                CornerRadius="8"
-                Padding="10">
-
-            <Frame x:Name="ContentFrame"
-                   NavigationUIVisibility="Hidden"
-                   Background="White"
-                   Navigated="ContentFrame_Navigated"/>
-        </Border>
-
+        
+        <!-- SIDEBAR AND CONTENT -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- SIDEBAR -->
+            <Border Grid.Column="0" Background="#2c3e50" Margin="15,15,0,15" CornerRadius="8">
+                <StackPanel>
+                    <Button Content="Dashboard"
+                            Height="45"
+                            Click="HomePage_Click"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="14"
+                            HorizontalContentAlignment="Left"
+                            Padding="20,0"
+                            Cursor="Hand"/>
+                    
+                    <Button Content="Manage Users"
+                            Height="45"
+                            Click="Button_Click_4"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="14"
+                            HorizontalContentAlignment="Left"
+                            Padding="20,0"
+                            Cursor="Hand"/>
+                    
+                    <Button Content="Manage Computers"
+                            Height="45"
+                            Click="Button_Click_3"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="14"
+                            HorizontalContentAlignment="Left"
+                            Padding="20,0"
+                            Cursor="Hand"/>
+                    
+                    <Button Content="Manage Components"
+                            Height="45"
+                            Click="Button_Click_2"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="14"
+                            HorizontalContentAlignment="Left"
+                            Padding="20,0"
+                            Cursor="Hand"/>
+                    
+                    <Button Content="Manage Orders"
+                            Height="45"
+                            Click="Button_Click_1"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="14"
+                            HorizontalContentAlignment="Left"
+                            Padding="20,0"
+                            Cursor="Hand"/>
+                    
+                    <Button Content="Manage Reports"
+                            Height="45"
+                            Click="Button_Click"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="14"
+                            HorizontalContentAlignment="Left"
+                            Padding="20,0"
+                            Cursor="Hand"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- CONTENT AREA -->
+            <Border Grid.Column="1"
+                    Margin="15"
+                    Background="White"
+                    CornerRadius="8"
+                    Padding="10">
+                <Frame x:Name="ContentFrame"
+                       NavigationUIVisibility="Hidden"
+                       Background="White"
+                       Navigated="ContentFrame_Navigated"/>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

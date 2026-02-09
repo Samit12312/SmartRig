@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="SmartRigWPF.Frames.ManageComponents"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="White">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0"
+                   Text="Manage Components"
+                   FontSize="24"
+                   FontWeight="SemiBold"
+                   Foreground="#2c3e50"
+                   Margin="0,0,0,20"/>
+
+        <!-- Component Type Selector and Actions -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,15">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Component Type:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0"
+                           FontWeight="SemiBold"/>
+                <ComboBox Name="ComponentTypeComboBox"
+                          Width="150"
+                          Height="30">
+                    <ComboBoxItem Content="CPU"/>
+                    <ComboBoxItem Content="GPU"/>
+                    <ComboBoxItem Content="RAM"/>
+                    <ComboBoxItem Content="Storage"/>
+                    <ComboBoxItem Content="Motherboard"/>
+                    <ComboBoxItem Content="Power Supply"/>
+                    <ComboBoxItem Content="Case"/>
+                    <ComboBoxItem Content="CPU Fan"/>
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Add Component"
+                        Width="130"
+                        Height="35"
+                        Background="#27ae60"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Margin="0,0,10,0"
+                        Cursor="Hand"/>
+                <Button Content="Edit Component"
+                        Width="130"
+                        Height="35"
+                        Background="#3498db"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Margin="0,0,10,0"
+                        Cursor="Hand"/>
+                <Button Content="Delete Component"
+                        Width="130"
+                        Height="35"
+                        Background="#e74c3c"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Cursor="Hand"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Data Grid -->
+        <DataGrid Grid.Row="2"
+                  Name="ComponentsDataGrid"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="Horizontal"
+                  AlternatingRowBackground="#f8f9fa"
+                  Background="White">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="120"/>
+                <DataGridTextColumn Header="Manufacturer" Binding="{Binding Manufacturer}" Width="150"/>
+                <DataGridTextColumn Header="Specs" Binding="{Binding Specs}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
