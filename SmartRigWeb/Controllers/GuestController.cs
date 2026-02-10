@@ -154,7 +154,6 @@ namespace SmartRigWeb
             }
         }
 
-
         [HttpGet]
         public ComputerDetailsViewModel GetComputerDetails(int computerId)
         {

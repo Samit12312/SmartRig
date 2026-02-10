@@ -88,11 +88,49 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
-
-
         [HttpGet]
         public List<Computer> GetAllComputers()
         {
+            //List< ComputerDetailsViewModel> computerDetailsViewModels = new List<ComputerDetailsViewModel>();
+            //try
+            //{
+            //    this.repositoryFactory.ConnectDbContext();
+            //    Computer computer = this.repositoryFactory.ComputerRepository.GetAll();
+            //    Ram ram = this.repositoryFactory.RamRepository.GetById(computer.RamId);
+            //    PowerSupply PS = this.repositoryFactory.PowerSupplyRepository.GetById(computer.PowerSupplyId);
+            //    Models.Type type = this.repositoryFactory.TypeRepository.GetById(computer.ComputerTypeId);
+            //    Storage storage = this.repositoryFactory.StorageRepository.GetById(computer.StorageId);
+            //    Gpu Gpu = this.repositoryFactory.GpuRepository.GetById(computer.GpuId);
+            //    MotherBoard motherboard = this.repositoryFactory.MotherBoardRepository.GetById(computer.MotherBoardId);
+            //    Models.OperatingSystem OS = this.repositoryFactory.OperatingSystemRepository.GetById(computer.OperatingSystemId);
+            //    CpuFan cpuFan = this.repositoryFactory.CpuFanRepository.GetById(computer.CpuFanId);
+            //    Company company = this.repositoryFactory.CompanyRepository.GetById(computer.CompanyId);
+            //    Case computerCase = this.repositoryFactory.CaseRepository.GetById(computer.CaseId);
+            //    Cpu cpu = this.repositoryFactory.CpuRepository.GetById(computer.CpuId);
+
+            //    computerDetailsViewModels.computer = computer;
+            //    computerDetailsViewModels.type = type;
+            //    computerDetailsViewModels.cpuFan = cpuFan;
+            //    computerDetailsViewModels.operatingSystem = OS;
+            //    computerDetailsViewModels.storage = storage;
+            //    computerDetailsViewModels.cpu = cpu;
+            //    computerDetailsViewModels.company = company;
+            //    computerDetailsViewModels.gpu = Gpu;
+            //    computerDetailsViewModels.computerCase = computerCase;
+            //    computerDetailsViewModels.motherBoard = motherboard;
+            //    computerDetailsViewModels.powerSupply = PS;
+            //    computerDetailsViewModels.ram = ram;
+            //    return computerDetailsViewModels;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex.Message);
+            //    return null;
+            //}
+            //finally
+            //{
+            //    this.repositoryFactory.DisconnectDb();
+            //}
             try
             {
                 this.repositoryFactory.ConnectDbContext();
@@ -101,7 +139,7 @@ namespace SmartRigWeb
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return null;
+                return new List<Computer>();
             }
             finally
             {
