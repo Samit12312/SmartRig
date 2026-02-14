@@ -1,65 +1,84 @@
-﻿<UserControl x:Class="SmartRigWPF.Frames.ManageOrders"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="White">
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:SmartRigWPF"
+    x:Class="SmartRigWPF.Frames.ManageOrders"
+    Background="White"
+    Width="730" Height="540">
+
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
 
         <!-- Title -->
-        <TextBlock Grid.Row="0"
-                   Text="Manage Orders"
+        <TextBlock Text="Manage Orders"
                    FontSize="24"
                    FontWeight="SemiBold"
                    Foreground="#2c3e50"
-                   Margin="0,0,0,20"/>
+                   Margin="20,20,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"/>
 
         <!-- Action Buttons -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,15">
-            <Button Content="View Details"
-                    Width="110"
-                    Height="35"
-                    Background="#3498db"
-                    Foreground="White"
-                    BorderThickness="0"
-                    Margin="0,0,10,0"
-                    Cursor="Hand"/>
-            <Button Content="Mark as Paid"
-                    Width="110"
-                    Height="35"
-                    Background="#27ae60"
-                    Foreground="White"
-                    BorderThickness="0"
-                    Margin="0,0,10,0"
-                    Cursor="Hand"/>
-            <Button Content="Delete Order"
-                    Width="110"
-                    Height="35"
-                    Background="#e74c3c"
-                    Foreground="White"
-                    BorderThickness="0"
-                    Cursor="Hand"/>
+        <StackPanel Orientation="Horizontal"
+            Margin="20,65,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top">
+            <Button Content="View Details" Width="120" Height="35"
+            Background="#3498db" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+            <Button Content="Mark as Paid" Width="120" Height="35"
+            Background="#27ae60" Foreground="White" BorderThickness="0" Cursor="Hand"
+            Margin="10,0,0,0"/>
+            <Button Content="Delete Order" Width="120" Height="35"
+            Background="#e74c3c" Foreground="White" BorderThickness="0" Cursor="Hand"
+            Margin="10,0,0,0"/>
         </StackPanel>
 
-        <!-- Data Grid -->
-        <DataGrid Grid.Row="2"
-                  Name="OrdersDataGrid"
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  HeadersVisibility="Column"
-                  GridLinesVisibility="Horizontal"
-                  AlternatingRowBackground="#f8f9fa"
-                  Background="White">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Cart ID" Binding="{Binding CartId}" Width="80"/>
-                <DataGridTextColumn Header="User ID" Binding="{Binding UserId}" Width="80"/>
-                <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="120"/>
-                <DataGridTextColumn Header="Status" Binding="{Binding IsPayed}" Width="100"/>
-                <DataGridTextColumn Header="Total Items" Binding="{Binding ItemCount}" Width="100"/>
-            </DataGrid.Columns>
-        </DataGrid>
+
+        <!-- ListView -->
+        <ListView x:Name="listView"
+          Margin="20,120,20,30"
+          BorderBrush="#dee2e6"
+          BorderThickness="1"
+                  Height="200"
+          ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border Padding="12"
+                    BorderBrush="#ecf0f1"
+                    BorderThickness="0,0,0,1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel>
+
+                                <TextBlock FontSize="16" FontWeight="SemiBold">
+                                    <Run Text="Order #"/>
+                                    <Run Text="{Binding CartId}"/>
+                                </TextBlock>
+                                <TextBlock FontSize="12" Foreground="#7f8c8d" Margin="0,2,0,0">
+                            <Run Text="User ID: "/>
+                            <Run Text="{Binding UserId}"/>
+                                </TextBlock>
+
+                                <WrapPanel Margin="0,6,0,0">
+                                    <TextBlock Text="Date: " Width="120"/>
+                                    <TextBlock Text="{Binding Date}"/>
+                                </WrapPanel>
+
+                                <WrapPanel Margin="0,4,0,0">
+                                    <TextBlock Text="Payment Status: " Width="120"/>
+                                    <TextBlock Text="{Binding IsPayed}" FontWeight="Bold" Foreground="#27ae60"/>
+                                </WrapPanel>
+
+                            </StackPanel>
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
     </Grid>
 </UserControl>

@@ -13,7 +13,7 @@ namespace SmartRigWPF
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string url = $"http://localhost:7249/Images/Computers/{value.ToString()}";
+            string url = $"http://localhost:5195/Images/Computers/{value.ToString()}";
             if (value == null)
                 return null;
 

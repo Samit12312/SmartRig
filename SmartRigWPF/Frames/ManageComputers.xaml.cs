@@ -32,7 +32,7 @@ namespace SmartRigWPF.Frames
             WebClient<List<Computer>> client = new WebClient<List<Computer>>();
             client.Schema = "http";
             client.Host = "localhost";
-            client.Port = 7249;
+            client.Port = 5195;
             client.Path = "api/Manager/GetAllComputers";
             this.computers = await client.GetAsync();
 

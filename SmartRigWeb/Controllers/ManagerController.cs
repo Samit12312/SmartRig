@@ -219,6 +219,23 @@ namespace SmartRigWeb
             }
         }
 
-
+        [HttpGet]
+        public List<User> GetAllUsers()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.UserRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
     }
 }

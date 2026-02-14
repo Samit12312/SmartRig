@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Models;
+using ApiClient;
 
 namespace SmartRigWPF.Frames
 {
@@ -20,9 +22,24 @@ namespace SmartRigWPF.Frames
     /// </summary>
     public partial class ManageUsers : UserControl
     {
+        List<User> users = new List<User>();
+
         public ManageUsers()
         {
             InitializeComponent();
+            GetUsers();
+        }
+
+        private async Task GetUsers()
+        {
+            WebClient<List<User>> client = new WebClient<List<User>>();
+            client.Schema = "http";
+            client.Host = "localhost";
+            client.Port = 5195;
+            client.Path = "api/Manager/GetAllUsers";
+            this.users = await client.GetAsync();
+            this.DataContext = this.users;
+            listView.ItemsSource = this.users;
         }
     }
 }
