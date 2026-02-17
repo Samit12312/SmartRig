@@ -28,7 +28,18 @@ namespace SmartRigWeb
             this.dbContext = new OleDbConext();
             this.modelsFactory = new ModelsFactory();
         }
-
+        public void OpenTransaction()
+        {
+            this.dbContext.BeginTransaction();
+        }
+        public void Commit()
+        {
+            this.dbContext.Commit();
+        }
+        public void Rollback()
+        {
+            this.dbContext.RollBack();
+        }   
         public UserRepository UserRepository
         {
             get

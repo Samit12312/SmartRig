@@ -20,6 +20,7 @@ namespace SmartRigWPF.Frames
     /// </summary>
     public partial class ManageReports : UserControl
     {
+
         public ManageReports()
         {
             InitializeComponent();

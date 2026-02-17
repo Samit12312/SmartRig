@@ -26,7 +26,7 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Top">
             <Button Content="Add Computer" Width="120" Height="35"
-            Background="#27ae60" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+            Background="#27ae60" Foreground="White" BorderThickness="0" Cursor="Hand" Click="Button_Click"/>
             <Button Content="Edit Computer" Width="120" Height="35"
             Background="#3498db" Foreground="White" BorderThickness="0" Cursor="Hand"
             Margin="10,0,0,0"/>

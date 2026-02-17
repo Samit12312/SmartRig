@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Models;
+using Models.ViewModels;
 
 namespace SmartRigWeb
 {
@@ -17,17 +18,74 @@ namespace SmartRigWeb
             this.repositoryFactory = new RepositoryFactory();
         }
         [HttpPost]
-        public bool AddComputer(Computer computer)
+        public bool AddComputer(Computer computer, IFormFile file )
         {
             try
             {
                 this.repositoryFactory.ConnectDbContext();
-                return this.repositoryFactory.ComputerRepository.Create(computer);
+                this.repositoryFactory.OpenTransaction();
+
+                this.repositoryFactory.Commit();
+                return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+        [HttpGet]
+        public NewComputerViewModel GetNewComputerViewModel()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                NewComputerViewModel vm = new NewComputerViewModel();
+
+                vm.Cpus = this.repositoryFactory.CpuRepository.GetAll();
+
+                vm.Gpus = this.repositoryFactory.GpuRepository.GetAll();
+
+                vm.Rams = this.repositoryFactory.RamRepository.GetAll();
+
+                vm.Storages = this.repositoryFactory.StorageRepository.GetAll();
+
+                vm.Motherboards = this.repositoryFactory.MotherBoardRepository.GetAll();
+
+                vm.PowerSupplies = this.repositoryFactory.PowerSupplyRepository.GetAll();
+
+                vm.Fans = this.repositoryFactory.CpuFanRepository.GetAll();
+
+                vm.Cases = this.repositoryFactory.CaseRepository.GetAll();
+
+                vm.Types = this.repositoryFactory.TypeRepository.GetAllByTypeCode(1);
+
+                List<Company> allCompanies = this.repositoryFactory.CompanyRepository.GetAll();
+
+                vm.Companies = new List<Company>();
+                vm.Os = new List<Company>();
+
+                foreach (Company company in allCompanies)
+                {
+                    if (company.CompanyId == 8 || company.CompanyId == 9 || company.CompanyId == 10)
+                    {
+                        vm.Os.Add(company);
+                    }
+                    else
+                    {
+                        vm.Companies.Add(company);
+                    }
+                }
+                return vm;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
             }
             finally
             {

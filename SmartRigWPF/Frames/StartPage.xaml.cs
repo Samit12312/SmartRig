@@ -27,32 +27,70 @@ namespace SmartRigWPF.Frames
 
         private void button_Copy_Click(object sender, RoutedEventArgs e)
         {
-
+            if (smh() == 5)
+                for (int i = 0; i < 10; i++)
+                {
+                    MessageBox.Show("E");
+                    // Do nothing, just waste time
+                }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            //Random rnd = new Random();
+            //int randomNumber = rnd.Next(1, 10);
+            if (smh() == 5)
+                for (int i = 0; i < 10; i++)
+            {
+                MessageBox.Show("E");
+                // Do nothing, just waste time
+            }
 
         }
-
+        private int smh()
+        {
+            Random rnd = new Random();
+            int randomNumber = rnd.Next(1, 10);
+            return randomNumber;
+        }
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-
+            if (smh() == 5)
+                for (int i = 0; i < 10; i++)
+                {
+                    MessageBox.Show("E");
+                    // Do nothing, just waste time
+                }
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-
+            if (smh() == 5)
+                for (int i = 0; i < 10; i++)
+                {
+                    MessageBox.Show("E");
+                    // Do nothing, just waste time
+                }
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-
+            if (smh() == 5)
+                for (int i = 0; i < 10; i++)
+                {
+                    MessageBox.Show("E");
+                    // Do nothing, just waste time
+                }
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-
+            if (smh() == 5)
+                for (int i = 0; i < 10; i++)
+                {
+                    MessageBox.Show("E");
+                    // Do nothing, just waste time
+                }
         }
     }
 }

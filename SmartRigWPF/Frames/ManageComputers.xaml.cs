@@ -40,5 +40,11 @@ namespace SmartRigWPF.Frames
             listView.ItemsSource = this.computers;  
 
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            AddComputer addComputer = new AddComputer();
+            bool? result = addComputer.ShowDialog();
+        }
     }
 }
