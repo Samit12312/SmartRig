@@ -75,9 +75,9 @@ namespace SmartRigWeb
         }
         public int GetLastComputerId()
         {
-            string sql = @"SELECT MAX(ComputerId) AS LastComputerId
-                   FROM Computer";
-            return GetComputers(sql)[0].ComputerId;
+            string sql = @"SELECT MAX(ComputerId) FROM Computer";
+            object value = this.dbContext.GetValue(sql);
+            return Convert.ToInt32(value);
         }
         public List<Computer> GetComputersByOperatingSystemId(int OperatingSystemId)
         {

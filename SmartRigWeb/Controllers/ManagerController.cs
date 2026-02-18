@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Models;
 using Models.ViewModels;
+using System.Text.Json;
 
 namespace SmartRigWeb
 {
@@ -18,15 +19,19 @@ namespace SmartRigWeb
             this.repositoryFactory = new RepositoryFactory();
         }
         [HttpPost]
-        public bool AddComputer(Computer computer, IFormFile file )
+        public bool AddComputer( )
         {
+            string jsonData = Request.Form["data"];
+            Computer data = JsonSerializer.Deserialize<Computer>(jsonData);
+            IFormFile file = Request.Form.Files[0];    
             try
             {
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.OpenTransaction();
-                this.repositoryFactory.ComputerRepository.Create(computer);
-                computer.ComputerPicture += this.repositoryFactory.ComputerRepository.GetLastComputerId() + ".jpg";
-                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/computers", computer.ComputerPicture);
+                this.repositoryFactory.ComputerRepository.Create(data);
+                data.ComputerPicture = this.repositoryFactory.ComputerRepository.GetLastComputerId() + data.ComputerPicture;
+                this.repositoryFactory.ComputerRepository.Update(data);
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/computers", data.ComputerPicture);
 
 
                 this.repositoryFactory.Commit();
@@ -69,22 +74,10 @@ namespace SmartRigWeb
 
                 vm.Types = this.repositoryFactory.TypeRepository.GetAllByTypeCode(1);
 
-                List<Company> allCompanies = this.repositoryFactory.CompanyRepository.GetAll();
+                vm.Companies = this.repositoryFactory.CompanyRepository.GetAll();
 
-                vm.Companies = new List<Company>();
-                vm.Os = new List<Company>();
+                vm.OS = this.repositoryFactory.OperatingSystemRepository.GetAll();
 
-                foreach (Company company in allCompanies)
-                {
-                    if (company.CompanyId == 8 || company.CompanyId == 9 || company.CompanyId == 10)
-                    {
-                        vm.Os.Add(company);
-                    }
-                    else
-                    {
-                        vm.Companies.Add(company);
-                    }
-                }
                 return vm;
             }
             catch (Exception ex)

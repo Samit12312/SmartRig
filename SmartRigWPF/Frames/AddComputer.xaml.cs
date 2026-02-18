@@ -35,19 +35,22 @@ namespace SmartRigWPF.Frames
             WebClient<NewComputerViewModel> client = new WebClient<NewComputerViewModel>();
             client.Schema = "http";
             client.Host = "localhost";
-            client.Port = 5195;
+            client.Port = 7249;
             client.Path = "api/Manager/GetNewComputerViewModel";
             NewComputerViewModel viewModel = await client.GetAsync();
             if (viewModel != null)
             {
                 CompanyBox.ItemsSource = viewModel.Companies;
                 TypeBox.ItemsSource = viewModel.Types;
-                OSBox.ItemsSource = viewModel.Companies;
+                OSBox.ItemsSource = viewModel.OS;
                 CpuBox.ItemsSource = viewModel.Cpus;
                 GpuBox.ItemsSource = viewModel.Gpus;
                 RamBox.ItemsSource = viewModel.Rams;
                 StorageBox.ItemsSource = viewModel.Storages;
                 MotherboardBox.ItemsSource = viewModel.Motherboards;
+                CaseBox.ItemsSource = viewModel.Cases;
+                CpuFanBox.ItemsSource = viewModel.Fans;
+                PowerSupplyBox.ItemsSource = viewModel.PowerSupplies;
                 if (viewModel.Computer == null) {viewModel.Computer = new Computer(); }
             }
 
@@ -69,25 +72,28 @@ namespace SmartRigWPF.Frames
         private async void AddBtn_Click(object sender, RoutedEventArgs e)
         {
             NewComputerViewModel ncvm = new NewComputerViewModel();
-            ncvm.Computer = new Computer();
-            ncvm.Computer.ComputerName = ComputerNameBox.Text;
-            ncvm.Computer.Price = int.Parse(PriceBox.Text);
-            ncvm.Computer.CompanyId = (int)CompanyBox.SelectedValue;
-            ncvm.Computer.ComputerTypeId = (int)TypeBox.SelectedValue;
-            ncvm.Computer.OperatingSystemId = (int)OSBox.SelectedValue;
-            ncvm.Computer.CpuId = (int)CpuBox.SelectedValue;
-            ncvm.Computer.GpuId = (int)GpuBox.SelectedValue;
-            ncvm.Computer.RamId = (int)RamBox.SelectedValue;
-            ncvm.Computer.StorageId = (int)StorageBox.SelectedValue;
-            ncvm.Computer.MotherBoardId = (int)MotherboardBox.SelectedValue;
-            ncvm.Computer.ComputerPicture = System.IO.Path.GetExtension(this.imgPath);
+            Computer computer = new Computer();
+            computer.ComputerName = ComputerNameBox.Text;
+            computer.Price = int.Parse(PriceBox.Text);
+            computer.CompanyId = (int)CompanyBox.SelectedValue;
+            computer.ComputerTypeId = (int)TypeBox.SelectedValue;
+            computer.OperatingSystemId = (int)OSBox.SelectedValue;
+            computer.CpuId = (int)CpuBox.SelectedValue;
+            computer.GpuId = (int)GpuBox.SelectedValue;
+            computer.RamId = (int)RamBox.SelectedValue;
+            computer.StorageId = (int)StorageBox.SelectedValue;
+            computer.MotherBoardId = (int)MotherboardBox.SelectedValue;
+            computer.CaseId = (int)CaseBox.SelectedValue;
+            computer.CpuFanId = (int)CpuFanBox.SelectedValue;
+            computer.PowerSupplyId = (int)PowerSupplyBox.SelectedValue;
+            computer.ComputerPicture = System.IO.Path.GetExtension(this.imgPath);
             Stream stream = new FileStream(imgPath, FileMode.Open, FileAccess.Read);
             WebClient<Computer> client = new WebClient<Computer>();
             client.Schema = "http";
             client.Host = "localhost";
-            client.Port = 5195;
+            client.Port = 7249;
             client.Path = "api/Manager/AddComputer";
-            bool ok = await client.PostAsync(ncvm.Computer, stream);
+            bool ok = await client.PostAsync(computer, stream);
             if (ok) { this.DialogResult = true; MessageBox.Show("Computer Added"); this.Close(); }
             else {  MessageBox.Show("Failed to add computer","", MessageBoxButton.OK , MessageBoxImage.Error); }
         }

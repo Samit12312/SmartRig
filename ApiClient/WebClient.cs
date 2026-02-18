@@ -185,7 +185,7 @@ namespace ApiClient
                 StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
                 multipartFormDataContent.Add(stringContent, "data");
                 StreamContent fileContent = new StreamContent(file);
-                multipartFormDataContent.Add(fileContent, "file", "fileName");
+                multipartFormDataContent.Add(fileContent, "file", "file");
                 requestMessage.Content = multipartFormDataContent;
                 using (HttpResponseMessage responseMessage = await this.httpClient.SendAsync(requestMessage))
                 {
