@@ -25,7 +25,8 @@ namespace SmartRigWeb
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.OpenTransaction();
                 this.repositoryFactory.ComputerRepository.Create(computer);
-
+                computer.ComputerPicture += this.repositoryFactory.ComputerRepository.GetLastComputerId() + ".jpg";
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/computers", computer.ComputerPicture);
 
 
                 this.repositoryFactory.Commit();
