@@ -24,6 +24,9 @@ namespace SmartRigWeb
             {
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.OpenTransaction();
+                this.repositoryFactory.ComputerRepository.Create(computer);
+
+
 
                 this.repositoryFactory.Commit();
                 return true;
@@ -31,6 +34,7 @@ namespace SmartRigWeb
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                this.repositoryFactory.Rollback();
                 return false;
             }
             finally

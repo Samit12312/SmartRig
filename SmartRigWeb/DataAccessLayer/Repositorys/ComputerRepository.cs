@@ -73,7 +73,12 @@ namespace SmartRigWeb
             this.dbContext.AddParameter("@CompanyId", CompanyId.ToString());
             return GetComputers(sql);
         }
-
+        public int GetLastComputerId()
+        {
+            string sql = @"SELECT MAX(ComputerId) AS LastComputerId
+                   FROM Computer";
+            return GetComputers(sql)[0].ComputerId;
+        }
         public List<Computer> GetComputersByOperatingSystemId(int OperatingSystemId)
         {
             string sql = @"SELECT Computer.ComputerId, Computer.ComputerName, Computer.ComputerTypeId, Computer.CompanyId, Computer.StorageId, Computer.RamId, Computer.CpuId, Computer.GpuId, Computer.Price, Computer.OperatingSystemId, Computer.CaseId, Computer.PowerSupplyId, Computer.CpuFanId, Computer.MotherBoardId, Computer.ComputerPicture

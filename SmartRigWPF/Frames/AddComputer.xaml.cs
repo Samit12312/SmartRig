@@ -82,12 +82,12 @@ namespace SmartRigWPF.Frames
             ncvm.Computer.MotherBoardId = (int)MotherboardBox.SelectedValue;
             ncvm.Computer.ComputerPicture = System.IO.Path.GetExtension(this.imgPath);
             Stream stream = new FileStream(imgPath, FileMode.Open, FileAccess.Read);
-            WebClient<NewComputerViewModel> client = new WebClient<NewComputerViewModel>();
+            WebClient<Computer> client = new WebClient<Computer>();
             client.Schema = "http";
             client.Host = "localhost";
             client.Port = 5195;
             client.Path = "api/Manager/AddComputer";
-            bool ok = await client.PostAsync(ncvm, stream);
+            bool ok = await client.PostAsync(ncvm.Computer, stream);
             if (ok) { this.DialogResult = true; MessageBox.Show("Computer Added"); this.Close(); }
             else {  MessageBox.Show("Failed to add computer","", MessageBoxButton.OK , MessageBoxImage.Error); }
         }
