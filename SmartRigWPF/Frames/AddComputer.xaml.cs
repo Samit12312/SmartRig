@@ -35,7 +35,7 @@ namespace SmartRigWPF.Frames
             WebClient<NewComputerViewModel> client = new WebClient<NewComputerViewModel>();
             client.Schema = "http";
             client.Host = "localhost";
-            client.Port = 7249;
+            client.Port = 5195;
             client.Path = "api/Manager/GetNewComputerViewModel";
             NewComputerViewModel viewModel = await client.GetAsync();
             if (viewModel != null)
@@ -91,7 +91,7 @@ namespace SmartRigWPF.Frames
             WebClient<Computer> client = new WebClient<Computer>();
             client.Schema = "http";
             client.Host = "localhost";
-            client.Port = 7249;
+            client.Port = 5195;
             client.Path = "api/Manager/AddComputer";
             bool ok = await client.PostAsync(computer, stream);
             if (ok) { this.DialogResult = true; MessageBox.Show("Computer Added"); this.Close(); }

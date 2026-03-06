@@ -342,6 +342,18 @@ namespace SmartRigWeb
 
             return this.dbContext.Update(sql) > 0;
         }
+        public bool DeleteWithCartItems(string computerId)
+        {
+            // Delete cart items first
+            string deleteCartItems = @"DELETE FROM [CartComputer] WHERE ComputerId = @ComputerId";
+            this.dbContext.AddParameter("@ComputerId", computerId);
+            this.dbContext.Delete(deleteCartItems);
+
+            // Then delete the computer
+            string deleteComputer = @"DELETE FROM [Computer] WHERE ComputerId = @ComputerId";
+            this.dbContext.AddParameter("@ComputerId", computerId);
+            return this.dbContext.Delete(deleteComputer) > 0;
+        }
     }
 
 }

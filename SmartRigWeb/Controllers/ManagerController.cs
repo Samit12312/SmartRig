@@ -29,9 +29,17 @@ namespace SmartRigWeb
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.OpenTransaction();
                 this.repositoryFactory.ComputerRepository.Create(data);
-                data.ComputerPicture = this.repositoryFactory.ComputerRepository.GetLastComputerId() + data.ComputerPicture;
+                // make the computer image name the same as the computer id to avoid duplicates and make it easier to find
+                int newComputerId = this.repositoryFactory.ComputerRepository.GetLastComputerId();
+                string fileExtension = Path.GetExtension(file.FileName);
+                data.ComputerPicture = newComputerId + fileExtension;
+                data.ComputerId = newComputerId;
                 this.repositoryFactory.ComputerRepository.Update(data);
-                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/computers", data.ComputerPicture);
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Images/Computers", data.ComputerPicture);
+                using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
 
 
                 this.repositoryFactory.Commit();
@@ -114,11 +122,14 @@ namespace SmartRigWeb
             try
             {
                 this.repositoryFactory.ConnectDbContext();
-                return this.repositoryFactory.ComputerRepository.Delete(computerId);
+
+                bool result = this.repositoryFactory.ComputerRepository.DeleteWithCartItems(computerId);
+
+                return result;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Error deleting computer: {ex.Message}");
                 return false;
             }
             finally
@@ -287,6 +298,175 @@ namespace SmartRigWeb
             {
                 Console.WriteLine(ex.Message);
                 return null;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+        [HttpGet]
+        public List<Company> GetAllCompanies()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.CompanyRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<Company>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public List<Cpu> GetAllCpus()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.CpuRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<Cpu>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public List<Gpu> GetAllGpus()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.GpuRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<Gpu>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public List<Ram> GetAllRams()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.RamRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<Ram>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public List<Storage> GetAllStorages()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.StorageRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<Storage>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public List<CpuFan> GetAllCpuFans()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.CpuFanRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<CpuFan>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+        [HttpGet]
+        public List<PowerSupply> GetAllPowerSupplies()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.PowerSupplyRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<PowerSupply>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public List<MotherBoard> GetAllMotherBoards()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.MotherBoardRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<MotherBoard>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public List<Models.OperatingSystem> GetAllOperatingSystems()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.OperatingSystemRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<Models.OperatingSystem>();
             }
             finally
             {
