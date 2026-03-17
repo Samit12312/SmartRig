@@ -40,13 +40,26 @@ namespace SmartRigWPF.Frames
             listView.ItemsSource = this.computers;
 
         }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             AddComputer addComputer = new AddComputer();
-            bool? result = addComputer.ShowDialog();
+            addComputer.ShowDialog();
         }
+        private async void EditBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (listView.SelectedItem == null)
+            {
+                MessageBox.Show("Select a computer first");
+                return;
+            }
 
+            Computer selectedComputer = (Computer)listView.SelectedItem;
+
+            AddComputer win = new AddComputer(selectedComputer);
+            win.ShowDialog();
+
+            await GetComputers();
+        }
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
             if (listView.SelectedItem == null)
@@ -57,7 +70,6 @@ namespace SmartRigWPF.Frames
 
             Computer selectedComputer = (Computer)listView.SelectedItem;
 
-            // Confirm deletion
             MessageBoxResult confirmation = MessageBox.Show(
                 $"Are you sure you want to delete '{selectedComputer.ComputerName}'?",
                 "Confirm Delete",
@@ -81,7 +93,7 @@ namespace SmartRigWPF.Frames
                     if (success)
                     {
                         MessageBox.Show("Computer deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await GetComputers(); // Refresh the list
+                        await GetComputers();
                     }
                     else
                     {

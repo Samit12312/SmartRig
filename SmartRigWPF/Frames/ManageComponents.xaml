@@ -1,299 +1,244 @@
 ﻿<UserControl
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="clr-namespace:Models;assembly=Models"
     x:Class="SmartRigWPF.Frames.ManageComponents"
     Background="White"
-    Width="750" Height="600">
+    Width="730" Height="540">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,200">
-        <StackPanel Margin="20" x:Name="MainStack" >
+    <UserControl.Resources>
+        <!-- CPU Template -->
+        <DataTemplate DataType="{x:Type models:Cpu}">
+            <Border Padding="12" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
+                <StackPanel>
+                    <TextBlock Text="{Binding CpuName}" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock FontSize="12" Foreground="#7f8c8d" Margin="0,2,0,0">
+                        <Run Text="CPU ID: "/>
+                        <Run Text="{Binding CpuId}"/>
+                    </TextBlock>
+                    <WrapPanel Margin="0,6,0,0">
+                        <TextBlock Text="Price: $" Width="80"/>
+                        <TextBlock Text="{Binding CpuPrice}" FontWeight="Bold" Foreground="#27ae60"/>
+                        <TextBlock Text="Company ID: " Width="120" Margin="20,0,0,0"/>
+                        <TextBlock Text="{Binding CpuCompanyId}"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
 
-            <!-- CPU Grid -->
-            <Grid Margin="0,0,0,20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="200"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Manage CPUs" FontSize="22" FontWeight="SemiBold" Grid.Row="0" Margin="0,0,0,10"/>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,10">
-                    <Button Content="Add CPU" Width="120" Height="30" Background="#27ae60" Foreground="White" Margin="0,0,10,0" Click="AddCpu_Click"/>
-                    <Button Content="Edit CPU" Width="120" Height="30" Background="#3498db" Foreground="White" Margin="0,0,10,0" Click="EditCpu_Click"/>
-                    <Button Content="Delete CPU" Width="120" Height="30" Background="#e74c3c" Foreground="White" Click="DeleteCpu_Click"/>
+        <!-- GPU Template -->
+        <DataTemplate DataType="{x:Type models:Gpu}">
+            <Border Padding="12" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
+                <StackPanel>
+                    <TextBlock Text="{Binding GpuName}" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock FontSize="12" Foreground="#7f8c8d" Margin="0,2,0,0">
+                        <Run Text="GPU ID: "/>
+                        <Run Text="{Binding GpuId}"/>
+                    </TextBlock>
+                    <WrapPanel Margin="0,6,0,0">
+                        <TextBlock Text="Size: " Width="80"/>
+                        <TextBlock Text="{Binding GpuSize}"/>
+                        <TextBlock Text="Speed: " Width="120" Margin="20,0,0,0"/>
+                        <TextBlock Text="{Binding GpuSpeed}"/>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <TextBlock Text="Price: $" Width="80"/>
+                        <TextBlock Text="{Binding GpuPrice}" FontWeight="Bold" Foreground="#27ae60"/>
+                        <TextBlock Text="Company ID: " Width="120" Margin="20,0,0,0"/>
+                        <TextBlock Text="{Binding GpuCompanyId}"/>
+                    </WrapPanel>
                 </StackPanel>
-                <ListView x:Name="cpuListView" Grid.Row="2" BorderBrush="#dee2e6" BorderThickness="1" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="10" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding CpuName}" FontSize="16" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding CpuId, StringFormat=CPU ID: {0}}" FontSize="12" Foreground="#7f8c8d"/>
-                                    <WrapPanel Margin="0,4,0,0">
-                                        <TextBlock Text="Price: " Width="120"/>
-                                        <TextBlock Text="{Binding CpuPrice}" FontWeight="Bold" Foreground="#27ae60"/>
-                                        <TextBlock Text="Company ID: " Width="120" Margin="20,0,0,0"/>
-                                        <TextBlock Text="{Binding CpuCompanyId}"/>
-                                    </WrapPanel>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
+            </Border>
+        </DataTemplate>
 
-            <!-- GPU Grid -->
-            <Grid Margin="0,0,0,20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="200"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Manage GPUs" FontSize="22" FontWeight="SemiBold" Grid.Row="0" Margin="0,0,0,10"/>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,10">
-                    <Button Content="Add GPU" Width="120" Height="30" Background="#27ae60" Foreground="White" Margin="0,0,10,0" Click="AddGpu_Click"/>
-                    <Button Content="Edit GPU" Width="120" Height="30" Background="#3498db" Foreground="White" Margin="0,0,10,0" Click="EditGpu_Click"/>
-                    <Button Content="Delete GPU" Width="120" Height="30" Background="#e74c3c" Foreground="White" Click="DeleteGpu_Click"/>
+        <!-- RAM Template -->
+        <DataTemplate DataType="{x:Type models:Ram}">
+            <Border Padding="12" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
+                <StackPanel>
+                    <TextBlock Text="{Binding RamName}" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock FontSize="12" Foreground="#7f8c8d" Margin="0,2,0,0">
+                        <Run Text="RAM ID: "/>
+                        <Run Text="{Binding RamId}"/>
+                    </TextBlock>
+                    <WrapPanel Margin="0,6,0,0">
+                        <TextBlock Text="Size: " Width="80"/>
+                        <TextBlock Text="{Binding RamSize}"/>
+                        <TextBlock Text="Speed: " Width="120" Margin="20,0,0,0"/>
+                        <TextBlock Text="{Binding RamSpeed}"/>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <TextBlock Text="Price: $" Width="80"/>
+                        <TextBlock Text="{Binding RamPrice}" FontWeight="Bold" Foreground="#27ae60"/>
+                        <TextBlock Text="Company ID: " Width="120" Margin="20,0,0,0"/>
+                        <TextBlock Text="{Binding RamCompanyId}"/>
+                    </WrapPanel>
                 </StackPanel>
-                <ListView x:Name="gpuListView" Grid.Row="2" BorderBrush="#dee2e6" BorderThickness="1" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="10" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding GpuName}" FontSize="16" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding GpuId, StringFormat=GPU ID: {0}}" FontSize="12" Foreground="#7f8c8d"/>
-                                    <WrapPanel Margin="0,4,0,0">
-                                        <TextBlock Text="Size: " Width="120"/>
-                                        <TextBlock Text="{Binding GpuSize}"/>
-                                        <TextBlock Text="Speed: " Width="120" Margin="20,0,0,0"/>
-                                        <TextBlock Text="{Binding GpuSpeed}"/>
-                                    </WrapPanel>
-                                    <WrapPanel Margin="0,4,0,0">
-                                        <TextBlock Text="Price: " Width="120"/>
-                                        <TextBlock Text="{Binding GpuPrice}" FontWeight="Bold" Foreground="#27ae60"/>
-                                        <TextBlock Text="Company ID: " Width="120" Margin="20,0,0,0"/>
-                                        <TextBlock Text="{Binding GpuCompanyId}"/>
-                                    </WrapPanel>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
+            </Border>
+        </DataTemplate>
 
-            <!-- RAM Grid -->
-            <Grid Margin="0,0,0,20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="200"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Manage RAMs" FontSize="22" FontWeight="SemiBold" Grid.Row="0" Margin="0,0,0,10"/>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,10">
-                    <Button Content="Add RAM" Width="120" Height="30" Background="#27ae60" Foreground="White" Margin="0,0,10,0" Click="AddRam_Click"/>
-                    <Button Content="Edit RAM" Width="120" Height="30" Background="#3498db" Foreground="White" Margin="0,0,10,0" Click="EditRam_Click"/>
-                    <Button Content="Delete RAM" Width="120" Height="30" Background="#e74c3c" Foreground="White" Click="DeleteRam_Click"/>
+        <!-- Storage Template -->
+        <DataTemplate DataType="{x:Type models:Storage}">
+            <Border Padding="12" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
+                <StackPanel>
+                    <TextBlock Text="{Binding StorageName}" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock FontSize="12" Foreground="#7f8c8d" Margin="0,2,0,0">
+                        <Run Text="Storage ID: "/>
+                        <Run Text="{Binding StorageId}"/>
+                    </TextBlock>
+                    <WrapPanel Margin="0,6,0,0">
+                        <TextBlock Text="Size: " Width="80"/>
+                        <TextBlock Text="{Binding StorageSize}"/>
+                        <TextBlock Text="Speed: " Width="120" Margin="20,0,0,0"/>
+                        <TextBlock Text="{Binding StorageSpeed}"/>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <TextBlock Text="Type: " Width="80"/>
+                        <TextBlock Text="{Binding StorageType}"/>
+                        <TextBlock Text="Price: $" Width="120" Margin="20,0,0,0"/>
+                        <TextBlock Text="{Binding StoragePrice}" FontWeight="Bold" Foreground="#27ae60"/>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <TextBlock Text="Company ID: " Width="80"/>
+                        <TextBlock Text="{Binding StorageCompanyId}"/>
+                    </WrapPanel>
                 </StackPanel>
-                <ListView x:Name="ramListView" Grid.Row="2" BorderBrush="#dee2e6" BorderThickness="1" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="10" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding RamName}" FontSize="16" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding RamId, StringFormat=RAM ID: {0}}" FontSize="12" Foreground="#7f8c8d"/>
-                                    <WrapPanel Margin="0,4,0,0">
-                                        <TextBlock Text="Size: " Width="120"/>
-                                        <TextBlock Text="{Binding RamSize}"/>
-                                        <TextBlock Text="Speed: " Width="120" Margin="20,0,0,0"/>
-                                        <TextBlock Text="{Binding RamSpeed}"/>
-                                    </WrapPanel>
-                                    <WrapPanel Margin="0,4,0,0">
-                                        <TextBlock Text="Type ID: " Width="120"/>
-                                        <TextBlock Text="{Binding RamTypeId}"/>
-                                        <TextBlock Text="Price: " Width="120" Margin="20,0,0,0"/>
-                                        <TextBlock Text="{Binding RamPrice}" FontWeight="Bold" Foreground="#27ae60"/>
-                                        <TextBlock Text="Company ID: " Width="120" Margin="20,0,0,0"/>
-                                        <TextBlock Text="{Binding RamCompanyId}"/>
-                                    </WrapPanel>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
-            <!-- Storage Grid -->
-            <Grid Margin="0,0,0,20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="200"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Manage Storages" FontSize="22" FontWeight="SemiBold" Grid.Row="0" Margin="0,0,0,10"/>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,10">
-                    <Button Content="Add Storage" Width="120" Height="30" Background="#27ae60" Foreground="White" Margin="0,0,10,0" Click="AddStorage_Click"/>
-                    <Button Content="Edit Storage" Width="120" Height="30" Background="#3498db" Foreground="White" Margin="0,0,10,0" Click="EditStorage_Click"/>
-                    <Button Content="Delete Storage" Width="120" Height="30" Background="#e74c3c" Foreground="White" Click="DeleteStorage_Click"/>
-                </StackPanel>
-                <ListView x:Name="storageListView" Grid.Row="2" BorderBrush="#dee2e6" BorderThickness="1" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="10" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding StorageName}" FontSize="16" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding StorageId, StringFormat=Storage ID: {0}}" FontSize="12" Foreground="#7f8c8d"/>
-                                    <WrapPanel Margin="0,4,0,0">
-                                        <TextBlock Text="Size: " Width="120"/>
-                                        <TextBlock Text="{Binding StorageSize}"/>
-                                        <TextBlock Text="Type: " Width="120" Margin="20,0,0,0"/>
-                                        <TextBlock Text="{Binding StorageType}"/>
-                                    </WrapPanel>
-                                    <WrapPanel Margin="0,4,0,0">
-                                        <TextBlock Text="Price: " Width="120"/>
-                                        <TextBlock Text="{Binding StoragePrice}" FontWeight="Bold" Foreground="#27ae60"/>
-                                        <TextBlock Text="Company ID: " Width="120" Margin="20,0,0,0"/>
-                                        <TextBlock Text="{Binding StorageCompanyId}"/>
-                                    </WrapPanel>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
+            </Border>
+        </DataTemplate>
 
-            <!-- Motherboard Grid -->
-            <Grid Margin="0,0,0,20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="200"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Manage Motherboards" FontSize="22" FontWeight="SemiBold" Grid.Row="0" Margin="0,0,0,10"/>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,10">
-                    <Button Content="Add Motherboard" Width="120" Height="30" Background="#27ae60" Foreground="White" Margin="0,0,10,0" Click="AddMotherBoard_Click"/>
-                    <Button Content="Edit Motherboard" Width="120" Height="30" Background="#3498db" Foreground="White" Margin="0,0,10,0" Click="EditMotherBoard_Click"/>
-                    <Button Content="Delete Motherboard" Width="120" Height="30" Background="#e74c3c" Foreground="White" Click="DeleteMotherBoard_Click"/>
+        <!-- Motherboard Template -->
+        <DataTemplate DataType="{x:Type models:MotherBoard}">
+            <Border Padding="12" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
+                <StackPanel>
+                    <TextBlock Text="{Binding MotherBoardName}" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock FontSize="12" Foreground="#7f8c8d" Margin="0,2,0,0">
+                        <Run Text="Motherboard ID: "/>
+                        <Run Text="{Binding MotherBoardId}"/>
+                    </TextBlock>
+                    <WrapPanel Margin="0,6,0,0">
+                        <TextBlock Text="Price: $" Width="80"/>
+                        <TextBlock Text="{Binding MotherBoardPrice}" FontWeight="Bold" Foreground="#27ae60"/>
+                        <TextBlock Text="Company ID: " Width="120" Margin="20,0,0,0"/>
+                        <TextBlock Text="{Binding MotherBoardCompanyId}"/>
+                    </WrapPanel>
                 </StackPanel>
-                <ListView x:Name="motherBoardListView" Grid.Row="2" BorderBrush="#dee2e6" BorderThickness="1" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="10" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding MotherBoardName}" FontSize="16" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding MotherBoardId, StringFormat=Motherboard ID: {0}}" FontSize="12" Foreground="#7f8c8d"/>
-                                    <WrapPanel Margin="0,4,0,0">
-                                        <TextBlock Text="Form Factor: " Width="120"/>
-                                        <TextBlock Text="{Binding FormFactor}"/>
-                                        <TextBlock Text="Socket: " Width="120" Margin="20,0,0,0"/>
-                                        <TextBlock Text="{Binding Socket}"/>
-                                    </WrapPanel>
-                                    <WrapPanel Margin="0,4,0,0">
-                                        <TextBlock Text="Price: " Width="120"/>
-                                        <TextBlock Text="{Binding MotherBoardPrice}" FontWeight="Bold" Foreground="#27ae60"/>
-                                        <TextBlock Text="Company ID: " Width="120" Margin="20,0,0,0"/>
-                                        <TextBlock Text="{Binding MotherBoardCompanyId}"/>
-                                    </WrapPanel>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
+            </Border>
+        </DataTemplate>
 
-            <!-- CPU Fan Grid -->
-            <Grid Margin="0,0,0,20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="200"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Manage CPU Fans" FontSize="22" FontWeight="SemiBold" Grid.Row="0" Margin="0,0,0,10"/>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,10">
-                    <Button Content="Add CPU Fan" Width="120" Height="30" Background="#27ae60" Foreground="White" Margin="0,0,10,0" Click="AddCpuFan_Click"/>
-                    <Button Content="Edit CPU Fan" Width="120" Height="30" Background="#3498db" Foreground="White" Margin="0,0,10,0" Click="EditCpuFan_Click"/>
-                    <Button Content="Delete CPU Fan" Width="120" Height="30" Background="#e74c3c" Foreground="White" Click="DeleteCpuFan_Click"/>
+        <!-- CPU Fan Template -->
+        <DataTemplate DataType="{x:Type models:CpuFan}">
+            <Border Padding="12" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
+                <StackPanel>
+                    <TextBlock Text="{Binding CpuFanName}" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock FontSize="12" Foreground="#7f8c8d" Margin="0,2,0,0">
+                        <Run Text="CPU Fan ID: "/>
+                        <Run Text="{Binding CpuFanId}"/>
+                    </TextBlock>
+                    <WrapPanel Margin="0,6,0,0">
+                        <TextBlock Text="Price: $" Width="80"/>
+                        <TextBlock Text="{Binding CpuFanPrice}" FontWeight="Bold" Foreground="#27ae60"/>
+                        <TextBlock Text="Company ID: " Width="120" Margin="20,0,0,0"/>
+                        <TextBlock Text="{Binding CpuFanCompanyId}"/>
+                    </WrapPanel>
                 </StackPanel>
-                <ListView x:Name="cpuFanListView" Grid.Row="2" BorderBrush="#dee2e6" BorderThickness="1" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="10" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding CpuFanName}" FontSize="16" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding CpuFanId, StringFormat=CPU Fan ID: {0}}" FontSize="12" Foreground="#7f8c8d"/>
-                                    <WrapPanel Margin="0,4,0,0">
-                                        <TextBlock Text="RPM: " Width="120"/>
-                                        <TextBlock Text="{Binding Rpm}"/>
-                                        <TextBlock Text="Price: " Width="120" Margin="20,0,0,0"/>
-                                        <TextBlock Text="{Binding CpuFanPrice}" FontWeight="Bold" Foreground="#27ae60"/>
-                                    </WrapPanel>
-                                    <TextBlock Text="{Binding CpuFanCompanyId, StringFormat=Company ID: {0}}" FontSize="12" Foreground="#7f8c8d" Margin="0,4,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
+            </Border>
+        </DataTemplate>
 
-            <!-- Power Supply Grid -->
-            <Grid Margin="0,0,0,20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="200"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Manage Power Supplies" FontSize="22" FontWeight="SemiBold" Grid.Row="0" Margin="0,0,0,10"/>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,10">
-                    <Button Content="Add PSU" Width="120" Height="30" Background="#27ae60" Foreground="White" Margin="0,0,10,0" Click="AddPowerSupply_Click"/>
-                    <Button Content="Edit PSU" Width="120" Height="30" Background="#3498db" Foreground="White" Margin="0,0,10,0" Click="EditPowerSupply_Click"/>
-                    <Button Content="Delete PSU" Width="120" Height="30" Background="#e74c3c" Foreground="White" Click="DeletePowerSupply_Click"/>
+        <!-- Power Supply Template -->
+        <DataTemplate DataType="{x:Type models:PowerSupply}">
+            <Border Padding="12" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
+                <StackPanel>
+                    <TextBlock Text="{Binding PowerSupplyName}" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock FontSize="12" Foreground="#7f8c8d" Margin="0,2,0,0">
+                        <Run Text="Power Supply ID: "/>
+                        <Run Text="{Binding PowerSupplyId}"/>
+                    </TextBlock>
+                    <WrapPanel Margin="0,6,0,0">
+                        <TextBlock Text="Wattage: " Width="80"/>
+                        <TextBlock Text="{Binding PowerSupplyWattage}"/>
+                        <TextBlock Text="Price: $" Width="120" Margin="20,0,0,0"/>
+                        <TextBlock Text="{Binding PowerSupplyPrice}" FontWeight="Bold" Foreground="#27ae60"/>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <TextBlock Text="Company ID: " Width="80"/>
+                        <TextBlock Text="{Binding PowerSupplyCompanyId}"/>
+                    </WrapPanel>
                 </StackPanel>
-                <ListView x:Name="powerSupplyListView" Grid.Row="2" BorderBrush="#dee2e6" BorderThickness="1" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="10" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding PsuName}" FontSize="16" FontWeight="SemiBold"/>
-                                    <TextBlock Text="PSU ID: {Binding PsuId}" FontSize="12" Foreground="#7f8c8d"/>
-                                    <WrapPanel Margin="0,4,0,0">
-                                        <TextBlock Text="Wattage: " Width="120"/>
-                                        <TextBlock Text="{Binding Wattage}"/>
-                                        <TextBlock Text="Price: " Width="120" Margin="20,0,0,0"/>
-                                        <TextBlock Text="{Binding PsuPrice}" FontWeight="Bold" Foreground="#27ae60"/>
-                                    </WrapPanel>
-                                    <TextBlock Text="{Binding PsuCompanyId, StringFormat=Company ID: {0}}" FontSize="12" Foreground="#7f8c8d" Margin="0,4,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
+            </Border>
+        </DataTemplate>
 
-            <!-- OS Grid -->
-            <Grid Margin="0,0,0,20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="200"/>
-                </Grid.RowDefinitions>
-                <TextBlock Text="Manage Operating Systems" FontSize="22" FontWeight="SemiBold" Grid.Row="0" Margin="0,0,0,10"/>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,10">
-                    <Button Content="Add OS" Width="120" Height="30" Background="#27ae60" Foreground="White" Margin="0,0,10,0" Click="AddOs_Click"/>
-                    <Button Content="Edit OS" Width="120" Height="30" Background="#3498db" Foreground="White" Margin="0,0,10,0" Click="EditOs_Click"/>
-                    <Button Content="Delete OS" Width="120" Height="30" Background="#e74c3c" Foreground="White" Click="DeleteOs_Click"/>
+        <!-- Operating System Template -->
+        <DataTemplate DataType="{x:Type models:OperatingSystem}">
+            <Border Padding="12" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
+                <StackPanel>
+                    <TextBlock Text="{Binding OperatingSystemName}" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock FontSize="12" Foreground="#7f8c8d" Margin="0,2,0,0">
+                        <Run Text="OS ID: "/>
+                        <Run Text="{Binding OperatingSystemId}"/>
+                    </TextBlock>
+                    <WrapPanel Margin="0,6,0,0">
+                        <TextBlock Text="Price: $" Width="80"/>
+                        <TextBlock Text="{Binding OperatingSystemPrice}" FontWeight="Bold" Foreground="#27ae60"/>
+                        <TextBlock Text="Company: " Width="120" Margin="20,0,0,0"/>
+                        <TextBlock Text="{Binding OperatingSystemCompanyId}"/>
+                    </WrapPanel>
                 </StackPanel>
-                <ListView x:Name="osListView" Grid.Row="2" BorderBrush="#dee2e6" BorderThickness="1" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="10" BorderBrush="#ecf0f1" BorderThickness="0,0,0,1">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding OsName}" FontSize="16" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding OsId, StringFormat=OS ID: {0}}" FontSize="12" Foreground="#7f8c8d"/>
-                                    <TextBlock Text="{Binding OsPrice, StringFormat=Price: {0}}" FontSize="12" Foreground="#27ae60" Margin="0,4,0,0"/>
-                                    <TextBlock Text="{Binding OsCompanyId, StringFormat=Company ID: {0}}" FontSize="12" Foreground="#7f8c8d" Margin="0,4,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <!-- Title -->
+        <TextBlock Text="Manage Components"
+                   FontSize="24"
+                   FontWeight="SemiBold"
+                   Foreground="#2c3e50"
+                   Margin="20,20,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"/>
+
+        <!-- Filter and Action Buttons -->
+        <StackPanel Orientation="Horizontal"
+            Margin="20,65,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top">
+
+            <TextBlock Text="Filter:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0"
+                       FontWeight="SemiBold"/>
+
+            <ComboBox x:Name="ComponentTypeComboBox"
+                      Width="140"
+                      Height="35"
+                      SelectionChanged="ComponentTypeComboBox_SelectionChanged">
+                <ComboBoxItem Content="All" IsSelected="True"/>
+                <ComboBoxItem Content="CPU"/>
+                <ComboBoxItem Content="GPU"/>
+                <ComboBoxItem Content="RAM"/>
+                <ComboBoxItem Content="Storage"/>
+                <ComboBoxItem Content="Motherboard"/>
+                <ComboBoxItem Content="CPU Fan"/>
+                <ComboBoxItem Content="Power Supply"/>
+                <ComboBoxItem Content="Operating System"/>
+            </ComboBox>
+
+            <Button Content="Add" Width="80" Height="35"
+            Background="#27ae60" Foreground="White" BorderThickness="0" Cursor="Hand"
+            Margin="20,0,0,0"/>
+            <Button Content="Edit" Width="80" Height="35"
+            Background="#3498db" Foreground="White" BorderThickness="0" Cursor="Hand"
+            Margin="10,0,0,0"/>
+            <Button Content="Delete" Width="80" Height="35"
+            Background="#e74c3c" Foreground="White" BorderThickness="0" Cursor="Hand"
+            Margin="10,0,0,0"/>
         </StackPanel>
-    </ScrollViewer>
+
+        <!-- ListView -->
+        <ListView x:Name="listView"
+          Margin="20,120,20,30"
+          BorderBrush="#dee2e6"
+          BorderThickness="1"
+          Height="200"
+          ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+    </Grid>
 </UserControl>

@@ -29,9 +29,8 @@ namespace SmartRigWeb
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.OpenTransaction();
                 this.repositoryFactory.ComputerRepository.Create(data);
-                // make the computer image name the same as the computer id to avoid duplicates and make it easier to find
                 int newComputerId = this.repositoryFactory.ComputerRepository.GetLastComputerId();
-                string fileExtension = Path.GetExtension(file.FileName);
+                string fileExtension = System.IO.Path.GetExtension(file.FileName);
                 data.ComputerPicture = newComputerId + fileExtension;
                 data.ComputerId = newComputerId;
                 this.repositoryFactory.ComputerRepository.Update(data);

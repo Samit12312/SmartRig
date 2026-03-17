@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,151 +10,176 @@ namespace SmartRigWPF.Frames
 {
     public partial class ManageComponents : UserControl
     {
+        List<object> allComponents = new List<object>();
+        bool isLoaded = false;
+
         public ManageComponents()
         {
             InitializeComponent();
-            LoadComponents();
+            Loaded += ManageComponents_Loaded;
         }
 
-        private async void LoadComponents()
-        {
-            await LoadCpus();
-            await LoadGpus();
-            await LoadRams();
-            await LoadStorages();
-            await LoadMotherBoards();
-            await LoadCpuFans();
-            await LoadPowerSupplies();
-            await LoadOperatingSystems();
+        private async void ManageComponents_Loaded(object sender, RoutedEventArgs e)
+        { 
+            // Disable filter while loading
+            ComponentTypeComboBox.IsEnabled = false;
+
+            await LoadAllComponents();
+
+            // Enable filter after loading
+            ComponentTypeComboBox.IsEnabled = true;
+            isLoaded = true;
         }
 
-        private async Task LoadCpus()
+        private async Task LoadAllComponents()
         {
-            WebClient<List<Cpu>> client = new WebClient<List<Cpu>>()
+            try
             {
-                Schema = "http",
-                Host = "localhost",
-                Port = 5195,
-                Path = "api/Manager/GetAllCpus"
-            };
-            cpuListView.ItemsSource = await client.GetAsync();
-        }
+                allComponents.Clear();
 
-        private async Task LoadGpus()
-        {
-            WebClient<List<Gpu>> client = new WebClient<List<Gpu>>()
+                // Load CPUs
+                WebClient<List<Cpu>> cpuClient = new WebClient<List<Cpu>>
+                {
+                    Schema = "http",
+                    Host = "localhost",
+                    Port = 5195,
+                    Path = "api/Manager/GetAllCpus"
+                };
+                var cpus = await cpuClient.GetAsync();
+                if (cpus != null) allComponents.AddRange(cpus);
+
+                // Load GPUs
+                WebClient<List<Gpu>> gpuClient = new WebClient<List<Gpu>>
+                {
+                    Schema = "http",
+                    Host = "localhost",
+                    Port = 5195,
+                    Path = "api/Manager/GetAllGpus"
+                };
+                var gpus = await gpuClient.GetAsync();
+                if (gpus != null) allComponents.AddRange(gpus);
+
+                // Load RAMs
+                WebClient<List<Ram>> ramClient = new WebClient<List<Ram>>
+                {
+                    Schema = "http",
+                    Host = "localhost",
+                    Port = 5195,
+                    Path = "api/Manager/GetAllRams"
+                };
+                var rams = await ramClient.GetAsync();
+                if (rams != null) allComponents.AddRange(rams);
+
+                // Load Storages
+                WebClient<List<Storage>> storageClient = new WebClient<List<Storage>>
+                {
+                    Schema = "http",
+                    Host = "localhost",
+                    Port = 5195,
+                    Path = "api/Manager/GetAllStorages"
+                };
+                var storages = await storageClient.GetAsync();
+                if (storages != null) allComponents.AddRange(storages);
+
+                // Load Motherboards
+                WebClient<List<MotherBoard>> motherboardClient = new WebClient<List<MotherBoard>>
+                {
+                    Schema = "http",
+                    Host = "localhost",
+                    Port = 5195,
+                    Path = "api/Manager/GetAllMotherBoards"
+                };
+                var motherboards = await motherboardClient.GetAsync();
+                if (motherboards != null) allComponents.AddRange(motherboards);
+
+                // Load CPU Fans
+                WebClient<List<CpuFan>> fanClient = new WebClient<List<CpuFan>>
+                {
+                    Schema = "http",
+                    Host = "localhost",
+                    Port = 5195,
+                    Path = "api/Manager/GetAllCpuFans"
+                };
+                var fans = await fanClient.GetAsync();
+                if (fans != null) allComponents.AddRange(fans);
+
+                // Load Power Supplies
+                WebClient<List<PowerSupply>> psuClient = new WebClient<List<PowerSupply>>
+                {
+                    Schema = "http",
+                    Host = "localhost",
+                    Port = 5195,
+                    Path = "api/Manager/GetAllPowerSupplies"
+                };
+                var psus = await psuClient.GetAsync();
+                if (psus != null) allComponents.AddRange(psus);
+
+                // Load Operating Systems
+                WebClient<List<Models.OperatingSystem>> osClient = new WebClient<List<Models.OperatingSystem>>
+                {
+                    Schema = "http",
+                    Host = "localhost",
+                    Port = 5195,
+                    Path = "api/Manager/GetAllOperatingSystems"
+                };
+                var oses = await osClient.GetAsync();
+                if (oses != null) allComponents.AddRange(oses);
+
+                // Only set ItemsSource if listView is not null
+                if (listView != null)
+                {
+                    listView.ItemsSource = allComponents;
+                }
+            }
+            catch (System.Exception ex)
             {
-                Schema = "http",
-                Host = "localhost",
-                Port = 5195,
-                Path = "api/Manager/GetAllGpus"
-            };
-            gpuListView.ItemsSource = await client.GetAsync();
+                MessageBox.Show($"Error loading components: {ex.Message}");
+            }
         }
 
-        private async Task LoadRams()
+        private void ComponentTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            WebClient<List<Ram>> client = new WebClient<List<Ram>>()
+            // Don't filter if not loaded yet
+            if (!isLoaded || ComponentTypeComboBox.SelectedItem == null || listView == null) return;
+
+            string selectedType = ((ComboBoxItem)ComponentTypeComboBox.SelectedItem).Content.ToString();
+
+            if (selectedType == "All")
             {
-                Schema = "http",
-                Host = "localhost",
-                Port = 5195,
-                Path = "api/Manager/GetAllRams"
-            };
-            ramListView.ItemsSource = await client.GetAsync();
-        }
-        private async Task LoadStorages()
-        {
-            WebClient<List<Storage>> client = new WebClient<List<Storage>>()
+                listView.ItemsSource = allComponents;
+            }
+            else if (selectedType == "CPU")
             {
-                Schema = "http",
-                Host = "localhost",
-                Port = 5195,
-                Path = "api/Manager/GetAllStorages"
-            };
-            storageListView.ItemsSource = await client.GetAsync();
-        }
-
-        private async Task LoadMotherBoards()
-        {
-            WebClient<List<MotherBoard>> client = new WebClient<List<MotherBoard>>()
+                listView.ItemsSource = allComponents.OfType<Cpu>().ToList();
+            }
+            else if (selectedType == "GPU")
             {
-                Schema = "http",
-                Host = "localhost",
-                Port = 5195,
-                Path = "api/Manager/GetAllMotherBoards"
-            };
-            motherBoardListView.ItemsSource = await client.GetAsync();
-        }
-
-        private async Task LoadCpuFans()
-        {
-            WebClient<List<CpuFan>> client = new WebClient<List<CpuFan>>()
+                listView.ItemsSource = allComponents.OfType<Gpu>().ToList();
+            }
+            else if (selectedType == "RAM")
             {
-                Schema = "http",
-                Host = "localhost",
-                Port = 5195,
-                Path = "api/Manager/GetAllCpuFans"
-            };
-            cpuFanListView.ItemsSource = await client.GetAsync();
-        }
-
-        private async Task LoadPowerSupplies()
-        {
-            WebClient<List<PowerSupply>> client = new WebClient<List<PowerSupply>>()
+                listView.ItemsSource = allComponents.OfType<Ram>().ToList();
+            }
+            else if (selectedType == "Storage")
             {
-                Schema = "http",
-                Host = "localhost",
-                Port = 5195,
-                Path = "api/Manager/GetAllPowerSupplies"
-            };
-            powerSupplyListView.ItemsSource = await client.GetAsync();
-        }
-
-        private async Task LoadOperatingSystems()
-        {
-            WebClient<List<Models.OperatingSystem>> client = new WebClient<List<Models.OperatingSystem>>()
+                listView.ItemsSource = allComponents.OfType<Storage>().ToList();
+            }
+            else if (selectedType == "Motherboard")
             {
-                Schema = "http",
-                Host = "localhost",
-                Port = 5195,
-                Path = "api/Manager/GetAllOperatingSystems"
-            };
-            osListView.ItemsSource = await client.GetAsync();
+                listView.ItemsSource = allComponents.OfType<MotherBoard>().ToList();
+            }
+            else if (selectedType == "CPU Fan")
+            {
+                listView.ItemsSource = allComponents.OfType<CpuFan>().ToList();
+            }
+            else if (selectedType == "Power Supply")
+            {
+                listView.ItemsSource = allComponents.OfType<PowerSupply>().ToList();
+            }
+            else if (selectedType == "Operating System")
+            {
+                listView.ItemsSource = allComponents.OfType<Models.OperatingSystem>().ToList();
+            }
         }
-
-        // Button handlers
-        private void AddStorage_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Add Storage");
-        private void EditStorage_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Edit Storage");
-        private void DeleteStorage_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Delete Storage");
-
-        private void AddMotherBoard_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Add MotherBoard");
-        private void EditMotherBoard_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Edit MotherBoard");
-        private void DeleteMotherBoard_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Delete MotherBoard");
-
-        private void AddCpuFan_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Add CPU Fan");
-        private void EditCpuFan_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Edit CPU Fan");
-        private void DeleteCpuFan_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Delete CPU Fan");
-
-        private void AddPowerSupply_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Add PSU");
-        private void EditPowerSupply_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Edit PSU");
-        private void DeletePowerSupply_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Delete PSU");
-
-        private void AddOs_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Add OS");
-        private void EditOs_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Edit OS");
-        private void DeleteOs_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Delete OS");
-        // Repeat similar methods for Storage, Motherboard, CPU Fan, Power Supply, OS
-
-        private void AddCpu_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Add CPU");
-        private void EditCpu_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Edit CPU");
-        private void DeleteCpu_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Delete CPU");
-
-        private void AddGpu_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Add GPU");
-        private void EditGpu_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Edit GPU");
-        private void DeleteGpu_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Delete GPU");
-
-        private void AddRam_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Add RAM");
-        private void EditRam_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Edit RAM");
-        private void DeleteRam_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Delete RAM");
     }
 }

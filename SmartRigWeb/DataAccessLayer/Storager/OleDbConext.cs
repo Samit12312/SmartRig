@@ -62,10 +62,16 @@ namespace SmartRigWeb
         {
             return ChangeDb(sql);
         }
-        private int ChangeDb(string sql) 
+        private int ChangeDb(string sql)
         {
             this.command.CommandText = sql;
+            if (this.transaction != null)
+            {
+                this.command.Transaction = this.transaction;
+            }
+
             int records = this.command.ExecuteNonQuery();
+            Console.WriteLine($"ExecuteNonQuery returned: {records}");
             this.command.Parameters.Clear();
             return records;
         }

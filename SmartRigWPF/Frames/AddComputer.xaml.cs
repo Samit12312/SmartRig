@@ -25,9 +25,18 @@ namespace SmartRigWPF.Frames
     public partial class AddComputer : Window
     {
         string imgPath;
+        bool isEdit;
+        Computer selectedComputer;
         public AddComputer()
         {
             InitializeComponent();
+            GetNewComputerViewModel();
+        }
+        public AddComputer(Computer computer)
+        {
+            InitializeComponent();
+            this.selectedComputer = computer;
+            isEdit = true;
             GetNewComputerViewModel();
         }
         private async Task GetNewComputerViewModel()
@@ -38,8 +47,10 @@ namespace SmartRigWPF.Frames
             client.Port = 5195;
             client.Path = "api/Manager/GetNewComputerViewModel";
             NewComputerViewModel viewModel = await client.GetAsync();
+
             if (viewModel != null)
             {
+                // Set ItemsSource FIRST, before setting the Computer
                 CompanyBox.ItemsSource = viewModel.Companies;
                 TypeBox.ItemsSource = viewModel.Types;
                 OSBox.ItemsSource = viewModel.OS;
@@ -51,10 +62,38 @@ namespace SmartRigWPF.Frames
                 CaseBox.ItemsSource = viewModel.Cases;
                 CpuFanBox.ItemsSource = viewModel.Fans;
                 PowerSupplyBox.ItemsSource = viewModel.PowerSupplies;
-                if (viewModel.Computer == null) {viewModel.Computer = new Computer(); }
-            }
 
-            this.DataContext = viewModel;
+                // THEN set the DataContext
+                this.DataContext = viewModel;
+
+                // THEN load edit data if needed
+                if (isEdit && selectedComputer != null)
+                {
+                    viewModel.Computer = selectedComputer;
+
+                    // Force ComboBox selections after data is bound
+                    CompanyBox.SelectedValue = selectedComputer.CompanyId;
+                    TypeBox.SelectedValue = selectedComputer.ComputerTypeId;
+                    OSBox.SelectedValue = selectedComputer.OperatingSystemId;
+                    CpuBox.SelectedValue = selectedComputer.CpuId;
+                    GpuBox.SelectedValue = selectedComputer.GpuId;
+                    RamBox.SelectedValue = selectedComputer.RamId;
+                    StorageBox.SelectedValue = selectedComputer.StorageId;
+                    MotherboardBox.SelectedValue = selectedComputer.MotherBoardId;
+                    CaseBox.SelectedValue = selectedComputer.CaseId;
+                    CpuFanBox.SelectedValue = selectedComputer.CpuFanId;
+                    PowerSupplyBox.SelectedValue = selectedComputer.PowerSupplyId;
+
+                    // Load image
+                    Uri uri = new Uri(System.IO.Path.Combine(Environment.CurrentDirectory, "Images",
+                        selectedComputer.ComputerId + selectedComputer.ComputerPicture));
+                    this.image.Source = new BitmapImage(uri);
+                }
+                else
+                {
+                    viewModel.Computer = new Computer();
+                }
+            }
         }
         private void UploadImageBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -95,7 +134,7 @@ namespace SmartRigWPF.Frames
             client.Path = "api/Manager/AddComputer";
             bool ok = await client.PostAsync(computer, stream);
             if (ok) { this.DialogResult = true; MessageBox.Show("Computer Added"); this.Close(); }
-            else {  MessageBox.Show("Failed to add computer","", MessageBoxButton.OK , MessageBoxImage.Error); }
+            else { MessageBox.Show("Failed to add computer", "", MessageBoxButton.OK, MessageBoxImage.Error); }
         }
     }
 }
