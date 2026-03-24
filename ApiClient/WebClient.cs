@@ -178,19 +178,29 @@ namespace ApiClient
         {
             using (HttpRequestMessage requestMessage = new HttpRequestMessage())
             {
-                requestMessage.Method = HttpMethod.Post;// post שיטת שליחת בקשה
-                requestMessage.RequestUri = this.uriBuilder.Uri; // מגדיר את כתובת הבקשה
+                requestMessage.Method = HttpMethod.Post;
+                requestMessage.RequestUri = this.uriBuilder.Uri;
+
                 MultipartFormDataContent multipartFormDataContent = new MultipartFormDataContent();
                 string jsonData = JsonSerializer.Serialize(data);
                 StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
                 multipartFormDataContent.Add(stringContent, "data");
-                StreamContent fileContent = new StreamContent(file);
+
+                byte[] fileBytes;
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    await file.CopyToAsync(ms);
+                    fileBytes = ms.ToArray();
+                }
+
+                ByteArrayContent fileContent = new ByteArrayContent(fileBytes);
                 multipartFormDataContent.Add(fileContent, "file", "file");
+
                 requestMessage.Content = multipartFormDataContent;
+
                 using (HttpResponseMessage responseMessage = await this.httpClient.SendAsync(requestMessage))
                 {
                     return responseMessage.IsSuccessStatusCode;
-
                 }
             }
         }

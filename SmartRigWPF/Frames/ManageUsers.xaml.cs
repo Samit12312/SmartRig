@@ -17,9 +17,6 @@ using ApiClient;
 
 namespace SmartRigWPF.Frames
 {
-    /// <summary>
-    /// Interaction logic for ManageUsers.xaml
-    /// </summary>
     public partial class ManageUsers : UserControl
     {
         List<User> users = new List<User>();
@@ -38,8 +35,20 @@ namespace SmartRigWPF.Frames
             client.Port = 5195;
             client.Path = "api/Manager/GetAllUsers";
             this.users = await client.GetAsync();
-            this.DataContext = this.users;
             listView.ItemsSource = this.users;
+        }
+
+        private async void EditBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (listView.SelectedItem == null)
+            {
+                MessageBox.Show("Select a user first");
+                return;
+            }
+            User selectedUser = (User)listView.SelectedItem;
+            AddUser win = new AddUser(selectedUser);
+            win.ShowDialog();
+            await GetUsers();
         }
     }
 }

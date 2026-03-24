@@ -7,14 +7,13 @@
              Background="White"
              Width="730" Height="650">
     <Canvas>
-        <!-- Title -->
+        
         <TextBlock Canvas.Left="20" Canvas.Top="20"
                    Text="Add Computer"
                    FontSize="24"
                    FontWeight="SemiBold"
                    Foreground="#2c3e50"/>
 
-        <!-- Computer Name -->
         <TextBlock Canvas.Left="20" Canvas.Top="70"
                    Text="Computer Name"
                    FontSize="13"
@@ -177,7 +176,6 @@
           SelectedValuePath="CpuFanId"
           BorderBrush="#dee2e6"/>
 
-        <!-- Image Preview -->
         <Border Canvas.Left="460" Canvas.Top="70"
                 Width="200" Height="200"
                 BorderBrush="#dee2e6"
@@ -188,7 +186,6 @@
                    Stretch="Uniform"/>
         </Border>
 
-        <!-- Upload Image Button -->
         <Button x:Name="UploadImageBtn"
                 Canvas.Left="485" Canvas.Top="315"
                 Content="Upload Image"
@@ -199,7 +196,6 @@
                 Cursor="Hand"
                 Click="UploadImageBtn_Click"/>
 
-        <!-- Add Button -->
         <Button x:Name="AddBtn"
                 Canvas.Left="20" Canvas.Top="570"
                 Content="Add Computer"
@@ -209,8 +205,7 @@
                 BorderThickness="0"
                 Cursor="Hand"
                 Click="AddBtn_Click"/>
-
-        <!-- Cancel Button -->
+        
         <Button x:Name="CancelBtn"
                 Canvas.Left="180" Canvas.Top="570"
                 Content="Cancel"
@@ -220,7 +215,6 @@
                 BorderThickness="0"
                 Cursor="Hand"/>
 
-        <!-- Message -->
         <TextBlock x:Name="MessageText"
                    Canvas.Left="20" Canvas.Top="495"
                    FontSize="13"

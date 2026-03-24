@@ -22,14 +22,9 @@
             Margin="20,65,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top">
-            <Button Content="Add User" Width="120" Height="35"
-            Background="#27ae60" Foreground="White" BorderThickness="0" Cursor="Hand"/>
             <Button Content="Edit User" Width="120" Height="35"
-            Background="#3498db" Foreground="White" BorderThickness="0" Cursor="Hand"
-            Margin="10,0,0,0"/>
-            <Button Content="Delete User" Width="120" Height="35"
-            Background="#e74c3c" Foreground="White" BorderThickness="0" Cursor="Hand"
-            Margin="10,0,0,0"/>
+    Background="#3498db" Foreground="White" BorderThickness="0" Cursor="Hand"
+    Click="EditBtn_Click"/>
         </StackPanel>
 
 

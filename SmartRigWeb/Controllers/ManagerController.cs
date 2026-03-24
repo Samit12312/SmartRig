@@ -24,14 +24,15 @@ namespace SmartRigWeb
             string jsonData = Request.Form["data"];
             Computer data = JsonSerializer.Deserialize<Computer>(jsonData);
             IFormFile file = Request.Form.Files[0];    
+            
             try
             {
+                string format = data.ComputerPicture;
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.OpenTransaction();
                 this.repositoryFactory.ComputerRepository.Create(data);
                 int newComputerId = this.repositoryFactory.ComputerRepository.GetLastComputerId();
-                string fileExtension = System.IO.Path.GetExtension(file.FileName);
-                data.ComputerPicture = newComputerId + fileExtension;
+                data.ComputerPicture = newComputerId + format;
                 data.ComputerId = newComputerId;
                 this.repositoryFactory.ComputerRepository.Update(data);
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Images/Computers", data.ComputerPicture);
@@ -98,12 +99,53 @@ namespace SmartRigWeb
             }
         }
         [HttpPost]
-        public bool EditComputer(Computer computer)
+        public bool EditComputer([FromForm] string data, IFormFile file)
         {
             try
             {
+                JsonSerializerOptions options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                Computer computer = JsonSerializer.Deserialize<Computer>(data, options);
+
                 this.repositoryFactory.ConnectDbContext();
+
+                if (file != null)
+                {
+                    string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Computers",
+                        computer.ComputerId + ".jpg");
+                    using (FileStream fs = new FileStream(imagePath, FileMode.Create))
+                    {
+                        file.CopyTo(fs);
+                    }
+                }
+
                 return this.repositoryFactory.ComputerRepository.Update(computer);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+        [HttpPost]
+        public bool EditUser([FromBody] EditUserViewModel data)
+        {
+            try
+            {
+                User user = new User();
+                user.UserId = data.UserId;
+                user.UserName = data.UserName;
+                user.UserEmail = data.UserEmail;
+                user.UserAddress = data.UserAddress;
+                user.UserPhoneNumber = data.UserPhoneNumber;
+                user.CityId = data.CityId;
+                user.Manager = data.Manager;
+
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.UserRepository.Update(user);
             }
             catch (Exception ex)
             {
@@ -155,57 +197,50 @@ namespace SmartRigWeb
             }
         }
         [HttpGet]
-        public List<Computer> GetAllComputers()
+        public List<ComputersViewModel> GetAllComputers()
         {
-            //List< ComputerDetailsViewModel> computerDetailsViewModels = new List<ComputerDetailsViewModel>();
-            //try
-            //{
-            //    this.repositoryFactory.ConnectDbContext();
-            //    Computer computer = this.repositoryFactory.ComputerRepository.GetAll();
-            //    Ram ram = this.repositoryFactory.RamRepository.GetById(computer.RamId);
-            //    PowerSupply PS = this.repositoryFactory.PowerSupplyRepository.GetById(computer.PowerSupplyId);
-            //    Models.Type type = this.repositoryFactory.TypeRepository.GetById(computer.ComputerTypeId);
-            //    Storage storage = this.repositoryFactory.StorageRepository.GetById(computer.StorageId);
-            //    Gpu Gpu = this.repositoryFactory.GpuRepository.GetById(computer.GpuId);
-            //    MotherBoard motherboard = this.repositoryFactory.MotherBoardRepository.GetById(computer.MotherBoardId);
-            //    Models.OperatingSystem OS = this.repositoryFactory.OperatingSystemRepository.GetById(computer.OperatingSystemId);
-            //    CpuFan cpuFan = this.repositoryFactory.CpuFanRepository.GetById(computer.CpuFanId);
-            //    Company company = this.repositoryFactory.CompanyRepository.GetById(computer.CompanyId);
-            //    Case computerCase = this.repositoryFactory.CaseRepository.GetById(computer.CaseId);
-            //    Cpu cpu = this.repositoryFactory.CpuRepository.GetById(computer.CpuId);
-
-            //    computerDetailsViewModels.computer = computer;
-            //    computerDetailsViewModels.type = type;
-            //    computerDetailsViewModels.cpuFan = cpuFan;
-            //    computerDetailsViewModels.operatingSystem = OS;
-            //    computerDetailsViewModels.storage = storage;
-            //    computerDetailsViewModels.cpu = cpu;
-            //    computerDetailsViewModels.company = company;
-            //    computerDetailsViewModels.gpu = Gpu;
-            //    computerDetailsViewModels.computerCase = computerCase;
-            //    computerDetailsViewModels.motherBoard = motherboard;
-            //    computerDetailsViewModels.powerSupply = PS;
-            //    computerDetailsViewModels.ram = ram;
-            //    return computerDetailsViewModels;
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex.Message);
-            //    return null;
-            //}
-            //finally
-            //{
-            //    this.repositoryFactory.DisconnectDb();
-            //}
             try
             {
                 this.repositoryFactory.ConnectDbContext();
-                return this.repositoryFactory.ComputerRepository.GetAll();
+
+                List<Computer> computers = this.repositoryFactory.ComputerRepository.GetAll();
+                List<Cpu> cpus = this.repositoryFactory.CpuRepository.GetAll();
+                List<Gpu> gpus = this.repositoryFactory.GpuRepository.GetAll();
+                List<Ram> rams = this.repositoryFactory.RamRepository.GetAll();
+                List<Storage> storages = this.repositoryFactory.StorageRepository.GetAll();
+                List<MotherBoard> motherboards = this.repositoryFactory.MotherBoardRepository.GetAll();
+                List<PowerSupply> powerSupplies = this.repositoryFactory.PowerSupplyRepository.GetAll();
+                List<CpuFan> fans = this.repositoryFactory.CpuFanRepository.GetAll();
+                List<Case> cases = this.repositoryFactory.CaseRepository.GetAll();
+                List<Company> companies = this.repositoryFactory.CompanyRepository.GetAll();
+                List<Models.OperatingSystem> operatingSystems = this.repositoryFactory.OperatingSystemRepository.GetAll();
+                List<Models.Type> types = this.repositoryFactory.TypeRepository.GetAllByTypeCode(1);
+
+                List<ComputersViewModel> result = new List<ComputersViewModel>();
+
+                foreach (Computer c in computers)
+                {
+                    ComputersViewModel vm = new ComputersViewModel();
+                    vm.computer = c;
+                    vm.cpu = this.repositoryFactory.CpuRepository.GetById(c.CpuId);
+                    vm.gpu = this.repositoryFactory.GpuRepository.GetById(c.GpuId);
+                    vm.ram = this.repositoryFactory.RamRepository.GetById(c.RamId);
+                    vm.storage = this.repositoryFactory.StorageRepository.GetById(c.StorageId);
+                    vm.motherBoard = this.repositoryFactory.MotherBoardRepository.GetById(c.MotherBoardId);
+                    vm.powerSupply = this.repositoryFactory.PowerSupplyRepository.GetById(c.PowerSupplyId);
+                    vm.cpuFan = this.repositoryFactory.CpuFanRepository.GetById(c.CpuFanId);
+                    vm.computerCase = this.repositoryFactory.CaseRepository.GetById(c.CaseId);
+                    vm.company = this.repositoryFactory.CompanyRepository.GetById(c.CompanyId);
+                    vm.operatingSystem = this.repositoryFactory.OperatingSystemRepository.GetById(c.OperatingSystemId);
+                    vm.type = this.repositoryFactory.TypeRepository.GetById(c.ComputerTypeId);
+                    result.Add(vm);
+                }
+                return result;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return new List<Computer>();
+                return new List<ComputersViewModel>();
             }
             finally
             {

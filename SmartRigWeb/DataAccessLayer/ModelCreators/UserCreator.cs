@@ -17,7 +17,8 @@ namespace SmartRigWeb
                 UserAddress = Convert.ToString(reader["UserAddress"]),
                 CityId = Convert.ToInt16(reader["CityId"]),
                 UserPhoneNumber = Convert.ToString(reader["UserPhoneNumber"]),
-                UserSalt = reader["UserSalt"].ToString()
+                UserSalt = reader["UserSalt"].ToString(),
+                Manager = Convert.ToBoolean(reader["Manager"])
             };
         }
     }

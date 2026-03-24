@@ -308,21 +308,20 @@ namespace SmartRigWeb
         public bool Update(Computer item)
         {
             string sql = @"UPDATE [Computer]
-                           SET ComputerName = @ComputerName,
-                               ComputerTypeId = @ComputerTypeId,
-                               CompanyId = @CompanyId,
-                               StorageId = @StorageId,
-                               RamId = @RamId,
-                               CpuId = @CpuId,
-                               GpuId = @GpuId,
-                               Price = @Price,
-                               OperatingSystemId = @OperatingSystemId,
-                               CaseId = @CaseId,
-                               PowerSupplyId = @PowerSupplyId,
-                               CpuFanId = @CpuFanId,
-                               MotherBoardId = @MotherBoardId,
-                               ComputerPicture = @ComputerPicture
-                           WHERE ComputerId = @ComputerId";
+SET ComputerName = @ComputerName,
+    ComputerTypeId = @ComputerTypeId,
+    CompanyId = @CompanyId,
+    StorageId = @StorageId,
+    RamId = @RamId,
+    CpuId = @CpuId,
+    GpuId = @GpuId,
+    Price = @Price,
+    OperatingSystemId = @OperatingSystemId,
+    CaseId = @CaseId,
+    PowerSupplyId = @PowerSupplyId,
+    CpuFanId = @CpuFanId,
+    MotherBoardId = @MotherBoardId
+WHERE ComputerId = @ComputerId";
 
             this.dbContext.AddParameter("@ComputerName", item.ComputerName);
             this.dbContext.AddParameter("@ComputerTypeId", item.ComputerTypeId.ToString());
@@ -337,19 +336,16 @@ namespace SmartRigWeb
             this.dbContext.AddParameter("@PowerSupplyId", item.PowerSupplyId.ToString());
             this.dbContext.AddParameter("@CpuFanId", item.CpuFanId.ToString());
             this.dbContext.AddParameter("@MotherBoardId", item.MotherBoardId.ToString());
-            this.dbContext.AddParameter("@ComputerPicture", item.ComputerPicture);
             this.dbContext.AddParameter("@ComputerId", item.ComputerId.ToString());
 
             return this.dbContext.Update(sql) > 0;
         }
         public bool DeleteWithCartItems(string computerId)
         {
-            // Delete cart items first
             string deleteCartItems = @"DELETE FROM [CartComputer] WHERE ComputerId = @ComputerId";
             this.dbContext.AddParameter("@ComputerId", computerId);
             this.dbContext.Delete(deleteCartItems);
 
-            // Then delete the computer
             string deleteComputer = @"DELETE FROM [Computer] WHERE ComputerId = @ComputerId";
             this.dbContext.AddParameter("@ComputerId", computerId);
             return this.dbContext.Delete(deleteComputer) > 0;

@@ -88,33 +88,25 @@ namespace SmartRigWeb
         public bool Update(User item)
         {
             string sql = @"
-    UPDATE [User]
-    SET 
-        UserName = @UserName,
-        UserEmail = @UserEmail,
-        UserAddress = @UserAddress,
-        CityId = @CityId,
-        UserPhoneNumber = @UserPhoneNumber,
-        Manager = @Manager
-    WHERE 
-        UserId = @UserId";
-
+UPDATE [User]
+SET UserName = @UserName,
+    UserEmail = @UserEmail,
+    UserAddress = @UserAddress,
+    UserPhoneNumber = @UserPhoneNumber,
+    CityId = @CityId,
+    Manager = @Manager
+WHERE UserId = @UserId";
             this.dbContext.AddParameter("@UserName", item.UserName);
             this.dbContext.AddParameter("@UserEmail", item.UserEmail);
             this.dbContext.AddParameter("@UserAddress", item.UserAddress);
-
-            this.dbContext.AddParameter("@CityId", item.CityId.ToString());
             this.dbContext.AddParameter("@UserPhoneNumber", item.UserPhoneNumber);
-
-            // IMPORTANT FIX HERE:
+            this.dbContext.AddParameter("@CityId", item.CityId);
             this.dbContext.AddParameter("@Manager", item.Manager ? "-1" : "0");
-
             this.dbContext.AddParameter("@UserId", item.UserId.ToString());
-
             return this.dbContext.Update(sql) > 0;
         }
 
-            public string Login(string userEmail, string userPassword)
+        public string Login(string userEmail, string userPassword)
             {
                 string sql = @"SELECT UserId, UserPassword, UserSalt
                        FROM [User] 

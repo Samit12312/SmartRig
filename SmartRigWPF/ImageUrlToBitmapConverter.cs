@@ -13,17 +13,17 @@ namespace SmartRigWPF
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string url = $"http://localhost:5195/Images/Computers/{value.ToString()}";
             if (value == null)
                 return null;
 
+            string url = $"http://localhost:5195/Images/Computers/{value.ToString()}";
             try
             {
                 return new BitmapImage(new Uri(url, UriKind.Absolute));
             }
             catch
             {
-                return null; // או תמונת ברירת מחדל
+                return null;
             }
         }
 

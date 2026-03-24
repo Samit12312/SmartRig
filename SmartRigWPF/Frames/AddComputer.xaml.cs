@@ -17,21 +17,21 @@ using Microsoft.Win32;
 using Models;
 using Models.ViewModels;
 using System.IO;
+
 namespace SmartRigWPF.Frames
 {
-    /// <summary>
-    /// Interaction logic for AddComputer.xaml
-    /// </summary>
     public partial class AddComputer : Window
     {
         string imgPath;
         bool isEdit;
         Computer selectedComputer;
+
         public AddComputer()
         {
             InitializeComponent();
             GetNewComputerViewModel();
         }
+
         public AddComputer(Computer computer)
         {
             InitializeComponent();
@@ -39,6 +39,7 @@ namespace SmartRigWPF.Frames
             isEdit = true;
             GetNewComputerViewModel();
         }
+
         private async Task GetNewComputerViewModel()
         {
             WebClient<NewComputerViewModel> client = new WebClient<NewComputerViewModel>();
@@ -50,7 +51,6 @@ namespace SmartRigWPF.Frames
 
             if (viewModel != null)
             {
-                // Set ItemsSource FIRST, before setting the Computer
                 CompanyBox.ItemsSource = viewModel.Companies;
                 TypeBox.ItemsSource = viewModel.Types;
                 OSBox.ItemsSource = viewModel.OS;
@@ -63,15 +63,15 @@ namespace SmartRigWPF.Frames
                 CpuFanBox.ItemsSource = viewModel.Fans;
                 PowerSupplyBox.ItemsSource = viewModel.PowerSupplies;
 
-                // THEN set the DataContext
                 this.DataContext = viewModel;
 
-                // THEN load edit data if needed
                 if (isEdit && selectedComputer != null)
                 {
                     viewModel.Computer = selectedComputer;
 
-                    // Force ComboBox selections after data is bound
+                    ComputerNameBox.Text = selectedComputer.ComputerName;
+                    PriceBox.Text = selectedComputer.Price.ToString();
+
                     CompanyBox.SelectedValue = selectedComputer.CompanyId;
                     TypeBox.SelectedValue = selectedComputer.ComputerTypeId;
                     OSBox.SelectedValue = selectedComputer.OperatingSystemId;
@@ -84,10 +84,8 @@ namespace SmartRigWPF.Frames
                     CpuFanBox.SelectedValue = selectedComputer.CpuFanId;
                     PowerSupplyBox.SelectedValue = selectedComputer.PowerSupplyId;
 
-                    // Load image
-                    Uri uri = new Uri(System.IO.Path.Combine(Environment.CurrentDirectory, "Images",
-                        selectedComputer.ComputerId + selectedComputer.ComputerPicture));
-                    this.image.Source = new BitmapImage(uri);
+                    this.Title = "Edit Computer";
+                    AddBtn.Content = "Update Computer";
                 }
                 else
                 {
@@ -95,6 +93,7 @@ namespace SmartRigWPF.Frames
                 }
             }
         }
+
         private void UploadImageBtn_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -110,7 +109,6 @@ namespace SmartRigWPF.Frames
 
         private async void AddBtn_Click(object sender, RoutedEventArgs e)
         {
-            NewComputerViewModel ncvm = new NewComputerViewModel();
             Computer computer = new Computer();
             computer.ComputerName = ComputerNameBox.Text;
             computer.Price = int.Parse(PriceBox.Text);
@@ -125,16 +123,48 @@ namespace SmartRigWPF.Frames
             computer.CaseId = (int)CaseBox.SelectedValue;
             computer.CpuFanId = (int)CpuFanBox.SelectedValue;
             computer.PowerSupplyId = (int)PowerSupplyBox.SelectedValue;
-            computer.ComputerPicture = System.IO.Path.GetExtension(this.imgPath);
-            Stream stream = new FileStream(imgPath, FileMode.Open, FileAccess.Read);
+
             WebClient<Computer> client = new WebClient<Computer>();
             client.Schema = "http";
             client.Host = "localhost";
             client.Port = 5195;
-            client.Path = "api/Manager/AddComputer";
-            bool ok = await client.PostAsync(computer, stream);
-            if (ok) { this.DialogResult = true; MessageBox.Show("Computer Added"); this.Close(); }
-            else { MessageBox.Show("Failed to add computer", "", MessageBoxButton.OK, MessageBoxImage.Error); }
+
+            bool ok = false;
+
+            if (isEdit)
+            {
+                computer.ComputerId = selectedComputer.ComputerId;
+                computer.ComputerPicture = ".jpg";
+                client.Path = "api/Manager/EditComputer";
+
+                if (!string.IsNullOrEmpty(imgPath))
+                {
+                    using (Stream stream = new FileStream(imgPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        ok = await client.PostAsync(computer, stream);
+                    }
+                }
+                else
+                {
+                    ok = await client.PostAsync(computer);
+                }
+
+                if (ok) { this.DialogResult = true; MessageBox.Show("Computer Updated"); this.Close(); }
+                else { MessageBox.Show("Failed to update computer", "", MessageBoxButton.OK, MessageBoxImage.Error); }
+            }
+            else
+            {
+
+            }
+            {
+                computer.ComputerPicture = System.IO.Path.GetExtension(this.imgPath);
+                Stream stream = new FileStream(imgPath, FileMode.Open, FileAccess.Read);
+                client.Path = "api/Manager/AddComputer";
+                ok = await client.PostAsync(computer, stream);
+
+                if (ok) { this.DialogResult = true; MessageBox.Show("Computer Added"); this.Close(); }
+                else { MessageBox.Show("Failed to add computer", "", MessageBoxButton.OK, MessageBoxImage.Error); }
+            }
         }
     }
 }

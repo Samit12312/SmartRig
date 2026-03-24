@@ -34,10 +34,9 @@
 
 
         <ListView x:Name="listView"
-          Margin="20,120,20,30"
+          Margin="20,133,20,125"
           BorderBrush="#dee2e6"
           BorderThickness="1"
-                  Height="200"
           ScrollViewer.VerticalScrollBarVisibility="Auto">
 
             <ListView.ItemTemplate>
@@ -52,58 +51,88 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel>
-
-                                <TextBlock Text="{Binding ComputerName}" FontSize="16" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding computer.ComputerName}" FontSize="16" FontWeight="SemiBold"/>
                                 <TextBlock FontSize="12" Foreground="#7f8c8d" Margin="0,2,0,0">
-                            <Run Text="Computer ID: "/>
-                            <Run Text="{Binding ComputerId}"/>
+        <Run Text="Computer ID: "/>
+        <Run Text="{Binding computer.ComputerId}"/>
                                 </TextBlock>
 
-                                <WrapPanel Margin="0,6,0,0">
-                                    <TextBlock Text="CPU: " Width="120"/>
-                                    <TextBlock Text="{Binding CpuId}"/>
-                                    <TextBlock Text="GPU: " Width="120" Margin="20,0,0,0"/>
-                                    <TextBlock Text="{Binding GpuId}"/>
-                                </WrapPanel>
+                                <Grid Margin="0,6,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="CPU:" Foreground="#7f8c8d"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding cpu.CpuName}"/>
+                                    <TextBlock Grid.Column="2" Text="GPU:" Foreground="#7f8c8d"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding gpu.GpuName}"/>
+                                </Grid>
 
-                                <WrapPanel>
-                                    <TextBlock Text="RAM: " Width="120"/>
-                                    <TextBlock Text="{Binding RamId}"/>
-                                    <TextBlock Text="Storage: " Width="120" Margin="20,0,0,0"/>
-                                    <TextBlock Text="{Binding StorageId}"/>
-                                </WrapPanel>
+                                <Grid Margin="0,4,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="RAM:" Foreground="#7f8c8d"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding ram.RamSize}"/>
+                                    <TextBlock Grid.Column="2" Text="Storage:" Foreground="#7f8c8d"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding storage.StorageName}"/>
+                                </Grid>
 
-                                <WrapPanel>
-                                    <TextBlock Text="Motherboard: " Width="120"/>
-                                    <TextBlock Text="{Binding MotherBoardId}"/>
-                                    <TextBlock Text="Power Supply: " Width="120" Margin="20,0,0,0"/>
-                                    <TextBlock Text="{Binding PowerSupplyId}"/>
-                                </WrapPanel>
+                                <Grid Margin="0,4,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Motherboard:" Foreground="#7f8c8d"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding motherBoard.MotherBoardName}"/>
+                                    <TextBlock Grid.Column="2" Text="Power Supply:" Foreground="#7f8c8d"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding powerSupply.PowerSupplyName}"/>
+                                </Grid>
 
-                                <WrapPanel>
-                                    <TextBlock Text="Case: " Width="120"/>
-                                    <TextBlock Text="{Binding CaseId}"/>
-                                    <TextBlock Text="CPU Fan: " Width="120" Margin="20,0,0,0"/>
-                                    <TextBlock Text="{Binding CpuFanId}"/>
-                                </WrapPanel>
+                                <Grid Margin="0,4,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Case:" Foreground="#7f8c8d"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding computerCase.CaseName}"/>
+                                    <TextBlock Grid.Column="2" Text="CPU Fan:" Foreground="#7f8c8d"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding cpuFan.CpuFanName}"/>
+                                </Grid>
 
-                                <WrapPanel Margin="0,4,0,0">
-                                    <TextBlock Text="OS: " Width="120"/>
-                                    <TextBlock Text="{Binding OperatingSystemId}"/>
-                                </WrapPanel>
+                                <Grid Margin="0,4,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="OS:" Foreground="#7f8c8d"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding operatingSystem.OperatingSystemName}"/>
+                                </Grid>
 
-                                <WrapPanel Margin="0,6,0,0">
-                                    <TextBlock Text="Price: " Width="120"/>
-                                    <TextBlock Text="{Binding Price}" FontWeight="Bold" Foreground="#27ae60"/>
-                                </WrapPanel>
-
+                                <Grid Margin="0,6,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Price:" Foreground="#7f8c8d"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding computer.Price}" FontWeight="Bold" Foreground="#27ae60"/>
+                                </Grid>
                             </StackPanel>
 
                             <Border Grid.Column="1"
                             Margin="10,0,0,0"
                             Background="#f4f6f7"
                             CornerRadius="6">
-                                <Image Source="{Binding ComputerPicture,Converter={StaticResource ImageConverter}}" Stretch="Uniform" Margin="8"/>
+                                <Image Source="{Binding computer.ComputerPicture, Converter={StaticResource ImageConverter}}" Stretch="Uniform" Margin="8"/>
                             </Border>
                         </Grid>
                     </Border>
