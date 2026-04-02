@@ -8,7 +8,6 @@
 
     <Grid>
 
-        <!-- Title -->
         <TextBlock Text="Manage Orders"
                    FontSize="24"
                    FontWeight="SemiBold"
@@ -17,23 +16,17 @@
                    HorizontalAlignment="Left"
                    VerticalAlignment="Top"/>
 
-        <!-- Action Buttons -->
         <StackPanel Orientation="Horizontal"
             Margin="20,65,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top">
             <Button Content="View Details" Width="120" Height="35"
-            Background="#3498db" Foreground="White" BorderThickness="0" Cursor="Hand"/>
-            <Button Content="Mark as Paid" Width="120" Height="35"
-            Background="#27ae60" Foreground="White" BorderThickness="0" Cursor="Hand"
-            Margin="10,0,0,0"/>
+            Background="#3498db" Foreground="White" BorderThickness="0" Cursor="Hand" Click="ViewDetailsBtn_Click"/>
             <Button Content="Delete Order" Width="120" Height="35"
             Background="#e74c3c" Foreground="White" BorderThickness="0" Cursor="Hand"
-            Margin="10,0,0,0"/>
+            Margin="10,0,0,0" Click="DeleteOrderBtn_Click"/>
         </StackPanel>
 
-
-        <!-- ListView -->
         <ListView x:Name="listView"
           Margin="20,120,20,30"
           BorderBrush="#dee2e6"

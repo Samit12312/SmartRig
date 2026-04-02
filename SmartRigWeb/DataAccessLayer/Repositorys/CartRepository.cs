@@ -25,9 +25,13 @@ namespace SmartRigWeb
 
         public bool Delete(string Id)
         {
-            string sql = @"DELETE FROM [Cart] WHERE CartId = @CartId";
+            string deleteCartComputers = @"DELETE FROM CartComputer WHERE CartId = @CartId";
             this.dbContext.AddParameter("@CartId", Id);
-            return this.dbContext.Delete(sql) > 0;
+            this.dbContext.Delete(deleteCartComputers);
+
+            string deleteCart = @"DELETE FROM [Cart] WHERE CartId = @CartId";
+            this.dbContext.AddParameter("@CartId", Id);
+            return this.dbContext.Delete(deleteCart) > 0;
         }
         public bool BuyCart(int cartId)
         {

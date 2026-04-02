@@ -7,8 +7,7 @@
     Width="730" Height="540">
 
     <Grid>
-
-        <!-- Title -->
+        
         <TextBlock Text="Manage Users"
                    FontSize="24"
                    FontWeight="SemiBold"
@@ -17,7 +16,6 @@
                    HorizontalAlignment="Left"
                    VerticalAlignment="Top"/>
 
-        <!-- Action Buttons -->
         <StackPanel Orientation="Horizontal"
             Margin="20,65,0,0"
             HorizontalAlignment="Left"
@@ -27,8 +25,6 @@
     Click="EditBtn_Click"/>
         </StackPanel>
 
-
-        <!-- ListView -->
         <ListView x:Name="listView"
           Margin="20,120,20,30"
           BorderBrush="#dee2e6"
@@ -86,6 +82,5 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-
     </Grid>
 </UserControl>

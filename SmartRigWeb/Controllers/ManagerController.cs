@@ -178,7 +178,7 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
-        [HttpPost]
+        [HttpGet]
         public bool ChangeCartStatus(int cartId, bool isPayed)
         {
             try
@@ -265,24 +265,43 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
-        //[HttpGet]
-        //public List<CartComputer> GetAllOrders()
-        //{
-        //    try
-        //    {
-        //        this.repositoryFactory.ConnectDbContext();
-        //        return this.repositoryFactory.CartRepository.GetAllOrders();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //        return new List<CartComputer>();
-        //    }
-        //    finally
-        //    {
-        //        this.repositoryFactory.DisconnectDb();
-        //    }
-        //}
+
+        [HttpGet]
+        public bool DeleteOrder(int cartId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.CartRepository.Delete(cartId.ToString());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+        [HttpGet]
+        public List<Cart> GetAllOrders()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.CartRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<Cart>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
         [HttpGet]
         public CartComputer GetMostSoldComputer()
         {

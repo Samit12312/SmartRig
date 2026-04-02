@@ -12,17 +12,94 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Models;
+using ApiClient;
 
 namespace SmartRigWPF.Frames
 {
-    /// <summary>
-    /// Interaction logic for ManageOrders.xaml
-    /// </summary>
     public partial class ManageOrders : UserControl
     {
+        List<Cart> orders = new List<Cart>();
+
         public ManageOrders()
         {
             InitializeComponent();
+            GetOrders();
+        }
+
+        private async Task GetOrders()
+        {
+            WebClient<List<Cart>> client = new WebClient<List<Cart>>();
+            client.Schema = "http";
+            client.Host = "localhost";
+            client.Port = 5195;
+            client.Path = "api/Manager/GetAllOrders";
+            this.orders = await client.GetAsync();
+            listView.ItemsSource = this.orders;
+        }
+
+        private async void MarkAsPaidBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (listView.SelectedItem == null)
+            {
+                MessageBox.Show("Select an order first");
+                return;
+            }
+            Cart selectedOrder = (Cart)listView.SelectedItem;
+
+            WebClient<bool> client = new WebClient<bool>();
+            client.Schema = "http";
+            client.Host = "localhost";
+            client.Port = 5195;
+            client.Path = "api/Manager/ChangeCartStatus";
+            client.AddParameter("cartId", selectedOrder.CartId.ToString());
+            client.AddParameter("isPayed", "true");
+            bool ok = await client.GetAsync();
+
+            if (ok) { MessageBox.Show("Order marked as paid!"); await GetOrders(); }
+            else { MessageBox.Show("Failed to update order", "", MessageBoxButton.OK, MessageBoxImage.Error); }
+        }
+
+        private async void DeleteOrderBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (listView.SelectedItem == null)
+            {
+                MessageBox.Show("Select an order first");
+                return;
+            }
+            Cart selectedOrder = (Cart)listView.SelectedItem;
+            MessageBoxResult confirmation = MessageBox.Show(
+                $"Are you sure you want to delete Order #{selectedOrder.CartId}?",
+                "Confirm Delete",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question
+            );
+            if (confirmation == MessageBoxResult.Yes)
+            {
+                WebClient<bool> client = new WebClient<bool>();
+                client.Schema = "http";
+                client.Host = "localhost";
+                client.Port = 5195;
+                client.Path = "api/Manager/DeleteOrder";
+                client.AddParameter("cartId", selectedOrder.CartId.ToString());
+                bool ok = await client.GetAsync();
+
+                if (ok) { MessageBox.Show("Order deleted!"); await GetOrders(); }
+                else { MessageBox.Show("Failed to delete order", "", MessageBoxButton.OK, MessageBoxImage.Error); }
+            }
+        }
+
+        private async void ViewDetailsBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (listView.SelectedItem == null)
+            {
+                MessageBox.Show("Select an order first");
+                return;
+            }
+            Cart selectedOrder = (Cart)listView.SelectedItem;
+            OrderDetails win = new OrderDetails(selectedOrder);
+            win.ShowDialog();
+            await GetOrders();
         }
     }
 }
