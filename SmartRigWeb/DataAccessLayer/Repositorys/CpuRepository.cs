@@ -60,11 +60,10 @@ namespace SmartRigWeb
         public bool Update(Cpu item)
         {
             string sql = @"UPDATE [Cpu] 
-                           SET CpuName = @CpuName, 
-                               CpuSpeed = @CpuSpeed, 
-                               CpuPrice = @CpuPrice, 
-                               CpuCompanyId = @CpuCompanyId
-                           WHERE CpuId = @CpuId";
+                   SET CpuName = @CpuName, 
+                       CpuPrice = @CpuPrice, 
+                       CpuCompanyId = @CpuCompanyId
+                   WHERE CpuId = @CpuId";
 
             this.dbContext.AddParameter("@CpuName", item.CpuName);
             this.dbContext.AddParameter("@CpuPrice", item.CpuPrice.ToString());

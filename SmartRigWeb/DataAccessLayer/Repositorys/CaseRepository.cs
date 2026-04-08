@@ -56,13 +56,13 @@ namespace SmartRigWeb
             }
         }
 
-        public bool Update(Case item)
+        public bool Update(Models.Case item)
         {
-            string sql = @"UPDATE [Case] 
-                           SET CaseName = @CaseName, 
-                               CasePrice = @CasePrice, 
-                               CaseCompanyId = @CaseCompanyId 
-                           WHERE CaseId = @CaseId";
+            string sql = @"UPDATE [Case]
+                   SET CaseName = @CaseName,
+                       CasePrice = @CasePrice,
+                       CaseCompanyId = @CaseCompanyId
+                   WHERE CaseId = @CaseId";
 
             this.dbContext.AddParameter("@CaseName", item.CaseName);
             this.dbContext.AddParameter("@CasePrice", item.CasePrice.ToString());

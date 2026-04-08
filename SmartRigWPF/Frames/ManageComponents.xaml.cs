@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Models;
+using Models.ViewModels;
 using ApiClient;
 
 namespace SmartRigWPF.Frames
@@ -20,15 +21,90 @@ namespace SmartRigWPF.Frames
         }
 
         private async void ManageComponents_Loaded(object sender, RoutedEventArgs e)
-        { 
-            // Disable filter while loading
+        {
             ComponentTypeComboBox.IsEnabled = false;
 
             await LoadAllComponents();
 
-            // Enable filter after loading
             ComponentTypeComboBox.IsEnabled = true;
             isLoaded = true;
+        }
+
+        private async void AddBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (ComponentTypeComboBox.SelectedItem == null)
+            {
+                MessageBox.Show("Select filter first");
+                return;
+            }
+
+            string selectedType = ((ComboBoxItem)ComponentTypeComboBox.SelectedItem).Content.ToString();
+            bool? result = false;
+
+            if (selectedType == "CPU")
+            {
+                AddCpu window = new AddCpu();
+                result = window.ShowDialog();
+            }
+            else if (selectedType == "CPU Fan")
+            {
+                AddCpuFan window = new AddCpuFan();
+                result = window.ShowDialog();
+            }
+            else if (selectedType == "Case")
+            {
+                AddCase window = new AddCase();
+                result = window.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Add is ready now for CPU, CPU Fan and Case only");
+                return;
+            }
+
+            if (result == true)
+            {
+                await LoadAllComponents();
+                ComponentTypeComboBox_SelectionChanged(null, null);
+            }
+        }
+
+        private async void EditBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (listView.SelectedItem == null)
+            {
+                MessageBox.Show("Select something first");
+                return;
+            }
+
+            bool? result = false;
+
+            if (listView.SelectedItem is CpuManageViewModel cpuVm)
+            {
+                AddCpu window = new AddCpu(cpuVm.cpu);
+                result = window.ShowDialog();
+            }
+            else if (listView.SelectedItem is CpuFanManageViewModel cpuFanVm)
+            {
+                AddCpuFan window = new AddCpuFan(cpuFanVm.cpuFan);
+                result = window.ShowDialog();
+            }
+            else if (listView.SelectedItem is CaseManageViewModel caseVm)
+            {
+                AddCase window = new AddCase(caseVm.computerCase);
+                result = window.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Edit is ready now for CPU, CPU Fan and Case only");
+                return;
+            }
+
+            if (result == true)
+            {
+                await LoadAllComponents();
+                ComponentTypeComboBox_SelectionChanged(null, null);
+            }
         }
 
         private async Task LoadAllComponents()
@@ -37,95 +113,27 @@ namespace SmartRigWPF.Frames
             {
                 allComponents.Clear();
 
-                // Load CPUs
-                WebClient<List<Cpu>> cpuClient = new WebClient<List<Cpu>>
-                {
-                    Schema = "http",
-                    Host = "localhost",
-                    Port = 5195,
-                    Path = "api/Manager/GetAllCpus"
-                };
-                var cpus = await cpuClient.GetAsync();
-                if (cpus != null) allComponents.AddRange(cpus);
+                WebClient<ManageComponentsViewModel> client = new WebClient<ManageComponentsViewModel>();
+                client.Schema = "http";
+                client.Host = "localhost";
+                client.Port = 5195;
+                client.Path = "api/Manager/GetAllManageComponents";
 
-                // Load GPUs
-                WebClient<List<Gpu>> gpuClient = new WebClient<List<Gpu>>
-                {
-                    Schema = "http",
-                    Host = "localhost",
-                    Port = 5195,
-                    Path = "api/Manager/GetAllGpus"
-                };
-                var gpus = await gpuClient.GetAsync();
-                if (gpus != null) allComponents.AddRange(gpus);
+                ManageComponentsViewModel vm = await client.GetAsync();
 
-                // Load RAMs
-                WebClient<List<Ram>> ramClient = new WebClient<List<Ram>>
+                if (vm != null)
                 {
-                    Schema = "http",
-                    Host = "localhost",
-                    Port = 5195,
-                    Path = "api/Manager/GetAllRams"
-                };
-                var rams = await ramClient.GetAsync();
-                if (rams != null) allComponents.AddRange(rams);
+                    if (vm.cpus != null) allComponents.AddRange(vm.cpus);
+                    if (vm.gpus != null) allComponents.AddRange(vm.gpus);
+                    if (vm.rams != null) allComponents.AddRange(vm.rams);
+                    if (vm.storages != null) allComponents.AddRange(vm.storages);
+                    if (vm.motherBoards != null) allComponents.AddRange(vm.motherBoards);
+                    if (vm.cpuFans != null) allComponents.AddRange(vm.cpuFans);
+                    if (vm.powerSupplies != null) allComponents.AddRange(vm.powerSupplies);
+                    if (vm.cases != null) allComponents.AddRange(vm.cases);
+                    if (vm.operatingSystems != null) allComponents.AddRange(vm.operatingSystems);
+                }
 
-                // Load Storages
-                WebClient<List<Storage>> storageClient = new WebClient<List<Storage>>
-                {
-                    Schema = "http",
-                    Host = "localhost",
-                    Port = 5195,
-                    Path = "api/Manager/GetAllStorages"
-                };
-                var storages = await storageClient.GetAsync();
-                if (storages != null) allComponents.AddRange(storages);
-
-                // Load Motherboards
-                WebClient<List<MotherBoard>> motherboardClient = new WebClient<List<MotherBoard>>
-                {
-                    Schema = "http",
-                    Host = "localhost",
-                    Port = 5195,
-                    Path = "api/Manager/GetAllMotherBoards"
-                };
-                var motherboards = await motherboardClient.GetAsync();
-                if (motherboards != null) allComponents.AddRange(motherboards);
-
-                // Load CPU Fans
-                WebClient<List<CpuFan>> fanClient = new WebClient<List<CpuFan>>
-                {
-                    Schema = "http",
-                    Host = "localhost",
-                    Port = 5195,
-                    Path = "api/Manager/GetAllCpuFans"
-                };
-                var fans = await fanClient.GetAsync();
-                if (fans != null) allComponents.AddRange(fans);
-
-                // Load Power Supplies
-                WebClient<List<PowerSupply>> psuClient = new WebClient<List<PowerSupply>>
-                {
-                    Schema = "http",
-                    Host = "localhost",
-                    Port = 5195,
-                    Path = "api/Manager/GetAllPowerSupplies"
-                };
-                var psus = await psuClient.GetAsync();
-                if (psus != null) allComponents.AddRange(psus);
-
-                // Load Operating Systems
-                WebClient<List<Models.OperatingSystem>> osClient = new WebClient<List<Models.OperatingSystem>>
-                {
-                    Schema = "http",
-                    Host = "localhost",
-                    Port = 5195,
-                    Path = "api/Manager/GetAllOperatingSystems"
-                };
-                var oses = await osClient.GetAsync();
-                if (oses != null) allComponents.AddRange(oses);
-
-                // Only set ItemsSource if listView is not null
                 if (listView != null)
                 {
                     listView.ItemsSource = allComponents;
@@ -139,7 +147,6 @@ namespace SmartRigWPF.Frames
 
         private void ComponentTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Don't filter if not loaded yet
             if (!isLoaded || ComponentTypeComboBox.SelectedItem == null || listView == null) return;
 
             string selectedType = ((ComboBoxItem)ComponentTypeComboBox.SelectedItem).Content.ToString();
@@ -150,35 +157,39 @@ namespace SmartRigWPF.Frames
             }
             else if (selectedType == "CPU")
             {
-                listView.ItemsSource = allComponents.OfType<Cpu>().ToList();
+                listView.ItemsSource = allComponents.OfType<CpuManageViewModel>().ToList();
             }
             else if (selectedType == "GPU")
             {
-                listView.ItemsSource = allComponents.OfType<Gpu>().ToList();
+                listView.ItemsSource = allComponents.OfType<GpuManageViewModel>().ToList();
             }
             else if (selectedType == "RAM")
             {
-                listView.ItemsSource = allComponents.OfType<Ram>().ToList();
+                listView.ItemsSource = allComponents.OfType<RamManageViewModel>().ToList();
             }
             else if (selectedType == "Storage")
             {
-                listView.ItemsSource = allComponents.OfType<Storage>().ToList();
+                listView.ItemsSource = allComponents.OfType<StorageManageViewModel>().ToList();
             }
             else if (selectedType == "Motherboard")
             {
-                listView.ItemsSource = allComponents.OfType<MotherBoard>().ToList();
+                listView.ItemsSource = allComponents.OfType<MotherBoardManageViewModel>().ToList();
+            }
+            else if (selectedType == "Case")
+            {
+                listView.ItemsSource = allComponents.OfType<CaseManageViewModel>().ToList();
             }
             else if (selectedType == "CPU Fan")
             {
-                listView.ItemsSource = allComponents.OfType<CpuFan>().ToList();
+                listView.ItemsSource = allComponents.OfType<CpuFanManageViewModel>().ToList();
             }
             else if (selectedType == "Power Supply")
             {
-                listView.ItemsSource = allComponents.OfType<PowerSupply>().ToList();
+                listView.ItemsSource = allComponents.OfType<PowerSupplyManageViewModel>().ToList();
             }
             else if (selectedType == "Operating System")
             {
-                listView.ItemsSource = allComponents.OfType<Models.OperatingSystem>().ToList();
+                listView.ItemsSource = allComponents.OfType<OperatingSystemManageViewModel>().ToList();
             }
         }
     }

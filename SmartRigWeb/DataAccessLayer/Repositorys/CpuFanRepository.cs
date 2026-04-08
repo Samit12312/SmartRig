@@ -48,11 +48,17 @@ namespace SmartRigWeb
 
         public bool Update(CpuFan item)
         {
-            string sql = @"UPDATE [CpuFan] SET CpuFanName=@CpuFanName, CpuFanCompanyId=@CpuFanCompanyId, CpuFanPrice=@CpuFanPrice WHERE CpuFanId=@CpuFanId";
+            string sql = @"UPDATE [CpuFan]
+                   SET CpuFanName = @CpuFanName,
+                       CpuFanPrice = @CpuFanPrice,
+                       CpuFanCompanyId = @CpuFanCompanyId
+                   WHERE CpuFanId = @CpuFanId";
+
             this.dbContext.AddParameter("@CpuFanName", item.CpuFanName);
-            this.dbContext.AddParameter("@CpuFanCompanyId", item.CpuFanCompanyId.ToString());
             this.dbContext.AddParameter("@CpuFanPrice", item.CpuFanPrice.ToString());
+            this.dbContext.AddParameter("@CpuFanCompanyId", item.CpuFanCompanyId.ToString());
             this.dbContext.AddParameter("@CpuFanId", item.CpuFanId.ToString());
+
             return this.dbContext.Update(sql) > 0;
         }
     }

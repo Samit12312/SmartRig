@@ -10,9 +10,9 @@ namespace SmartRigWeb
         {
             return new Case
             {
-                CaseId = Convert.ToInt16(reader["CaseId"]),
+                CaseId = Convert.ToInt32(reader["CaseId"]),
                 CaseName = Convert.ToString(reader["CaseName"]),
-                CasePrice = Convert.ToInt16(reader["CasePrice"]),
+                CasePrice = Convert.ToInt32(reader["CasePrice"]),
                 CaseCompanyId = Convert.ToInt16(reader["CaseCompanyId"])
             };
         }
