@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Models;
 using Models.ViewModels;
 using System.Text.Json;
@@ -18,6 +17,113 @@ namespace SmartRigWeb
         {
             this.repositoryFactory = new RepositoryFactory();
         }
+
+        [HttpGet]
+        public ManageComponentsViewModel GetAllManageComponents()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+
+                ManageComponentsViewModel vm = new ManageComponentsViewModel();
+
+                List<Cpu> cpus = this.repositoryFactory.CpuRepository.GetAll();
+                foreach (Cpu cpu in cpus)
+                {
+                    CpuManageViewModel item = new CpuManageViewModel();
+                    item.cpu = cpu;
+                    item.company = this.repositoryFactory.CompanyRepository.GetById(cpu.CpuCompanyId);
+                    vm.cpus.Add(item);
+                }
+
+                List<Gpu> gpus = this.repositoryFactory.GpuRepository.GetAll();
+                foreach (Gpu gpu in gpus)
+                {
+                    GpuManageViewModel item = new GpuManageViewModel();
+                    item.gpu = gpu;
+                    item.company = this.repositoryFactory.CompanyRepository.GetById(gpu.GpuCompanyId);
+                    vm.gpus.Add(item);
+                }
+
+                List<Ram> rams = this.repositoryFactory.RamRepository.GetAll();
+                foreach (Ram ram in rams)
+                {
+                    RamManageViewModel item = new RamManageViewModel();
+                    item.ram = ram;
+                    item.company = this.repositoryFactory.CompanyRepository.GetById(ram.RamCompanyId);
+                    item.type = this.repositoryFactory.TypeRepository.GetById(ram.RamTypeId);
+                    vm.rams.Add(item);
+                }
+
+                List<Storage> storages = this.repositoryFactory.StorageRepository.GetAll();
+                foreach (Storage storage in storages)
+                {
+                    StorageManageViewModel item = new StorageManageViewModel();
+                    item.storage = storage;
+                    item.company = this.repositoryFactory.CompanyRepository.GetById(storage.StorageCompanyId);
+                    item.type = this.repositoryFactory.TypeRepository.GetById(storage.StorageType);
+                    vm.storages.Add(item);
+                }
+
+                List<MotherBoard> motherBoards = this.repositoryFactory.MotherBoardRepository.GetAll();
+                foreach (MotherBoard motherBoard in motherBoards)
+                {
+                    MotherBoardManageViewModel item = new MotherBoardManageViewModel();
+                    item.motherBoard = motherBoard;
+                    item.company = this.repositoryFactory.CompanyRepository.GetById(motherBoard.MotherBoardCompanyId);
+                    vm.motherBoards.Add(item);
+                }
+
+                List<CpuFan> cpuFans = this.repositoryFactory.CpuFanRepository.GetAll();
+                foreach (CpuFan cpuFan in cpuFans)
+                {
+                    CpuFanManageViewModel item = new CpuFanManageViewModel();
+                    item.cpuFan = cpuFan;
+                    item.company = this.repositoryFactory.CompanyRepository.GetById(cpuFan.CpuFanCompanyId);
+                    vm.cpuFans.Add(item);
+                }
+
+                List<PowerSupply> powerSupplies = this.repositoryFactory.PowerSupplyRepository.GetAll();
+                foreach (PowerSupply powerSupply in powerSupplies)
+                {
+                    PowerSupplyManageViewModel item = new PowerSupplyManageViewModel();
+                    item.powerSupply = powerSupply;
+                    item.company = this.repositoryFactory.CompanyRepository.GetById(powerSupply.PowerSupplyCompanyId);
+                    vm.powerSupplies.Add(item);
+                }
+
+                List<Case> cases = this.repositoryFactory.CaseRepository.GetAll();
+                foreach (Case computerCase in cases)
+                {
+                    CaseManageViewModel item = new CaseManageViewModel();
+                    item.computerCase = computerCase;
+                    item.company = this.repositoryFactory.CompanyRepository.GetById(computerCase.CaseCompanyId);
+                    vm.cases.Add(item);
+                }
+
+                List<Models.OperatingSystem> operatingSystems = this.repositoryFactory.OperatingSystemRepository.GetAll();
+                foreach (Models.OperatingSystem operatingSystem in operatingSystems)
+                {
+                    OperatingSystemManageViewModel item = new OperatingSystemManageViewModel();
+                    item.operatingSystem = operatingSystem;
+                    item.company = this.repositoryFactory.CompanyRepository.GetById(operatingSystem.OperatingSystemCompanyId);
+                    vm.operatingSystems.Add(item);
+                }
+
+                return vm;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new ManageComponentsViewModel();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+
         [HttpPost]
         public bool AddComputer( )
         {
@@ -189,104 +295,51 @@ namespace SmartRigWeb
             }
         }
 
-        [HttpGet]
-        public ManageComponentsViewModel GetAllManageComponents()
+        
+
+        // Adding/Editing/Removing Stuff
+        /// <summary>
+        /// Adding/Editing/Removing components and computers is done by sending the component/computer object in the request body.
+        /// For removing,
+        /// only the id is sent as a query parameter.
+        /// The methods return true if the operation was successful,
+        /// false otherwise.
+        /// </summary>
+        /// <param name="gpu"></param>
+        /// <returns></returns>
+        // Gpu section
+        [HttpPost]
+        public bool AddGpu([FromBody] Gpu gpu)
         {
             try
             {
                 this.repositoryFactory.ConnectDbContext();
-
-                ManageComponentsViewModel vm = new ManageComponentsViewModel();
-
-                List<Cpu> cpus = this.repositoryFactory.CpuRepository.GetAll();
-                foreach (Cpu cpu in cpus)
-                {
-                    CpuManageViewModel item = new CpuManageViewModel();
-                    item.cpu = cpu;
-                    item.company = this.repositoryFactory.CompanyRepository.GetById(cpu.CpuCompanyId);
-                    vm.cpus.Add(item);
-                }
-
-                List<Gpu> gpus = this.repositoryFactory.GpuRepository.GetAll();
-                foreach (Gpu gpu in gpus)
-                {
-                    GpuManageViewModel item = new GpuManageViewModel();
-                    item.gpu = gpu;
-                    item.company = this.repositoryFactory.CompanyRepository.GetById(gpu.GpuCompanyId);
-                    vm.gpus.Add(item);
-                }
-
-                List<Ram> rams = this.repositoryFactory.RamRepository.GetAll();
-                foreach (Ram ram in rams)
-                {
-                    RamManageViewModel item = new RamManageViewModel();
-                    item.ram = ram;
-                    item.company = this.repositoryFactory.CompanyRepository.GetById(ram.RamCompanyId);
-                    item.type = this.repositoryFactory.TypeRepository.GetById(ram.RamTypeId);
-                    vm.rams.Add(item);
-                }
-
-                List<Storage> storages = this.repositoryFactory.StorageRepository.GetAll();
-                foreach (Storage storage in storages)
-                {
-                    StorageManageViewModel item = new StorageManageViewModel();
-                    item.storage = storage;
-                    item.company = this.repositoryFactory.CompanyRepository.GetById(storage.StorageCompanyId);
-                    item.type = this.repositoryFactory.TypeRepository.GetById(storage.StorageType);
-                    vm.storages.Add(item);
-                }
-
-                List<MotherBoard> motherBoards = this.repositoryFactory.MotherBoardRepository.GetAll();
-                foreach (MotherBoard motherBoard in motherBoards)
-                {
-                    MotherBoardManageViewModel item = new MotherBoardManageViewModel();
-                    item.motherBoard = motherBoard;
-                    item.company = this.repositoryFactory.CompanyRepository.GetById(motherBoard.MotherBoardCompanyId);
-                    vm.motherBoards.Add(item);
-                }
-
-                List<CpuFan> cpuFans = this.repositoryFactory.CpuFanRepository.GetAll();
-                foreach (CpuFan cpuFan in cpuFans)
-                {
-                    CpuFanManageViewModel item = new CpuFanManageViewModel();
-                    item.cpuFan = cpuFan;
-                    item.company = this.repositoryFactory.CompanyRepository.GetById(cpuFan.CpuFanCompanyId);
-                    vm.cpuFans.Add(item);
-                }
-
-                List<PowerSupply> powerSupplies = this.repositoryFactory.PowerSupplyRepository.GetAll();
-                foreach (PowerSupply powerSupply in powerSupplies)
-                {
-                    PowerSupplyManageViewModel item = new PowerSupplyManageViewModel();
-                    item.powerSupply = powerSupply;
-                    item.company = this.repositoryFactory.CompanyRepository.GetById(powerSupply.PowerSupplyCompanyId);
-                    vm.powerSupplies.Add(item);
-                }
-
-                List<Case> cases = this.repositoryFactory.CaseRepository.GetAll();
-                foreach (Case computerCase in cases)
-                {
-                    CaseManageViewModel item = new CaseManageViewModel();
-                    item.computerCase = computerCase;
-                    item.company = this.repositoryFactory.CompanyRepository.GetById(computerCase.CaseCompanyId);
-                    vm.cases.Add(item);
-                }
-
-                List<Models.OperatingSystem> operatingSystems = this.repositoryFactory.OperatingSystemRepository.GetAll();
-                foreach (Models.OperatingSystem operatingSystem in operatingSystems)
-                {
-                    OperatingSystemManageViewModel item = new OperatingSystemManageViewModel();
-                    item.operatingSystem = operatingSystem;
-                    item.company = this.repositoryFactory.CompanyRepository.GetById(operatingSystem.OperatingSystemCompanyId);
-                    vm.operatingSystems.Add(item);
-                }
-
-                return vm;
+                this.repositoryFactory.GpuRepository.Create(gpu);
+                return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return new ManageComponentsViewModel();
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpPost]
+        public bool EditGpu([FromBody] Gpu gpu)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.GpuRepository.Update(gpu);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
             }
             finally
             {
@@ -295,17 +348,17 @@ namespace SmartRigWeb
         }
 
         [HttpGet]
-        public List<Case> GetAllCases()
+        public bool RemoveGpu(string gpuId)
         {
             try
             {
                 this.repositoryFactory.ConnectDbContext();
-                return this.repositoryFactory.CaseRepository.GetAll();
+                return this.repositoryFactory.GpuRepository.Delete(gpuId);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return new List<Case>();
+                return false;
             }
             finally
             {
@@ -313,6 +366,300 @@ namespace SmartRigWeb
             }
         }
 
+        // Ram section
+        [HttpPost]
+        public bool AddRam([FromBody] Ram ram)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                this.repositoryFactory.RamRepository.Create(ram);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpPost]
+        public bool EditRam([FromBody] Ram ram)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.RamRepository.Update(ram);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public bool RemoveRam(string ramId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.RamRepository.Delete(ramId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        // Storage section
+        [HttpPost]
+        public bool AddStorage([FromBody] Storage storage)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                this.repositoryFactory.StorageRepository.Create(storage);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpPost]
+        public bool EditStorage([FromBody] Storage storage)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.StorageRepository.Update(storage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public bool RemoveStorage(string storageId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.StorageRepository.Delete(storageId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        // MotherBoard section
+        [HttpPost]
+        public bool AddMotherBoard([FromBody] MotherBoard motherBoard)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                this.repositoryFactory.MotherBoardRepository.Create(motherBoard);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpPost]
+        public bool EditMotherBoard([FromBody] MotherBoard motherBoard)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.MotherBoardRepository.Update(motherBoard);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public bool RemoveMotherBoard(string motherBoardId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.MotherBoardRepository.Delete(motherBoardId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        // PowerSupply section
+        [HttpPost]
+        public bool AddPowerSupply([FromBody] PowerSupply powerSupply)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                this.repositoryFactory.PowerSupplyRepository.Create(powerSupply);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpPost]
+        public bool EditPowerSupply([FromBody] PowerSupply powerSupply)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.PowerSupplyRepository.Update(powerSupply);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public bool RemovePowerSupply(string powerSupplyId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.PowerSupplyRepository.Delete(powerSupplyId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        // OperatingSystem section
+        [HttpPost]
+        public bool AddOperatingSystem([FromBody] Models.OperatingSystem operatingSystem)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                this.repositoryFactory.OperatingSystemRepository.Create(operatingSystem);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpPost]
+        public bool EditOperatingSystem([FromBody] Models.OperatingSystem operatingSystem)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.OperatingSystemRepository.Update(operatingSystem);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public bool RemoveOperatingSystem(string operatingSystemId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.OperatingSystemRepository.Delete(operatingSystemId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
         [HttpPost]
         public bool AddCase([FromBody] Models.Case caseItem)
         {
@@ -352,6 +699,26 @@ namespace SmartRigWeb
             }
         }
 
+        // Case remove
+        [HttpGet]
+        public bool RemoveCase(string caseId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.CaseRepository.Delete(caseId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+         //CpuFan Section
         [HttpPost]
         public bool AddCpuFan([FromBody] CpuFan cpuFan)
         {
@@ -379,6 +746,25 @@ namespace SmartRigWeb
             {
                 this.repositoryFactory.ConnectDbContext();
                 return this.repositoryFactory.CpuFanRepository.Update(cpuFan);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public bool RemoveCpuFan(string cpuFanId)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.CpuFanRepository.Delete(cpuFanId);
             }
             catch (Exception ex)
             {
@@ -601,6 +987,18 @@ namespace SmartRigWeb
             }
         }
 
+        // Get functions for SomeStuff 
+
+        // TOO !!! MUCH !!! STUFF !!!! 
+
+        // WHY DID I THINK THIS WAS A GOOD IDEA !?
+
+        // I should have just made a separate controller for each entity, but nooooo, I had to put everything in one controller, now look at this mess
+
+        // I mean, at least I can get all the data I need for the admin panel in one request, but still, this is a mess
+
+        // I should have at least made a separate view model for each entity, but nooooo, I had to put everything in one view model, now look at this mess
+
         [HttpGet]
         public List<User> GetAllUsers()
         {
@@ -782,6 +1180,43 @@ namespace SmartRigWeb
             {
                 Console.WriteLine(ex.Message);
                 return new List<Models.OperatingSystem>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+        [HttpGet]
+        public List<Models.Type> GetRamTypes()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.TypeRepository.GetAllByTypeCode(2);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<Models.Type>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+
+        [HttpGet]
+        public List<Models.Type> GetStorageTypes()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.TypeRepository.GetAllByTypeCode(3);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<Models.Type>();
             }
             finally
             {

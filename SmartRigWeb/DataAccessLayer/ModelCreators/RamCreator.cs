@@ -10,13 +10,13 @@ namespace SmartRigWeb
         {
             return new Ram
             {
-                RamId = Convert.ToInt16(reader["RamId"]),
+                RamId = Convert.ToInt32(reader["RamId"]),
                 RamName = Convert.ToString(reader["RamName"]),
                 RamSize = Convert.ToString(reader["RamSize"]),
-                RamTypeId = Convert.ToInt16(reader["RamTypeId"]),
+                RamTypeId = Convert.ToInt32(reader["RamTypeId"]),
                 RamSpeed = Convert.ToString(reader["RamSpeed"]),
-                RamPrice = Convert.ToInt16(reader["RamPrice"]),
-                RamCompanyId = Convert.ToInt16(reader["RamCompanyId"])
+                RamPrice = Convert.ToInt32(reader["RamPrice"]),
+                RamCompanyId = Convert.ToInt32(reader["RamCompanyId"])
             };
         }
     }

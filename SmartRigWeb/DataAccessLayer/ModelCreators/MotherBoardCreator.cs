@@ -10,10 +10,10 @@ namespace SmartRigWeb
         {
             return new MotherBoard
             {
-                MotherBoardId = Convert.ToInt16(reader["MotherBoardId"]),
+                MotherBoardId = Convert.ToInt32(reader["MotherBoardId"]),
                 MotherBoardName = Convert.ToString(reader["MotherBoardName"]),
-                MotherBoardPrice = Convert.ToInt16(reader["MotherBoardPrice"]),
-                MotherBoardCompanyId = Convert.ToInt16(reader["MotherBoardCompanyId"])
+                MotherBoardPrice = Convert.ToInt32(reader["MotherBoardPrice"]),
+                MotherBoardCompanyId = Convert.ToInt32(reader["MotherBoardCompanyId"])
             };
         }
     }

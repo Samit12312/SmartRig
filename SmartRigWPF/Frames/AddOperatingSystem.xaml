@@ -1,0 +1,70 @@
+﻿<Window x:Class="SmartRigWPF.Frames.AddOperatingSystem"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Background="White"
+        Width="730" Height="320"
+        Title="Add OperatingSystem">
+    <Canvas>
+
+        <TextBlock Canvas.Left="20" Canvas.Top="20"
+                   Text="Add Operating System"
+                   FontSize="24"
+                   FontWeight="SemiBold"
+                   Foreground="#2c3e50"/>
+
+        <TextBlock Canvas.Left="20" Canvas.Top="80"
+                   Text="Operating System Name"
+                   FontSize="13"
+                   Foreground="#2c3e50"/>
+        <TextBox x:Name="OperatingSystemNameBox"
+                 Canvas.Left="20" Canvas.Top="100"
+                 Width="200" Height="30"
+                 Padding="5"
+                 BorderBrush="#dee2e6"/>
+
+        <TextBlock Canvas.Left="240" Canvas.Top="80"
+                   Text="Price"
+                   FontSize="13"
+                   Foreground="#2c3e50"/>
+        <TextBox x:Name="PriceBox"
+                 Canvas.Left="240" Canvas.Top="100"
+                 Width="200" Height="30"
+                 Padding="5"
+                 BorderBrush="#dee2e6"/>
+
+        <TextBlock Canvas.Left="20" Canvas.Top="150"
+                   Text="Company"
+                   FontSize="13"
+                   Foreground="#2c3e50"/>
+        <ComboBox x:Name="CompanyBox"
+                  Canvas.Left="20" Canvas.Top="170"
+                  Width="200" Height="30"
+                  Padding="5"
+                  DisplayMemberPath="CompanyName"
+                  SelectedValuePath="CompanyId"
+                  BorderBrush="#dee2e6"/>
+
+        <Button x:Name="AddBtn"
+                Canvas.Left="20" Canvas.Top="240"
+                Content="Add Operating System"
+                Width="180" Height="35"
+                Background="#27ae60"
+                Foreground="White"
+                BorderThickness="0"
+                Cursor="Hand"
+                Click="AddBtn_Click"/>
+
+        <Button x:Name="CancelBtn"
+                Canvas.Left="210" Canvas.Top="240"
+                Content="Cancel"
+                Width="100" Height="35"
+                Background="#e74c3c"
+                Foreground="White"
+                BorderThickness="0"
+                Cursor="Hand"
+                Click="CancelBtn_Click"/>
+    </Canvas>
+</Window>

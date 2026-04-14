@@ -22,7 +22,7 @@ namespace SmartRigWeb
         {
             string sql = @"DELETE FROM [CpuFan] WHERE CpuFanId=@CpuFanId";
             this.dbContext.AddParameter("@CpuFanId", Id);
-            return this.dbContext.Insert(sql) > 0;
+            return this.dbContext.Update(sql) > 0;
         }
 
         public List<CpuFan> GetAll()

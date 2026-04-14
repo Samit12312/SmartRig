@@ -13,7 +13,7 @@ namespace SmartRigWeb
                 CaseId = Convert.ToInt32(reader["CaseId"]),
                 CaseName = Convert.ToString(reader["CaseName"]),
                 CasePrice = Convert.ToInt32(reader["CasePrice"]),
-                CaseCompanyId = Convert.ToInt16(reader["CaseCompanyId"])
+                CaseCompanyId = Convert.ToInt32(reader["CaseCompanyId"])
             };
         }
     }

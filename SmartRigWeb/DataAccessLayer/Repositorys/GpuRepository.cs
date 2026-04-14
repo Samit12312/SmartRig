@@ -11,18 +11,44 @@ namespace SmartRigWeb
 
         public bool Create(Gpu item)
         {
-            string sql = @"INSERT INTO [Gpu] (GpuName, GpuCompanyId, GpuPrice) VALUES (@GpuName, @GpuCompanyId, @GpuPrice)";
+            string sql = @"INSERT INTO [Gpu] 
+                   (GpuName, GpuSize, GpuSpeed, GpuCompanyId, GpuPrice) 
+                   VALUES (@GpuName, @GpuSize, @GpuSpeed, @GpuCompanyId, @GpuPrice)";
+
             this.dbContext.AddParameter("@GpuName", item.GpuName);
+            this.dbContext.AddParameter("@GpuSize", item.GpuSize);
+            this.dbContext.AddParameter("@GpuSpeed", item.GpuSpeed);
             this.dbContext.AddParameter("@GpuCompanyId", item.GpuCompanyId.ToString());
             this.dbContext.AddParameter("@GpuPrice", item.GpuPrice.ToString());
+
             return this.dbContext.Insert(sql) > 0;
+        }
+
+        public bool Update(Gpu item)
+        {
+            string sql = @"UPDATE [Gpu] 
+                   SET GpuName = @GpuName, 
+                       GpuSize = @GpuSize, 
+                       GpuSpeed = @GpuSpeed, 
+                       GpuCompanyId = @GpuCompanyId, 
+                       GpuPrice = @GpuPrice 
+                   WHERE GpuId = @GpuId";
+
+            this.dbContext.AddParameter("@GpuName", item.GpuName);
+            this.dbContext.AddParameter("@GpuSize", item.GpuSize);
+            this.dbContext.AddParameter("@GpuSpeed", item.GpuSpeed);
+            this.dbContext.AddParameter("@GpuCompanyId", item.GpuCompanyId.ToString());
+            this.dbContext.AddParameter("@GpuPrice", item.GpuPrice.ToString());
+            this.dbContext.AddParameter("@GpuId", item.GpuId.ToString());
+
+            return this.dbContext.Update(sql) > 0;
         }
 
         public bool Delete(string Id)
         {
             string sql = @"DELETE FROM [Gpu] WHERE GpuId=@GpuId";
             this.dbContext.AddParameter("@GpuId", Id);
-            return this.dbContext.Insert(sql) > 0;
+            return this.dbContext.Update(sql) > 0;
         }
 
         public List<Gpu> GetAll()
@@ -44,16 +70,6 @@ namespace SmartRigWeb
                 reader.Read();
                 return this.modelsFactory.GpuCreator.CreateModel(reader);
             }
-        }
-
-        public bool Update(Gpu item)
-        {
-            string sql = @"UPDATE [Gpu] SET GpuName=@GpuName, GpuCompanyId=@GpuCompanyId, GpuPrice=@GpuPrice WHERE GpuId=@GpuId";
-            this.dbContext.AddParameter("@GpuName", item.GpuName);
-            this.dbContext.AddParameter("@GpuCompanyId", item.GpuCompanyId.ToString());
-            this.dbContext.AddParameter("@GpuPrice", item.GpuPrice.ToString());
-            this.dbContext.AddParameter("@GpuId", item.GpuId.ToString());
-            return this.dbContext.Update(sql) > 0;
         }
     }
 }

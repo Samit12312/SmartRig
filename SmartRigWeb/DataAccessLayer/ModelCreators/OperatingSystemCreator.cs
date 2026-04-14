@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models;
+using System;
 using System.Data;
 
 namespace SmartRigWeb
@@ -9,10 +10,10 @@ namespace SmartRigWeb
         {
             return new Models.OperatingSystem
             {
-                OperatingSystemId = Convert.ToInt16(reader["OperatingSystemId"]),
+                OperatingSystemId = Convert.ToInt32(reader["OperatingSystemId"]),
                 OperatingSystemName = Convert.ToString(reader["OperatingSystemName"]),
-                OperatingSystemPrice = Convert.ToInt16(reader["OperatingSystemPrice"]),
-                OperatingSystemCompanyId = Convert.ToInt16(reader["OperatingSystemCompany"])
+                OperatingSystemPrice = Convert.ToInt32(reader["OperatingSystemPrice"]),
+                OperatingSystemCompanyId = Convert.ToInt32(reader["OperatingSystemCompany"])
             };
         }
     }

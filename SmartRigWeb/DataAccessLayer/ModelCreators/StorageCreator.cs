@@ -10,13 +10,13 @@ namespace SmartRigWeb
         {
             return new Storage
             {
-                StorageId = Convert.ToInt16(reader["StorageId"]),
+                StorageId = Convert.ToInt32(reader["StorageId"]),
                 StorageName = Convert.ToString(reader["StorageName"]),
                 StorageSize = Convert.ToString(reader["StorageSize"]),
                 StorageSpeed = Convert.ToString(reader["StorageSpeed"]),
-                StorageType = Convert.ToInt16(reader["StorageType"]),
-                StoragePrice = Convert.ToInt16(reader["StoragePrice"]),
-                StorageCompanyId = Convert.ToInt16(reader["StorageCompanyId"])
+                StorageType = Convert.ToInt32(reader["StorageType"]),
+                StoragePrice = Convert.ToInt32(reader["StoragePrice"]),
+                StorageCompanyId = Convert.ToInt32(reader["StorageCompanyId"])
             };
         }
     }

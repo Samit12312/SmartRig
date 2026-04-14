@@ -10,10 +10,10 @@ namespace SmartRigWeb
         {
             return new Cpu
             {
-                CpuId = Convert.ToInt16(reader["CpuId"]),
+                CpuId = Convert.ToInt32(reader["CpuId"]),
                 CpuName = Convert.ToString(reader["CpuName"]),
-                CpuPrice = Convert.ToInt16(reader["CpuPrice"]),
-                CpuCompanyId = Convert.ToInt16(reader["CpuCompanyId"])
+                CpuPrice = Convert.ToInt32(reader["CpuPrice"]),
+                CpuCompanyId = Convert.ToInt32(reader["CpuCompanyId"])
             };
         }
     }

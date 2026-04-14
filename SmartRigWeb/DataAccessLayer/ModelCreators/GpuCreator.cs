@@ -10,12 +10,12 @@ namespace SmartRigWeb
         {
             return new Gpu
             {
-                GpuId = Convert.ToInt16(reader["GpuId"]),
+                GpuId = Convert.ToInt32(reader["GpuId"]),
                 GpuName = Convert.ToString(reader["GpuName"]),
                 GpuSize = Convert.ToString(reader["GpuSize"]),
                 GpuSpeed = Convert.ToString(reader["GpuSpeed"]),
-                GpuPrice = Convert.ToInt16(reader["GpuPrice"]),
-                GpuCompanyId = Convert.ToInt16(reader["GpuCompanyId"])
+                GpuPrice = Convert.ToInt32(reader["GpuPrice"]),
+                GpuCompanyId = Convert.ToInt32(reader["GpuCompanyId"])
             };
         }
     }

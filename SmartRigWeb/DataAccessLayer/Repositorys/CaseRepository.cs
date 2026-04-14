@@ -28,7 +28,7 @@ namespace SmartRigWeb
         {
             string sql = @"DELETE FROM [Case] WHERE CaseId = @CaseId";
             this.dbContext.AddParameter("@CaseId", Id);
-            return this.dbContext.Insert(sql) > 0;
+            return this.dbContext.Update(sql) > 0;
         }
 
         public List<Case> GetAll()

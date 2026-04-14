@@ -15,23 +15,46 @@ namespace SmartRigWeb
         public bool Create(Storage item)
         {
             string sql = @"INSERT INTO [Storage] 
-                           (StorageName, StorageSize, StorageSpeed, StoragePrice, StorageCompanyId) 
-                           VALUES (@StorageName, @StorageSize, @StorageSpeed, @StoragePrice, @StorageCompanyId)";
+                   (StorageName, StorageSize, StorageSpeed, StorageType, StoragePrice, StorageCompanyId) 
+                   VALUES (@StorageName, @StorageSize, @StorageSpeed, @StorageType, @StoragePrice, @StorageCompanyId)";
 
             this.dbContext.AddParameter("@StorageName", item.StorageName);
             this.dbContext.AddParameter("@StorageSize", item.StorageSize);
             this.dbContext.AddParameter("@StorageSpeed", item.StorageSpeed);
+            this.dbContext.AddParameter("@StorageType", item.StorageType.ToString());
             this.dbContext.AddParameter("@StoragePrice", item.StoragePrice.ToString());
             this.dbContext.AddParameter("@StorageCompanyId", item.StorageCompanyId.ToString());
 
             return this.dbContext.Insert(sql) > 0;
         }
 
+        public bool Update(Storage item)
+        {
+            string sql = @"UPDATE [Storage] 
+                   SET StorageName = @StorageName, 
+                       StorageSize = @StorageSize, 
+                       StorageSpeed = @StorageSpeed, 
+                       StorageType = @StorageType, 
+                       StoragePrice = @StoragePrice, 
+                       StorageCompanyId = @StorageCompanyId
+                   WHERE StorageId = @StorageId";
+
+            this.dbContext.AddParameter("@StorageName", item.StorageName);
+            this.dbContext.AddParameter("@StorageSize", item.StorageSize);
+            this.dbContext.AddParameter("@StorageSpeed", item.StorageSpeed);
+            this.dbContext.AddParameter("@StorageType", item.StorageType.ToString());
+            this.dbContext.AddParameter("@StoragePrice", item.StoragePrice.ToString());
+            this.dbContext.AddParameter("@StorageCompanyId", item.StorageCompanyId.ToString());
+            this.dbContext.AddParameter("@StorageId", item.StorageId.ToString());
+
+            return this.dbContext.Update(sql) > 0;
+        }
+
         public bool Delete(string Id)
         {
             string sql = @"DELETE FROM [Storage] WHERE StorageId = @StorageId";
             this.dbContext.AddParameter("@StorageId", Id);
-            return this.dbContext.Insert(sql) > 0;
+            return this.dbContext.Update(sql) > 0;
         }
 
         public List<Storage> GetAll()
@@ -57,26 +80,6 @@ namespace SmartRigWeb
                 reader.Read();
                 return this.modelsFactory.StorageCreator.CreateModel(reader);
             }
-        }
-
-        public bool Update(Storage item)
-        {
-            string sql = @"UPDATE [Storage] 
-                           SET StorageName = @StorageName, 
-                               StorageSize = @StorageSize, 
-                               StorageSpeed = @StorageSpeed, 
-                               StoragePrice = @StoragePrice, 
-                               StorageCompanyId = @StorageCompanyId
-                           WHERE StorageId = @StorageId";
-
-            this.dbContext.AddParameter("@StorageName", item.StorageName);
-            this.dbContext.AddParameter("@StorageSize", item.StorageSize);
-            this.dbContext.AddParameter("@StorageSpeed", item.StorageSpeed);
-            this.dbContext.AddParameter("@StoragePrice", item.StoragePrice.ToString());
-            this.dbContext.AddParameter("@StorageCompanyId", item.StorageCompanyId.ToString());
-            this.dbContext.AddParameter("@StorageId", item.StorageId.ToString());
-
-            return this.dbContext.Update(sql) > 0;
         }
     }
 }

@@ -30,11 +30,49 @@ namespace SmartRigWPF.Frames
             isLoaded = true;
         }
 
+        private async Task LoadAllComponents()
+        {
+            try
+            {
+                allComponents.Clear();
+
+                WebClient<ManageComponentsViewModel> client = new WebClient<ManageComponentsViewModel>();
+                client.Schema = "http";
+                client.Host = "localhost";
+                client.Port = 5195;
+                client.Path = "api/Manager/GetAllManageComponents";
+
+                ManageComponentsViewModel vm = await client.GetAsync();
+
+                if (vm != null)
+                {
+                    if (vm.cpus != null) allComponents.AddRange(vm.cpus);
+                    if (vm.gpus != null) allComponents.AddRange(vm.gpus);
+                    if (vm.rams != null) allComponents.AddRange(vm.rams);
+                    if (vm.storages != null) allComponents.AddRange(vm.storages);
+                    if (vm.motherBoards != null) allComponents.AddRange(vm.motherBoards);
+                    if (vm.cases != null) allComponents.AddRange(vm.cases);
+                    if (vm.cpuFans != null) allComponents.AddRange(vm.cpuFans);
+                    if (vm.powerSupplies != null) allComponents.AddRange(vm.powerSupplies);
+                    if (vm.operatingSystems != null) allComponents.AddRange(vm.operatingSystems);
+                }
+
+                if (listView != null)
+                {
+                    listView.ItemsSource = allComponents;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Error loading components: " + ex.Message);
+            }
+        }
+
         private async void AddBtn_Click(object sender, RoutedEventArgs e)
         {
             if (ComponentTypeComboBox.SelectedItem == null)
             {
-                MessageBox.Show("Select filter first");
+                MessageBox.Show("Select a type first");
                 return;
             }
 
@@ -46,9 +84,24 @@ namespace SmartRigWPF.Frames
                 AddCpu window = new AddCpu();
                 result = window.ShowDialog();
             }
-            else if (selectedType == "CPU Fan")
+            else if (selectedType == "GPU")
             {
-                AddCpuFan window = new AddCpuFan();
+                AddGpu window = new AddGpu();
+                result = window.ShowDialog();
+            }
+            else if (selectedType == "RAM")
+            {
+                AddRam window = new AddRam();
+                result = window.ShowDialog();
+            }
+            else if (selectedType == "Storage")
+            {
+                AddStorage window = new AddStorage();
+                result = window.ShowDialog();
+            }
+            else if (selectedType == "Motherboard")
+            {
+                AddMotherBoard window = new AddMotherBoard();
                 result = window.ShowDialog();
             }
             else if (selectedType == "Case")
@@ -56,9 +109,24 @@ namespace SmartRigWPF.Frames
                 AddCase window = new AddCase();
                 result = window.ShowDialog();
             }
+            else if (selectedType == "CPU Fan")
+            {
+                AddCpuFan window = new AddCpuFan();
+                result = window.ShowDialog();
+            }
+            else if (selectedType == "Power Supply")
+            {
+                AddPowerSupply window = new AddPowerSupply();
+                result = window.ShowDialog();
+            }
+            else if (selectedType == "Operating System")
+            {
+                AddOperatingSystem window = new AddOperatingSystem();
+                result = window.ShowDialog();
+            }
             else
             {
-                MessageBox.Show("Add is ready now for CPU, CPU Fan and Case only");
+                MessageBox.Show("Select a specific type, not All");
                 return;
             }
 
@@ -84,9 +152,24 @@ namespace SmartRigWPF.Frames
                 AddCpu window = new AddCpu(cpuVm.cpu);
                 result = window.ShowDialog();
             }
-            else if (listView.SelectedItem is CpuFanManageViewModel cpuFanVm)
+            else if (listView.SelectedItem is GpuManageViewModel gpuVm)
             {
-                AddCpuFan window = new AddCpuFan(cpuFanVm.cpuFan);
+                AddGpu window = new AddGpu(gpuVm.gpu);
+                result = window.ShowDialog();
+            }
+            else if (listView.SelectedItem is RamManageViewModel ramVm)
+            {
+                AddRam window = new AddRam(ramVm.ram);
+                result = window.ShowDialog();
+            }
+            else if (listView.SelectedItem is StorageManageViewModel storageVm)
+            {
+                AddStorage window = new AddStorage(storageVm.storage);
+                result = window.ShowDialog();
+            }
+            else if (listView.SelectedItem is MotherBoardManageViewModel motherBoardVm)
+            {
+                AddMotherBoard window = new AddMotherBoard(motherBoardVm.motherBoard);
                 result = window.ShowDialog();
             }
             else if (listView.SelectedItem is CaseManageViewModel caseVm)
@@ -94,10 +177,20 @@ namespace SmartRigWPF.Frames
                 AddCase window = new AddCase(caseVm.computerCase);
                 result = window.ShowDialog();
             }
-            else
+            else if (listView.SelectedItem is CpuFanManageViewModel cpuFanVm)
             {
-                MessageBox.Show("Edit is ready now for CPU, CPU Fan and Case only");
-                return;
+                AddCpuFan window = new AddCpuFan(cpuFanVm.cpuFan);
+                result = window.ShowDialog();
+            }
+            else if (listView.SelectedItem is PowerSupplyManageViewModel powerSupplyVm)
+            {
+                AddPowerSupply window = new AddPowerSupply(powerSupplyVm.powerSupply);
+                result = window.ShowDialog();
+            }
+            else if (listView.SelectedItem is OperatingSystemManageViewModel operatingSystemVm)
+            {
+                AddOperatingSystem window = new AddOperatingSystem(operatingSystemVm.operatingSystem);
+                result = window.ShowDialog();
             }
 
             if (result == true)
@@ -107,41 +200,128 @@ namespace SmartRigWPF.Frames
             }
         }
 
-        private async Task LoadAllComponents()
+        private async void DeleteBtn_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (listView.SelectedItem == null)
             {
-                allComponents.Clear();
-
-                WebClient<ManageComponentsViewModel> client = new WebClient<ManageComponentsViewModel>();
-                client.Schema = "http";
-                client.Host = "localhost";
-                client.Port = 5195;
-                client.Path = "api/Manager/GetAllManageComponents";
-
-                ManageComponentsViewModel vm = await client.GetAsync();
-
-                if (vm != null)
-                {
-                    if (vm.cpus != null) allComponents.AddRange(vm.cpus);
-                    if (vm.gpus != null) allComponents.AddRange(vm.gpus);
-                    if (vm.rams != null) allComponents.AddRange(vm.rams);
-                    if (vm.storages != null) allComponents.AddRange(vm.storages);
-                    if (vm.motherBoards != null) allComponents.AddRange(vm.motherBoards);
-                    if (vm.cpuFans != null) allComponents.AddRange(vm.cpuFans);
-                    if (vm.powerSupplies != null) allComponents.AddRange(vm.powerSupplies);
-                    if (vm.cases != null) allComponents.AddRange(vm.cases);
-                    if (vm.operatingSystems != null) allComponents.AddRange(vm.operatingSystems);
-                }
-
-                if (listView != null)
-                {
-                    listView.ItemsSource = allComponents;
-                }
+                MessageBox.Show("Select something first");
+                return;
             }
-            catch (System.Exception ex)
+
+            MessageBoxResult confirmation = MessageBox.Show("Are you sure?", "Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (confirmation == MessageBoxResult.Yes)
             {
-                MessageBox.Show($"Error loading components: {ex.Message}");
+                try
+                {
+                    bool success = false;
+
+                    if (listView.SelectedItem is CpuManageViewModel cpuVm)
+                    {
+                        WebClient<bool> client = new WebClient<bool>();
+                        client.Schema = "http";
+                        client.Host = "localhost";
+                        client.Port = 5195;
+                        client.Path = "api/Manager/RemoveCpu";
+                        client.AddParameter("cpuId", cpuVm.cpu.CpuId.ToString());
+                        success = await client.GetAsync();
+                    }
+                    else if (listView.SelectedItem is GpuManageViewModel gpuVm)
+                    {
+                        WebClient<bool> client = new WebClient<bool>();
+                        client.Schema = "http";
+                        client.Host = "localhost";
+                        client.Port = 5195;
+                        client.Path = "api/Manager/RemoveGpu";
+                        client.AddParameter("gpuId", gpuVm.gpu.GpuId.ToString());
+                        success = await client.GetAsync();
+                    }
+                    else if (listView.SelectedItem is RamManageViewModel ramVm)
+                    {
+                        WebClient<bool> client = new WebClient<bool>();
+                        client.Schema = "http";
+                        client.Host = "localhost";
+                        client.Port = 5195;
+                        client.Path = "api/Manager/RemoveRam";
+                        client.AddParameter("ramId", ramVm.ram.RamId.ToString());
+                        success = await client.GetAsync();
+                    }
+                    else if (listView.SelectedItem is StorageManageViewModel storageVm)
+                    {
+                        WebClient<bool> client = new WebClient<bool>();
+                        client.Schema = "http";
+                        client.Host = "localhost";
+                        client.Port = 5195;
+                        client.Path = "api/Manager/RemoveStorage";
+                        client.AddParameter("storageId", storageVm.storage.StorageId.ToString());
+                        success = await client.GetAsync();
+                    }
+                    else if (listView.SelectedItem is MotherBoardManageViewModel motherBoardVm)
+                    {
+                        WebClient<bool> client = new WebClient<bool>();
+                        client.Schema = "http";
+                        client.Host = "localhost";
+                        client.Port = 5195;
+                        client.Path = "api/Manager/RemoveMotherBoard";
+                        client.AddParameter("motherBoardId", motherBoardVm.motherBoard.MotherBoardId.ToString());
+                        success = await client.GetAsync();
+                    }
+                    else if (listView.SelectedItem is CaseManageViewModel caseVm)
+                    {
+                        WebClient<bool> client = new WebClient<bool>();
+                        client.Schema = "http";
+                        client.Host = "localhost";
+                        client.Port = 5195;
+                        client.Path = "api/Manager/RemoveCase";
+                        client.AddParameter("caseId", caseVm.computerCase.CaseId.ToString());
+                        success = await client.GetAsync();
+                    }
+                    else if (listView.SelectedItem is CpuFanManageViewModel cpuFanVm)
+                    {
+                        WebClient<bool> client = new WebClient<bool>();
+                        client.Schema = "http";
+                        client.Host = "localhost";
+                        client.Port = 5195;
+                        client.Path = "api/Manager/RemoveCpuFan";
+                        client.AddParameter("cpuFanId", cpuFanVm.cpuFan.CpuFanId.ToString());
+                        success = await client.GetAsync();
+                    }
+                    else if (listView.SelectedItem is PowerSupplyManageViewModel powerSupplyVm)
+                    {
+                        WebClient<bool> client = new WebClient<bool>();
+                        client.Schema = "http";
+                        client.Host = "localhost";
+                        client.Port = 5195;
+                        client.Path = "api/Manager/RemovePowerSupply";
+                        client.AddParameter("powerSupplyId", powerSupplyVm.powerSupply.PowerSupplyId.ToString());
+                        success = await client.GetAsync();
+                    }
+                    else if (listView.SelectedItem is OperatingSystemManageViewModel operatingSystemVm)
+                    {
+                        WebClient<bool> client = new WebClient<bool>();
+                        client.Schema = "http";
+                        client.Host = "localhost";
+                        client.Port = 5195;
+                        client.Path = "api/Manager/RemoveOperatingSystem";
+                        client.AddParameter("operatingSystemId", operatingSystemVm.operatingSystem.OperatingSystemId.ToString());
+                        success = await client.GetAsync();
+                    }
+
+                    if (success)
+                    {
+                        MessageBox.Show("Deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await LoadAllComponents();
+                        ComponentTypeComboBox_SelectionChanged(null, null);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Failed to delete.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 

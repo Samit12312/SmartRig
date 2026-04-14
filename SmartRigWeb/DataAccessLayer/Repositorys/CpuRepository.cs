@@ -29,7 +29,7 @@ namespace SmartRigWeb
         {
             string sql = @"DELETE FROM [Cpu] WHERE CpuId = @CpuId";
             this.dbContext.AddParameter("@CpuId", Id);
-            return this.dbContext.Insert(sql) > 0;
+            return this.dbContext.Update(sql) > 0;
         }
 
         public List<Cpu> GetAll()
