@@ -1,147 +1,98 @@
-﻿using Models;
-using System.Data;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Text.Json;
-using ApiClient;
-using System.Net;
-using Models.ViewModels;
+﻿using System.Text.Json;
+
 namespace Tests
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
+            double price;
+            Console.Write("Enter price: ");
+            while (!double.TryParse(Console.ReadLine(), out price))
+            {
+                Console.Write("Invalid price. Enter number: ");
+            }
+
+            Dictionary<string, string> currencies = await GetCurrencies();
+            List<string> codes = new List<string>(currencies.Keys);
+            codes.Sort();
+
+            if (codes.Count == 0)
+            {
+                Console.WriteLine("No currencies were loaded.");
+                Console.ReadLine();
+                return;
+            }
+
+            Console.WriteLine("========== CURRENCY LIST ==========");
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                Console.WriteLine((i + 1) + ". " + codes[i] + " - " + currencies[codes[i]]);
+            }
+
+            Console.WriteLine("==================================");
+
+            int fromChoice;
+            Console.Write("Choose FROM currency number: ");
+            while (!int.TryParse(Console.ReadLine(), out fromChoice) || fromChoice < 1 || fromChoice > codes.Count)
+            {
+                Console.Write("Invalid number. Choose number from 1 to " + codes.Count + ": ");
+            }
+
+            string fromCurrency = codes[fromChoice - 1];
+
+            int toChoice;
+            Console.Write("Choose TO currency number: ");
+            while (!int.TryParse(Console.ReadLine(), out toChoice) || toChoice < 1 || toChoice > codes.Count)
+            {
+                Console.Write("Invalid number. Choose number from 1 to " + codes.Count + ": ");
+            }
+
+            string toCurrency = codes[toChoice - 1];
+
+            double convertedPrice = await ConvertPrice(price, fromCurrency, toCurrency);
+
+            Console.WriteLine();
+            Console.WriteLine(price + " " + fromCurrency + " = " + convertedPrice.ToString("0.00") + " " + toCurrency);
+
             Console.ReadLine();
-            TestWebClient();
-            Console.ReadLine();
-        }
-        static void TestWebClient()
-        { 
-            WebClient<ComputerDetailsViewModel> webClient = new WebClient<ComputerDetailsViewModel>();
-            webClient.Schema = "https";
-            webClient.Host = "localhost";
-            webClient.Port = 7249;
-            webClient.Path = "api/Guest/GetComputerDetails";
-            webClient.AddParameter("id", "14");
-            ComputerDetailsViewModel computer = webClient.Get();
-            Console.WriteLine(computer.computer.ComputerName);
-        }
-        static void gs()
-        {
-
-        }
-        static void CurrencyTest()
-        {
-            List<Currency> list = CurrencyTestList().Result;
-            int count = 1;
-            foreach (Currency currency in list)
-            {
-                Console.WriteLine($"{count}. {currency.symbol} - {currency.name}");
-                count++;
-            }
-            Console.Write("Currency number");
-
-            int from = int.Parse(Console.ReadLine());
-            Console.WriteLine("select curncy number to");
-            int to = int.Parse(Console.ReadLine());
-            Console.Write("insert sum");
-            int sum = int.Parse(Console.ReadLine());
-            ConvertResult r = GetResult(list[from - 1].symbol, list[to - 1].symbol, sum).Result;
-            Console.WriteLine($"{r.result.amountToConvert} {r.result.from} = {r.result.convertedAmount} {r.result.to}");
-        }
-        static void ViewHash()
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                Console.Write("Enter password: ");
-                string pass = Console.ReadLine();
-
-                Console.Write("Enter salt: ");
-                string salt = Console.ReadLine();
-
-                string hash = CaculateHash(pass, salt);
-                Console.WriteLine($"Hash #{i + 1}: {hash}");
-
-                Console.WriteLine(); // spacing
-            }
         }
 
-        static string GenerateSalt() // generateing salt for the food :D
+        static async Task<Dictionary<string, string>> GetCurrencies()
         {
-            byte[] saltBytes = new byte[32];
-            RandomNumberGenerator.Fill(saltBytes);
-            return Convert.ToBase64String(saltBytes);
-        }
-        static string CaculateHash(string password, string salt)
-        {
-            string s = password + salt;
-            byte[] pass = System.Text.Encoding.UTF8.GetBytes(s);
-            using (SHA256 sha256 = SHA256.Create())
+            HttpClient client = new HttpClient();
+            string json = await client.GetStringAsync("https://api.frankfurter.dev/v2/currencies");
+
+            JsonDocument document = JsonDocument.Parse(json);
+            Dictionary<string, string> currencies = new Dictionary<string, string>();
+
+            foreach (JsonElement item in document.RootElement.EnumerateArray())
             {
-                byte[] bytes = sha256.ComputeHash(pass);
-                return Convert.ToBase64String(bytes);
-            }
-        }
-        static async Task<ConvertResult> GetResult(string from, string to, double amount)
-        {
-            var client = new HttpClient();
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://currency-converter18.p.rapidapi.com/api/v1/convert?from={from}&to={to}&amount={amount}"),
-                Headers =
-    {
-        { "x-rapidapi-key", "96334a59famsh63ef8779a2d5330p17c328jsndaf044530bd3" },
-        { "x-rapidapi-host", "currency-converter18.p.rapidapi.com" },
-    },
-            };
-            using (var response = await client.SendAsync(request))
-            {
-                response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<ConvertResult>(body);
-            }
-        }
-        static void ModelValidation()
-        {
-            User u1 = new User();
-            u1.UserName = "12";
-            u1.UserEmail = "123";
-            u1.UserPassword = "sda";
-            u1.UserAddress = "";
-            u1.UserPhoneNumber = "123";
-            Dictionary<string, List<String>> errors = u1.AllErrors();
-            if (u1.IsValid == false)
-            {
-                foreach (var error in errors)
+                string code = item.GetProperty("iso_code").GetString();
+                string name = item.GetProperty("name").GetString();
+
+                if (!currencies.ContainsKey(code))
                 {
-                    foreach (var errorsmsg in error.Value)
-                    {
-                        Console.WriteLine(errorsmsg);
-                    }
+                    currencies.Add(code, name);
                 }
             }
+
+            return currencies;
         }
-        static async Task<List<Currency>> CurrencyTestList()
+
+        static async Task<double> ConvertPrice(double price, string fromCurrency, string toCurrency)
         {
-            var client = new HttpClient();
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri("https://currency-converter18.p.rapidapi.com/api/v1/supportedCurrencies"),
-                Headers =
-    {
-        { "x-rapidapi-key", "96334a59famsh63ef8779a2d5330p17c328jsndaf044530bd3" },
-        { "x-rapidapi-host", "currency-converter18.p.rapidapi.com" },
-    },
-            };
-            using (var response = await client.SendAsync(request))
-            {
-                response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<Currency>>(body);
-            }
+            HttpClient client = new HttpClient();
+            string url = "https://api.frankfurter.dev/v2/rate/" + fromCurrency + "/" + toCurrency;
+
+            string json = await client.GetStringAsync(url);
+
+            JsonDocument document = JsonDocument.Parse(json);
+
+            double rate = document.RootElement.GetProperty("rate").GetDouble();
+
+            return price * rate;
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Models;
 using Models.ViewModels;
 using System;
+using SmartRigWeb.Services;
 
 namespace SmartRigWeb
 {
@@ -11,19 +12,23 @@ namespace SmartRigWeb
     [ApiController]
     public class GuestController : ControllerBase
     {
+        private readonly CurrencyService currencyService;
         RepositoryFactory repositoryFactory;
         public GuestController()
         {
             repositoryFactory = new RepositoryFactory();
+            this.currencyService = new CurrencyService(new HttpClient());
         }
         [HttpGet]
-        public CatalogViewModel GetCatalog(
+        [HttpGet]
+        public async Task<CatalogViewModel> GetCatalog(
     int? minPrice = null,
     int? maxPrice = null,
     int? companyId = null,
     int? operatingSystemId = null,
     int? typeId = null,
-    int? priceSort = null) // 1 = ascending, 2 = descending
+    int? priceSort = null,// 1 = ascending, 2 = descending
+    string currencyCode = "ILS") 
         {
             CatalogViewModel catalogViewModel = new CatalogViewModel();
 
@@ -36,6 +41,9 @@ namespace SmartRigWeb
                 catalogViewModel.OperatingSystemId = operatingSystemId;
                 catalogViewModel.TypeId = typeId;
                 catalogViewModel.PriceSort = priceSort;
+                catalogViewModel.CurrencyCode = currencyCode.ToUpper();
+                catalogViewModel.Currencies = await this.currencyService.GetCurrencies();
+                catalogViewModel.CurrencySymbol = this.currencyService.GetSymbol(catalogViewModel.CurrencyCode);
 
                 this.repositoryFactory.ConnectDbContext();
 
@@ -115,7 +123,12 @@ namespace SmartRigWeb
 
                 // -------- MAPPING TO VIEW MODEL --------
                 List<ComputerCatalogViewModel> catalogComputers = new List<ComputerCatalogViewModel>();
+                double rate = 1;
 
+                if (catalogViewModel.CurrencyCode != "ILS")
+                {
+                    rate = await this.currencyService.GetRate("ILS", catalogViewModel.CurrencyCode);
+                }
                 foreach (Computer computer in computers)
                 {
                     Cpu cpu = this.repositoryFactory.CpuRepository.GetById(computer.CpuId);
@@ -134,6 +147,7 @@ namespace SmartRigWeb
                         Gpu = gpu.GpuName,
                         Ram = ram.RamName,
                         Storage = storage.StorageName,
+                        DisplayPrice = computer.Price * rate,
                         OperatingSystem = os.OperatingSystemName
                     };
 

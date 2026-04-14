@@ -20,6 +20,11 @@ namespace Models
         public int? MaxPrice { get; set; }       
 
         // Price sorting
-        public int? PriceSort { get; set; }    
+        public int? PriceSort { get; set; }
+
+        public Dictionary<string, string> Currencies { get; set; } = new Dictionary<string, string>();
+        public string CurrencyCode { get; set; } = "ILS";
+        public string CurrencySymbol { get; set; } = "₪";
+
     }
 }

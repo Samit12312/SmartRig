@@ -14,5 +14,7 @@
         public string OperatingSystem { get; set; }
 
         public int Price { get; set; }
+
+        public double DisplayPrice { get; set; }
     }
 }

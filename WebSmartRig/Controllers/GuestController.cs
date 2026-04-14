@@ -13,8 +13,9 @@ namespace WebSmartRig.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult GetCatalog(string? operatingSystemId = null, string? typeId = null, int? minPrice = null, int? maxPrice = null
-            , int? priceSort = null,int? companyId = null)
+        public IActionResult GetCatalog(string? operatingSystemId = null,
+            string? typeId = null, int? minPrice = null, int? maxPrice = null,
+            int? priceSort = null, int? companyId = null, string? currencyCode = "ILS")
         {
             // 1. get data from webservice
             // 2. 
@@ -43,7 +44,8 @@ namespace WebSmartRig.Controllers
 
             if (priceSort.HasValue)
                 webClient.AddParameter("priceSort", priceSort.Value.ToString()); // 1 = ascending, 2 = descending
-
+            if (currencyCode != null)
+                webClient.AddParameter("currencyCode", currencyCode);
 
             CatalogViewModel viewModel = webClient.Get();
             
