@@ -79,14 +79,22 @@ namespace Models
         public string UserPhoneNumber
         {
             get { return userPhoneNumber; }
-            set { userPhoneNumber = value; }
+            set
+            {
+                userPhoneNumber = value;
+                ValidateProperty(value, "UserPhoneNumber");
+            }
         }
 
-        [Required(ErrorMessage = "You must enter your city")]
+        [Range(1, int.MaxValue, ErrorMessage = "You must choose a city")]
         public int CityId
         {
             get { return cityId; }
-            set { cityId = value; }
+            set
+            {
+                cityId = value;
+                ValidateProperty(value, "CityId");
+            }
         }
 
         public bool Manager

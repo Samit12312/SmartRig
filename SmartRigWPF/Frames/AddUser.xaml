@@ -7,6 +7,12 @@
         Background="White"
         Width="530" Height="450"
         Title="Add User">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        
+        
+    </Window.Resources>
     <Canvas>
 
         <!-- Title -->
@@ -23,10 +29,14 @@
                    FontSize="13"
                    Foreground="#2c3e50"/>
         <TextBox x:Name="UserNameBox"
+                
                  Canvas.Left="20" Canvas.Top="90"
                  Width="200" Height="30"
                  Padding="5"
                  BorderBrush="#dee2e6"/>
+        <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent,ElementName=UserNameBox}"
+                Visibility="{Binding (Validation.HasError), Converter={StaticResource BoolToVis}, ElementName=UserNameBox}"
+                  Foreground="Red"/>
 
         <!-- Email -->
         <TextBlock Canvas.Left="290" Canvas.Top="70"

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration.UserSecrets;
-using Microsoft.OpenApi.Any;
 using Models;
 using System.Data;
 using System.Runtime.Intrinsics.Arm;
@@ -87,7 +86,11 @@ namespace SmartRigWeb
 
         public bool Update(User item)
         {
-            string sql = @"
+            string sql = "";
+
+            if (string.IsNullOrWhiteSpace(item.UserPassword))
+            {
+                sql = @"
 UPDATE [User]
 SET UserName = @UserName,
     UserEmail = @UserEmail,
@@ -96,13 +99,42 @@ SET UserName = @UserName,
     CityId = @CityId,
     Manager = @Manager
 WHERE UserId = @UserId";
-            this.dbContext.AddParameter("@UserName", item.UserName);
-            this.dbContext.AddParameter("@UserEmail", item.UserEmail);
-            this.dbContext.AddParameter("@UserAddress", item.UserAddress);
-            this.dbContext.AddParameter("@UserPhoneNumber", item.UserPhoneNumber);
-            this.dbContext.AddParameter("@CityId", item.CityId);
-            this.dbContext.AddParameter("@Manager", item.Manager ? "-1" : "0");
-            this.dbContext.AddParameter("@UserId", item.UserId.ToString());
+
+                this.dbContext.AddParameter("@UserName", item.UserName);
+                this.dbContext.AddParameter("@UserEmail", item.UserEmail);
+                this.dbContext.AddParameter("@UserAddress", item.UserAddress);
+                this.dbContext.AddParameter("@UserPhoneNumber", item.UserPhoneNumber);
+                this.dbContext.AddParameter("@CityId", item.CityId.ToString());
+                this.dbContext.AddParameter("@Manager", item.Manager ? "-1" : "0");
+                this.dbContext.AddParameter("@UserId", item.UserId.ToString());
+            }
+            else
+            {
+                string salt = GenerateSalt();
+
+                sql = @"
+UPDATE [User]
+SET UserName = @UserName,
+    UserEmail = @UserEmail,
+    UserPassword = @UserPassword,
+    UserAddress = @UserAddress,
+    CityId = @CityId,
+    UserPhoneNumber = @UserPhoneNumber,
+    Manager = @Manager,
+    UserSalt = @UserSalt
+WHERE UserId = @UserId";
+
+                this.dbContext.AddParameter("@UserName", item.UserName);
+                this.dbContext.AddParameter("@UserEmail", item.UserEmail);
+                this.dbContext.AddParameter("@UserPassword", CaculateHash(item.UserPassword, salt));
+                this.dbContext.AddParameter("@UserAddress", item.UserAddress);
+                this.dbContext.AddParameter("@CityId", item.CityId.ToString());
+                this.dbContext.AddParameter("@UserPhoneNumber", item.UserPhoneNumber);
+                this.dbContext.AddParameter("@Manager", item.Manager ? "-1" : "0");
+                this.dbContext.AddParameter("@UserSalt", salt);
+                this.dbContext.AddParameter("@UserId", item.UserId.ToString());
+            }
+
             return this.dbContext.Update(sql) > 0;
         }
 
@@ -122,7 +154,6 @@ WHERE UserId = @UserId";
                         string salt = reader["UserSalt"].ToString();
                         string userId = reader["UserId"].ToString();
 
-                        // Fix: swap the parameters to match Create method
                         if (hash == CaculateHash(userPassword, salt))
                             return userId;
                     }

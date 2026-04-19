@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Models.ViewModels
 {
-    public class EditUserViewModel // bypass user password validation when editing user info, and also bypass email validation if the email is not changed
+    public class EditUserViewModel
     {
-        public int UserId { get; set; }
-        public string UserName { get; set; }
-        public string UserEmail { get; set; }
-        public string UserAddress { get; set; }
-        public string UserPhoneNumber { get; set; }
-        public int CityId { get; set; }
-        public bool Manager { get; set; }
+        public User user { get; set; }
+        public List<Cities> cities { get; set; }
+
+        public EditUserViewModel()
+        {
+            user = new User();
+            cities = new List<Cities>();
+        }
     }
 }

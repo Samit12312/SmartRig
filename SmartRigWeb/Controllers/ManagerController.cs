@@ -783,13 +783,13 @@ namespace SmartRigWeb
             try
             {
                 User user = new User();
-                user.UserId = data.UserId;
-                user.UserName = data.UserName;
-                user.UserEmail = data.UserEmail;
-                user.UserAddress = data.UserAddress;
-                user.UserPhoneNumber = data.UserPhoneNumber;
-                user.CityId = data.CityId;
-                user.Manager = data.Manager;
+                user.UserId = data.user.UserId;
+                user.UserName = data.user.UserName;
+                user.UserEmail = data.user.UserEmail;
+                user.UserAddress = data.user.UserAddress;
+                user.UserPhoneNumber = data.user.UserPhoneNumber;
+                user.CityId = data.user.CityId;
+                user.Manager = data.user.Manager;
 
                 this.repositoryFactory.ConnectDbContext();
                 return this.repositoryFactory.UserRepository.Update(user);
@@ -1217,6 +1217,24 @@ namespace SmartRigWeb
             {
                 Console.WriteLine(ex.Message);
                 return new List<Models.Type>();
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+        [HttpGet]
+        public List<Cities> GetAllCities()
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
+                return this.repositoryFactory.CitiesRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<Cities>();
             }
             finally
             {
