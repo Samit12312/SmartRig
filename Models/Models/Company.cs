@@ -1,27 +1,28 @@
-﻿    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-    namespace Models
+namespace Models
+{
+    public class Company : Model
     {
-        public class Company
+        int companyId;
+        string companyName;
+
+        public int CompanyId
         {
-            int companyId;
-            string companyName;
-            public int CompanyId
+            get { return this.companyId; }
+            set { this.companyId = value; }
+        }
+
+        [Required(ErrorMessage = "You must enter company name")]
+        [StringLength(30, MinimumLength = 2, ErrorMessage = "Company name must be between 2 and 30 characters")]
+        public string CompanyName
+        {
+            get { return this.companyName; }
+            set
             {
-                get { return this.companyId; }
-                set { this.companyId = value; }
+                this.companyName = value;
+                ValidateProperty(value, "CompanyName");
             }
-
-            public string CompanyName
-            {
-                get { return this.companyName; }
-                set { this.companyName = value; }
-            }
-
-
         }
     }
+}

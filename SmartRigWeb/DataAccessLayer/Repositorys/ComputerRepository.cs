@@ -308,20 +308,21 @@ namespace SmartRigWeb
         public bool Update(Computer item)
         {
             string sql = @"UPDATE [Computer]
-SET ComputerName = @ComputerName,
-    ComputerTypeId = @ComputerTypeId,
-    CompanyId = @CompanyId,
-    StorageId = @StorageId,
-    RamId = @RamId,
-    CpuId = @CpuId,
-    GpuId = @GpuId,
-    Price = @Price,
-    OperatingSystemId = @OperatingSystemId,
-    CaseId = @CaseId,
-    PowerSupplyId = @PowerSupplyId,
-    CpuFanId = @CpuFanId,
-    MotherBoardId = @MotherBoardId
-WHERE ComputerId = @ComputerId";
+                   SET ComputerName = @ComputerName,
+                       ComputerTypeId = @ComputerTypeId,
+                       CompanyId = @CompanyId,
+                       StorageId = @StorageId,
+                       RamId = @RamId,
+                       CpuId = @CpuId,
+                       GpuId = @GpuId,
+                       Price = @Price,
+                       OperatingSystemId = @OperatingSystemId,
+                       CaseId = @CaseId,
+                       PowerSupplyId = @PowerSupplyId,
+                       CpuFanId = @CpuFanId,
+                       MotherBoardId = @MotherBoardId,
+                       ComputerPicture = @ComputerPicture
+                   WHERE ComputerId = @ComputerId";
 
             this.dbContext.AddParameter("@ComputerName", item.ComputerName);
             this.dbContext.AddParameter("@ComputerTypeId", item.ComputerTypeId.ToString());
@@ -336,6 +337,7 @@ WHERE ComputerId = @ComputerId";
             this.dbContext.AddParameter("@PowerSupplyId", item.PowerSupplyId.ToString());
             this.dbContext.AddParameter("@CpuFanId", item.CpuFanId.ToString());
             this.dbContext.AddParameter("@MotherBoardId", item.MotherBoardId.ToString());
+            this.dbContext.AddParameter("@ComputerPicture", item.ComputerPicture);
             this.dbContext.AddParameter("@ComputerId", item.ComputerId.ToString());
 
             return this.dbContext.Update(sql) > 0;

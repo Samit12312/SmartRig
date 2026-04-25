@@ -42,7 +42,7 @@ namespace SmartRigWPF.Frames
         {
             if (listView.SelectedItem == null)
             {
-                MessageBox.Show("Select an order first");
+                MessageBox.Show("select an order first");
                 return;
             }
             Cart selectedOrder = (Cart)listView.SelectedItem;
@@ -56,21 +56,21 @@ namespace SmartRigWPF.Frames
             client.AddParameter("isPayed", "true");
             bool ok = await client.GetAsync();
 
-            if (ok) { MessageBox.Show("Order marked as paid!"); await GetOrders(); }
-            else { MessageBox.Show("Failed to update order", "", MessageBoxButton.OK, MessageBoxImage.Error); }
+            if (ok) { MessageBox.Show("order marked as paid!"); await GetOrders(); }
+            else { MessageBox.Show("failed to update order", "", MessageBoxButton.OK, MessageBoxImage.Error); }
         }
 
         private async void DeleteOrderBtn_Click(object sender, RoutedEventArgs e)
         {
             if (listView.SelectedItem == null)
             {
-                MessageBox.Show("Select an order first");
+                MessageBox.Show("select an order first");
                 return;
             }
             Cart selectedOrder = (Cart)listView.SelectedItem;
             MessageBoxResult confirmation = MessageBox.Show(
-                $"Are you sure you want to delete Order #{selectedOrder.CartId}?",
-                "Confirm Delete",
+                $"are you sure you want to delete order #{selectedOrder.CartId}?",
+                "confirm delete",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question
             );
@@ -84,8 +84,8 @@ namespace SmartRigWPF.Frames
                 client.AddParameter("cartId", selectedOrder.CartId.ToString());
                 bool ok = await client.GetAsync();
 
-                if (ok) { MessageBox.Show("Order deleted!"); await GetOrders(); }
-                else { MessageBox.Show("Failed to delete order", "", MessageBoxButton.OK, MessageBoxImage.Error); }
+                if (ok) { MessageBox.Show("order deleted!"); await GetOrders(); }
+                else { MessageBox.Show("failed to delete order", "", MessageBoxButton.OK, MessageBoxImage.Error); }
             }
         }
 
@@ -93,7 +93,7 @@ namespace SmartRigWPF.Frames
         {
             if (listView.SelectedItem == null)
             {
-                MessageBox.Show("Select an order first");
+                MessageBox.Show("select an order first");
                 return;
             }
             Cart selectedOrder = (Cart)listView.SelectedItem;

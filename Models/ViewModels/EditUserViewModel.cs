@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-
-namespace Models.ViewModels
+﻿namespace Models.ViewModels
 {
     public class EditUserViewModel
     {
-        public User user { get; set; }
-        public List<Cities> cities { get; set; }
-
-        public EditUserViewModel()
-        {
-            user = new User();
-            cities = new List<Cities>();
-        }
+        public int UserId { get; set; }
+        public string UserName { get; set; }
+        public string UserEmail { get; set; }
+        public string UserPassword { get; set; }
+        public string UserAddress { get; set; }
+        public string UserPhoneNumber { get; set; }
+        public int CityId { get; set; }
+        public bool Manager { get; set; }
     }
 }

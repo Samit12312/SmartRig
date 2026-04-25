@@ -42,7 +42,7 @@ namespace SmartRigWPF.Frames
         {
             if (listView.SelectedItem == null)
             {
-                MessageBox.Show("Select a user first");
+                MessageBox.Show("select a user first");
                 return;
             }
             User selectedUser = (User)listView.SelectedItem;

@@ -9,9 +9,6 @@
         Title="Add User">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-
-        
-        
     </Window.Resources>
     <Canvas>
 

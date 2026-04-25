@@ -1,0 +1,1083 @@
+﻿
+==================================================
+FILE: Cart.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class Cart
+    {
+        public int cartId;
+        public int userId;
+        public string date;
+        public bool isPayed;
+
+        public int CartId
+        {
+            get { return this.cartId; }
+            set { this.cartId = value; }
+        }
+
+        public int UserId
+        {
+            get { return this.userId; }
+            set { this.userId = value; }
+        }
+
+        public string Date
+        {
+            get { return this.date; }
+            set { this.date = value; }
+        }
+
+        public bool IsPayed
+        {
+            get { return this.isPayed; }
+            set { this.isPayed = value; }
+        }
+
+
+
+
+    }
+}
+
+
+
+==================================================
+FILE: CartComputer.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class CartComputer
+    {
+        public int computerId;
+        public string computerName;
+        public int computerPrice;
+        public int computerQuantity;
+        public string computerPicture;
+        public int ComputerId
+        {
+            get { return this.computerId; }
+            set { this.computerId = value; }
+        }
+
+        public string ComputerName
+        {
+            get { return this.computerName; }
+            set { this.computerName = value; }
+        }
+
+        public int ComputerPrice
+        {
+            get { return this.computerPrice; }
+            set { this.computerPrice = value; }
+        }
+
+        public int ComputerQuantity
+        {
+            get { return this.computerQuantity; }
+            set { this.computerQuantity = value; }
+        }
+
+        public string ComputerPicture
+        {
+            get { return this.computerPicture; }
+            set { this.computerPicture = value; }
+        }
+
+
+    }
+}
+
+
+
+==================================================
+FILE: Case.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class Case
+    {
+        int caseId;
+        string caseName;
+        int casePrice;
+        int caseCompanyId;
+
+        public int CaseId
+        {
+            get { return this.caseId; }
+            set { this.caseId = value; }
+        }
+
+        public string CaseName
+        {
+            get { return this.caseName; }
+            set { this.caseName = value; }
+        }
+
+        public int CasePrice
+        {
+            get { return this.casePrice; }
+            set { this.casePrice = value; }
+        }
+
+        public int CaseCompanyId
+        {
+            get { return this.caseCompanyId; }
+            set { this.caseCompanyId = value; }
+        }
+
+
+
+    }
+}
+
+
+
+==================================================
+FILE: Cities.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class Cities
+    {
+        int cityId;
+        string cityName;
+
+        public int CityId
+        {
+            get { return cityId; }
+            set { cityId = value; }
+        }
+        [Required(ErrorMessage = "You must enter city name")]
+        public string CityName
+        {
+            get { return cityName; }
+            set { cityName = value; }
+        }
+    }
+}
+
+
+
+==================================================
+FILE: Company.cs
+==================================================
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    namespace Models
+    {
+        public class Company
+        {
+            int companyId;
+            string companyName;
+            public int CompanyId
+            {
+                get { return this.companyId; }
+                set { this.companyId = value; }
+            }
+
+            public string CompanyName
+            {
+                get { return this.companyName; }
+                set { this.companyName = value; }
+            }
+
+
+        }
+    }
+
+
+
+==================================================
+FILE: Computer.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class Computer
+    {
+        int computerId;
+        string computerName;
+        int computerTypeId;
+        int companyId;
+        int storageId;
+        int ramId;
+        int cpuId;
+        int gpuId;
+        int price;
+        int operatingSystemId;
+        int caseId;
+        int powerSupplyId;
+        int cpuFanId;
+        int motherBoardId;
+        string computerPicture;
+
+        public int ComputerId
+        {
+            get { return this.computerId; }
+            set { this.computerId = value; }
+        }
+
+        public string ComputerName
+        {
+            get { return this.computerName; }
+            set { this.computerName = value; }
+        }
+
+        public int ComputerTypeId
+        {
+            get { return this.computerTypeId; }
+            set { this.computerTypeId = value; }
+        }
+
+        public int CompanyId
+        {
+            get { return this.companyId; }
+            set { this.companyId = value; }
+        }
+
+        public int StorageId
+        {
+            get { return this.storageId; }
+            set { this.storageId = value; }
+        }
+
+        public int RamId
+        {
+            get { return this.ramId; }
+            set { this.ramId = value; }
+        }
+
+        public int CpuId
+        {
+            get { return this.cpuId; }
+            set { this.cpuId = value; }
+        }
+
+        public int GpuId
+        {
+            get { return this.gpuId; }
+            set { this.gpuId = value; }
+        }
+
+        public int Price
+        {
+            get { return this.price; }
+            set { this.price = value; }
+        }
+
+        public int OperatingSystemId
+        {
+            get { return this.operatingSystemId; }
+            set { this.operatingSystemId = value; }
+        }
+
+        public int CaseId
+        {
+            get { return this.caseId; }
+            set { this.caseId = value; }
+        }
+
+        public int PowerSupplyId
+        {
+            get { return this.powerSupplyId; }
+            set { this.powerSupplyId = value; }
+        }
+
+        public int CpuFanId
+        {
+            get { return this.cpuFanId; }
+            set { this.cpuFanId = value; }
+        }
+
+        public int MotherBoardId
+        {
+            get { return this.motherBoardId; }
+            set { this.motherBoardId = value; }
+        }
+
+        public string ComputerPicture
+        {
+            get { return this.computerPicture; }
+            set { this.computerPicture = value; }
+        }
+
+
+
+
+    }
+}
+
+
+
+==================================================
+FILE: Cpu.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class Cpu
+    {
+        int cpuId;
+        string cpuName;
+        int cpuPrice;
+        int cpuCompanyId;
+
+        public int CpuId
+        {
+            get { return this.cpuId; }
+            set { this.cpuId = value; }
+        }
+
+        public string CpuName
+        {
+            get { return this.cpuName; }
+            set { this.cpuName = value; }
+        }
+
+        public int CpuPrice
+        {
+            get { return this.cpuPrice; }
+            set { this.cpuPrice = value; }
+        }
+
+        public int CpuCompanyId
+        {
+            get { return this.cpuCompanyId; }
+            set { this.cpuCompanyId = value; }
+        }
+
+
+
+    }
+}
+
+
+
+==================================================
+FILE: CpuFan.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class CpuFan
+    {
+        int cpuFanId;
+        string cpuFanName;
+        int cpuFanPrice;
+        int cpuFanCompanyId;
+
+        public int CpuFanId
+        {
+            get { return this.cpuFanId; }
+            set { this.cpuFanId = value; }
+        }
+
+        public string CpuFanName
+        {
+            get { return this.cpuFanName; }
+            set { this.cpuFanName = value; }
+        }
+
+        public int CpuFanPrice
+        {
+            get { return this.cpuFanPrice; }
+            set { this.cpuFanPrice = value; }
+        }
+
+        public int CpuFanCompanyId
+        {
+            get { return this.cpuFanCompanyId; }
+            set { this.cpuFanCompanyId = value; }
+        }
+
+
+
+
+    }
+}
+
+
+
+==================================================
+FILE: Gpu.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class Gpu
+    {
+        int gpuId;
+        string gpuName;
+        string gpuSize;
+        string gpuSpeed;
+        int gpuPrice;
+        int gpuCompanyId;
+
+        public int GpuId
+        {
+            get { return this.gpuId; }
+            set { this.gpuId = value; }
+        }
+
+        public string GpuName
+        {
+            get { return this.gpuName; }
+            set { this.gpuName = value; }
+        }
+
+        public string GpuSize
+        {
+            get { return this.gpuSize; }
+            set { this.gpuSize = value; }
+        }
+
+        public string GpuSpeed
+        {
+            get { return this.gpuSpeed; }
+            set { this.gpuSpeed = value; }
+        }
+
+        public int GpuPrice
+        {
+            get { return this.gpuPrice; }
+            set { this.gpuPrice = value; }
+        }
+
+        public int GpuCompanyId
+        {
+            get { return this.gpuCompanyId; }
+            set { this.gpuCompanyId = value; }
+        }
+    }
+}
+
+
+
+==================================================
+FILE: LoginResponse.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class LoginResponse
+    {
+        public bool Success { get; set; }
+        public string UserId { get; set; }
+        public string UserName { get; set; } // Add this
+    }
+}
+
+
+
+==================================================
+FILE: Model.cs
+==================================================
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public abstract class Model : INotifyDataErrorInfo
+    {
+        private Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>(); // i hate niggrs :D
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;//אירוע שיש שגיאה והשחורים רודפים אחרי ואירוע זה נכנס למילון
+        private object threadLock = new object();// if it aint white it aint right שומר בזמן הבדיקה שלא יכנס ערך אחר
+        private bool isValid;
+         
+        public bool HasErrors
+        {
+            get { return errors.Any(propErrors => propErrors.Value != null && propErrors.Value.Count > 0); }
+        }
+
+        public bool IsValid
+        {
+            get { return !this.HasErrors; }
+
+        }
+
+        public void OnErrorsChanged(string propertyName)
+        {
+            if (ErrorsChanged != null)
+            {
+                ErrorsChanged(this, new DataErrorsChangedEventArgs(propertyName));
+
+            }
+        }
+
+        public IEnumerable GetErrors(string propertyName)
+        {
+            if (!string.IsNullOrEmpty(propertyName))
+            {
+                if (errors.ContainsKey(propertyName) && (errors[propertyName] != null) && errors[propertyName].Count > 0)
+                    return errors[propertyName].ToList();
+                else
+                    return null;
+            }
+            else
+                return errors.SelectMany(err => err.Value.ToList());
+        }
+
+        public Dictionary<string, List<string>> AllErrors()
+        {
+            return this.errors;
+        }
+
+        public void ValidateProperty(object value, [CallerMemberName] string propertyName = null)
+        {
+            lock (threadLock)
+            {
+                var validationContext = new ValidationContext(this, null, null);
+                validationContext.MemberName = propertyName;
+                var validationResults = new List<ValidationResult>();
+                Validator.TryValidateProperty(value, validationContext, validationResults);
+                //clear previous errors from tested property
+                if (errors.ContainsKey(propertyName))
+                    errors.Remove(propertyName);
+                OnErrorsChanged(propertyName);
+                HandleValidationResults(validationResults);
+            }
+        }
+
+        public void Validate()
+        {
+            this.isValid = true; //reset IsValid before validation
+            lock (threadLock)
+            {
+                var validationContext = new ValidationContext(this, null, null);
+                var validationResults = new List<ValidationResult>();
+                Validator.TryValidateObject(this, validationContext, validationResults, true);
+
+                //clear all previous errors
+                var propNames = errors.Keys.ToList();
+                errors.Clear();
+                HandleValidationResults(validationResults);
+                this.isValid = validationResults.Count == 0;
+            }
+        }
+
+        private void HandleValidationResults(List<ValidationResult> validationResults)
+        {
+            //Group validation results by property names
+            var resultsByPropNames = from res in validationResults
+                                     from mname in res.MemberNames
+                                     group res by mname into g
+                                     select g;
+
+            //add errors to dictionary and inform  binding engine about errors
+            foreach (var prop in resultsByPropNames)
+            {
+                var messages = prop.Select(r => r.ErrorMessage).ToList();
+                errors.Add(prop.Key, messages);
+                OnErrorsChanged(prop.Key);
+            }
+        }
+    }
+
+
+}
+
+
+
+==================================================
+FILE: MotherBoard.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class MotherBoard
+    {
+        int motherBoardId;
+        string motherBoardName;
+        int motherBoardPrice;
+        int motherBoardCompanyId;
+
+        public int MotherBoardId
+        {
+            get { return this.motherBoardId; }
+            set { this.motherBoardId = value; }
+        }
+
+        public string MotherBoardName
+        {
+            get { return this.motherBoardName; }
+            set { this.motherBoardName = value; }
+        }
+
+        public int MotherBoardPrice
+        {
+            get { return this.motherBoardPrice; }
+            set { this.motherBoardPrice = value; }
+        }
+
+        public int MotherBoardCompanyId
+        {
+            get { return this.motherBoardCompanyId; }
+            set { this.motherBoardCompanyId = value; }
+        }
+
+
+
+    }
+}
+
+
+
+==================================================
+FILE: OperatingSystem.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class OperatingSystem
+    {
+        int operatingSystemId;
+        string operatingSystemName;
+        int operatingSystemPrice;
+        int operatingSystemCompanyId;
+
+        public int OperatingSystemId
+        {
+            get { return this.operatingSystemId; }
+            set { this.operatingSystemId = value; }
+        }
+
+        public string OperatingSystemName
+        {
+            get { return this.operatingSystemName; }
+            set { this.operatingSystemName = value; }
+        }
+
+        public int OperatingSystemPrice
+        {
+            get { return this.operatingSystemPrice; }
+            set { this.operatingSystemPrice = value; }
+        }
+
+        public int OperatingSystemCompanyId
+        {
+            get { return this.operatingSystemCompanyId; }
+            set { this.operatingSystemCompanyId = value; }
+        }
+
+
+
+    }
+}
+
+
+
+==================================================
+FILE: PowerSupply.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class PowerSupply
+    {
+        int powerSupplyId;
+        string powerSupplyName;
+        int powerSupplyPrice;
+        int powerSupplyWatt;
+        int powerSupplyCompanyId;
+
+        public int PowerSupplyId
+        {
+            get { return this.powerSupplyId; }
+            set { this.powerSupplyId = value; }
+        }
+
+        public string PowerSupplyName
+        {
+            get { return this.powerSupplyName; }
+            set { this.powerSupplyName = value; }
+        }
+
+        public int PowerSupplyPrice
+        {
+            get { return this.powerSupplyPrice; }
+            set { this.powerSupplyPrice = value; }
+        }
+
+        public int PowerSupplyWatt
+        {
+            get { return this.powerSupplyWatt; }
+            set { this.powerSupplyWatt = value; }
+        }
+
+        public int PowerSupplyCompanyId
+        {
+            get { return this.powerSupplyCompanyId; }
+            set { this.powerSupplyCompanyId = value; }
+        }
+    }
+}
+
+
+
+==================================================
+FILE: Ram.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class Ram
+    {
+        int ramId;
+        string ramName;
+        string ramSize;
+        int ramTypeId;
+        string ramSpeed;
+        int ramPrice;
+        int ramCompanyId;
+
+        public int RamId
+        {
+            get { return this.ramId; }
+            set { this.ramId = value; }
+        }
+
+        public string RamName
+        {
+            get { return this.ramName; }
+            set { this.ramName = value; }
+        }
+
+        public string RamSize
+        {
+            get { return this.ramSize; }
+            set { this.ramSize = value; }
+        }
+
+        public int RamTypeId
+        {
+            get { return this.ramTypeId; }
+            set { this.ramTypeId = value; }
+        }
+
+        public string RamSpeed
+        {
+            get { return this.ramSpeed; }
+            set { this.ramSpeed = value; }
+        }
+
+        public int RamPrice
+        {
+            get { return this.ramPrice; }
+            set { this.ramPrice = value; }
+        }
+
+        public int RamCompanyId
+        {
+            get { return this.ramCompanyId; }
+            set { this.ramCompanyId = value; }
+        }
+    }
+}
+
+
+
+==================================================
+FILE: Storage.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class Storage
+    {
+        int storageId;
+        string storageName;
+        string storageSize;
+        string storageSpeed;
+        int storageType;
+        int storagePrice;
+        int storageCompanyId;
+
+        public int StorageId
+        {
+            get { return this.storageId; }
+            set { this.storageId = value; }
+        }
+
+        public string StorageName
+        {
+            get { return this.storageName; }
+            set { this.storageName = value; }
+        }
+
+        public string StorageSize
+        {
+            get { return this.storageSize; }
+            set { this.storageSize = value; }
+        }
+
+        public string StorageSpeed
+        {
+            get { return this.storageSpeed; }
+            set { this.storageSpeed = value; }
+        }
+
+        public int StorageType
+        {
+            get { return this.storageType; }
+            set { this.storageType = value; }
+        }
+
+        public int StoragePrice
+        {
+            get { return this.storagePrice; }
+            set { this.storagePrice = value; }
+        }
+
+        public int StorageCompanyId
+        {
+            get { return this.storageCompanyId; }
+            set { this.storageCompanyId = value; }
+        }
+
+
+
+    }
+}
+
+
+
+==================================================
+FILE: Type.cs
+==================================================
+using System;
+
+namespace Models
+{
+    public class Type
+    {
+        int typeId;
+        string typeName;
+        int typeCode; // 1 = Work/gaming/laptop, 2 = RAM type (DDR4/DDR3), 3 = storage type (SSD/NVMe2)
+
+        public int TypeId
+        {
+            get { return this.typeId; }
+            set { this.typeId = value; }
+        }
+
+        public string TypeName
+        {
+            get { return this.typeName; }
+            set { this.typeName = value; }
+        }
+
+        public int TypeCode
+        {
+            get { return this.typeCode; }
+            set { this.typeCode = value; }
+        }
+    }
+}
+
+
+
+==================================================
+FILE: User.cs
+==================================================
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models
+{
+    public class User : Model
+    {
+        int userId;
+        string userName;
+        string userEmail;
+        string userPassword;
+        string userAddress;
+        int cityId;
+        string userPhoneNumber;
+        bool manager;
+
+        public string UserSalt { get; set; } = "";
+        public int UserId
+        {
+            get { return userId; }
+            set { userId = value; }
+        }
+
+        [Required(ErrorMessage = "You must enter your name")]
+        [StringLength(15, MinimumLength = 2, ErrorMessage = "First name cannot be longer than 15 characters and less than 2")]
+        [FirstLetterCapital(ErrorMessage = "First letter must be capital")]
+        public string UserName
+        {
+            get { return userName; }
+            set
+            {
+                userName = value;
+                ValidateProperty(value, "UserName");
+            }
+        }
+
+        [Required(ErrorMessage = "You must enter your email address")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
+        public string UserEmail
+        {
+            get { return userEmail; }
+            set
+            {
+                userEmail = value;
+                ValidateProperty(value, "UserEmail");
+            }
+        }
+
+
+        [StringLength(25, MinimumLength = 4, ErrorMessage = "Password must be between 4 and 25 characters.")]
+        [RegularExpression(@"^(?=.*\d).+$", ErrorMessage = "Password must contain at least one number.")]
+        [Required(ErrorMessage = "You must enter your password")]
+        public string UserPassword
+        {
+            get { return userPassword; }
+            set
+            {
+                userPassword = value;
+                ValidateProperty(value, "UserPassword");
+            }
+        }
+
+        [Required(ErrorMessage = "You must enter your address")]
+        public string UserAddress
+        {
+            get { return userAddress; }
+            set
+            {
+                userAddress = value;
+                ValidateProperty(value, "UserAddress");
+            }
+        }
+
+        [Required(ErrorMessage = "You must enter your phone number")]
+        [Phone(ErrorMessage = "Please enter a valid phone number")]
+        public string UserPhoneNumber
+        {
+            get { return userPhoneNumber; }
+            set
+            {
+                userPhoneNumber = value;
+                ValidateProperty(value, "UserPhoneNumber");
+            }
+        }
+
+        [Range(1, int.MaxValue, ErrorMessage = "You must choose a city")]
+        public int CityId
+        {
+            get { return cityId; }
+            set
+            {
+                cityId = value;
+                ValidateProperty(value, "CityId");
+            }
+        }
+
+        public bool Manager
+        {
+            get { return manager; }
+            set
+            {
+                manager = value;
+                ValidateProperty(value, "Manager");
+            }
+        }
+    }
+}
+
+
+

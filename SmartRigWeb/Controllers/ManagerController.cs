@@ -125,28 +125,40 @@ namespace SmartRigWeb
 
 
         [HttpPost]
-        public bool AddComputer( )
+        public bool AddComputer()
         {
             string jsonData = Request.Form["data"];
             Computer data = JsonSerializer.Deserialize<Computer>(jsonData);
-            IFormFile file = Request.Form.Files[0];    
-            
+            IFormFile file = Request.Form.Files[0];
+
             try
             {
                 string format = data.ComputerPicture;
+
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.OpenTransaction();
+
                 this.repositoryFactory.ComputerRepository.Create(data);
+
                 int newComputerId = this.repositoryFactory.ComputerRepository.GetLastComputerId();
-                data.ComputerPicture = newComputerId + format;
+
                 data.ComputerId = newComputerId;
+                data.ComputerPicture = newComputerId + format;
+
                 this.repositoryFactory.ComputerRepository.Update(data);
-                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Images/Computers", data.ComputerPicture);
+
+                string filePath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "Images",
+                    "Computers",
+                    data.ComputerPicture
+                );
+
                 using (FileStream stream = new FileStream(filePath, FileMode.Create))
                 {
                     file.CopyTo(stream);
                 }
-
 
                 this.repositoryFactory.Commit();
                 return true;
@@ -216,8 +228,16 @@ namespace SmartRigWeb
 
                 if (file != null)
                 {
-                    string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Computers",
-                        computer.ComputerId + ".jpg");
+                    computer.ComputerPicture = computer.ComputerId + computer.ComputerPicture;
+
+                    string imagePath = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "Images",
+                        "Computers",
+                        computer.ComputerPicture
+                    );
+
                     using (FileStream fs = new FileStream(imagePath, FileMode.Create))
                     {
                         file.CopyTo(fs);
@@ -236,6 +256,8 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
+    
+
         // Cpu section
         [HttpPost]
         public bool AddCpu([FromBody] Cpu cpu)
@@ -783,13 +805,14 @@ namespace SmartRigWeb
             try
             {
                 User user = new User();
-                user.UserId = data.user.UserId;
-                user.UserName = data.user.UserName;
-                user.UserEmail = data.user.UserEmail;
-                user.UserAddress = data.user.UserAddress;
-                user.UserPhoneNumber = data.user.UserPhoneNumber;
-                user.CityId = data.user.CityId;
-                user.Manager = data.user.Manager;
+                user.UserId = data.UserId;
+                user.UserName = data.UserName;
+                user.UserEmail = data.UserEmail;
+                user.UserPassword = data.UserPassword;
+                user.UserAddress = data.UserAddress;
+                user.UserPhoneNumber = data.UserPhoneNumber;
+                user.CityId = data.CityId;
+                user.Manager = data.Manager;
 
                 this.repositoryFactory.ConnectDbContext();
                 return this.repositoryFactory.UserRepository.Update(user);

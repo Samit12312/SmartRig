@@ -63,34 +63,25 @@ namespace SmartRigWPF.Frames
                 CpuFanBox.ItemsSource = viewModel.Fans;
                 PowerSupplyBox.ItemsSource = viewModel.PowerSupplies;
 
-                this.DataContext = viewModel;
-
                 if (isEdit && selectedComputer != null)
                 {
                     viewModel.Computer = selectedComputer;
 
-                    ComputerNameBox.Text = selectedComputer.ComputerName;
-                    PriceBox.Text = selectedComputer.Price.ToString();
-
-                    CompanyBox.SelectedValue = selectedComputer.CompanyId;
-                    TypeBox.SelectedValue = selectedComputer.ComputerTypeId;
-                    OSBox.SelectedValue = selectedComputer.OperatingSystemId;
-                    CpuBox.SelectedValue = selectedComputer.CpuId;
-                    GpuBox.SelectedValue = selectedComputer.GpuId;
-                    RamBox.SelectedValue = selectedComputer.RamId;
-                    StorageBox.SelectedValue = selectedComputer.StorageId;
-                    MotherboardBox.SelectedValue = selectedComputer.MotherBoardId;
-                    CaseBox.SelectedValue = selectedComputer.CaseId;
-                    CpuFanBox.SelectedValue = selectedComputer.CpuFanId;
-                    PowerSupplyBox.SelectedValue = selectedComputer.PowerSupplyId;
-
                     this.Title = "Edit Computer";
                     AddBtn.Content = "Update Computer";
+
+                    if (!string.IsNullOrEmpty(selectedComputer.ComputerPicture))
+                    {
+                        Uri uri = new Uri("http://localhost:5195/Images/Computers/" + selectedComputer.ComputerPicture);
+                        this.image.Source = new BitmapImage(uri);
+                    }
                 }
                 else
                 {
                     viewModel.Computer = new Computer();
                 }
+
+                this.DataContext = viewModel;
             }
         }
 
@@ -109,20 +100,67 @@ namespace SmartRigWPF.Frames
 
         private async void AddBtn_Click(object sender, RoutedEventArgs e)
         {
-            Computer computer = new Computer();
-            computer.ComputerName = ComputerNameBox.Text;
-            computer.Price = int.Parse(PriceBox.Text);
-            computer.CompanyId = (int)CompanyBox.SelectedValue;
-            computer.ComputerTypeId = (int)TypeBox.SelectedValue;
-            computer.OperatingSystemId = (int)OSBox.SelectedValue;
-            computer.CpuId = (int)CpuBox.SelectedValue;
-            computer.GpuId = (int)GpuBox.SelectedValue;
-            computer.RamId = (int)RamBox.SelectedValue;
-            computer.StorageId = (int)StorageBox.SelectedValue;
-            computer.MotherBoardId = (int)MotherboardBox.SelectedValue;
-            computer.CaseId = (int)CaseBox.SelectedValue;
-            computer.CpuFanId = (int)CpuFanBox.SelectedValue;
-            computer.PowerSupplyId = (int)PowerSupplyBox.SelectedValue;
+            NewComputerViewModel viewModel = (NewComputerViewModel)this.DataContext;
+            Computer computer = viewModel.Computer;
+            int price = 0;
+
+            try
+            {
+                price = Convert.ToInt32(PriceBox.Text);
+            }
+            catch
+            {
+                MessageBox.Show("Please only input number in Price");
+                return;
+            }
+
+            computer.Price = price;
+            computer.CompanyId = CompanyBox.SelectedValue == null ? 0 : (int)CompanyBox.SelectedValue;
+            computer.ComputerTypeId = TypeBox.SelectedValue == null ? 0 : (int)TypeBox.SelectedValue;
+            computer.OperatingSystemId = OSBox.SelectedValue == null ? 0 : (int)OSBox.SelectedValue;
+            computer.CpuId = CpuBox.SelectedValue == null ? 0 : (int)CpuBox.SelectedValue;
+            computer.GpuId = GpuBox.SelectedValue == null ? 0 : (int)GpuBox.SelectedValue;
+            computer.RamId = RamBox.SelectedValue == null ? 0 : (int)RamBox.SelectedValue;
+            computer.StorageId = StorageBox.SelectedValue == null ? 0 : (int)StorageBox.SelectedValue;
+            computer.MotherBoardId = MotherboardBox.SelectedValue == null ? 0 : (int)MotherboardBox.SelectedValue;
+            computer.CaseId = CaseBox.SelectedValue == null ? 0 : (int)CaseBox.SelectedValue;
+            computer.CpuFanId = CpuFanBox.SelectedValue == null ? 0 : (int)CpuFanBox.SelectedValue;
+            computer.PowerSupplyId = PowerSupplyBox.SelectedValue == null ? 0 : (int)PowerSupplyBox.SelectedValue;
+
+
+            if (isEdit)
+            {
+                computer.ComputerId = selectedComputer.ComputerId;
+
+                if (string.IsNullOrEmpty(imgPath))
+                {
+                    computer.ComputerPicture = selectedComputer.ComputerPicture;
+                }
+                else
+                {
+                    computer.ComputerPicture = System.IO.Path.GetExtension(imgPath);
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(imgPath))
+                {
+                    MessageText.Text = "You must choose image";
+                    return;
+                }
+
+                computer.ComputerPicture = System.IO.Path.GetExtension(imgPath);
+            }
+
+            computer.Validate();
+
+            if (!computer.IsValid)
+            {
+                MessageText.Text = "Computer is not valid";
+                return;
+            }
+
+            MessageText.Text = "";
 
             WebClient<Computer> client = new WebClient<Computer>();
             client.Schema = "http";
@@ -133,8 +171,6 @@ namespace SmartRigWPF.Frames
 
             if (isEdit)
             {
-                computer.ComputerId = selectedComputer.ComputerId;
-                computer.ComputerPicture = ".jpg";
                 client.Path = "api/Manager/EditComputer";
 
                 if (!string.IsNullOrEmpty(imgPath))
@@ -149,22 +185,40 @@ namespace SmartRigWPF.Frames
                     ok = await client.PostAsync(computer);
                 }
 
-                if (ok) { this.DialogResult = true; MessageBox.Show("Computer Updated"); this.Close(); }
-                else { MessageBox.Show("Failed to update computer", "", MessageBoxButton.OK, MessageBoxImage.Error); }
+                if (ok)
+                {
+                    this.DialogResult = true;
+                    MessageBox.Show("Computer Updated");
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Failed to update computer", "", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             else
             {
+                using (Stream stream = new FileStream(imgPath, FileMode.Open, FileAccess.Read))
+                {
+                    client.Path = "api/Manager/AddComputer";
+                    ok = await client.PostAsync(computer, stream);
+                }
 
+                if (ok)
+                {
+                    this.DialogResult = true;
+                    MessageBox.Show("Computer Added");
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Failed to add computer", "", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            {
-                computer.ComputerPicture = System.IO.Path.GetExtension(this.imgPath);
-                Stream stream = new FileStream(imgPath, FileMode.Open, FileAccess.Read);
-                client.Path = "api/Manager/AddComputer";
-                ok = await client.PostAsync(computer, stream);
-
-                if (ok) { this.DialogResult = true; MessageBox.Show("Computer Added"); this.Close(); }
-                else { MessageBox.Show("Failed to add computer", "", MessageBoxButton.OK, MessageBoxImage.Error); }
-            }
+        }
+        private void CancelBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

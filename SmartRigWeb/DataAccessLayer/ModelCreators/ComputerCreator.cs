@@ -10,20 +10,20 @@ namespace SmartRigWeb
         {
             return new Computer
             {
-                ComputerId = Convert.ToInt16(reader["ComputerId"]),
+                ComputerId = Convert.ToInt32(reader["ComputerId"]),
                 ComputerName = Convert.ToString(reader["ComputerName"]),
-                ComputerTypeId = Convert.ToInt16(reader["ComputerTypeId"]),
-                CompanyId = Convert.ToInt16(reader["CompanyId"]),
-                StorageId = Convert.ToInt16(reader["StorageId"]),
-                RamId = Convert.ToInt16(reader["RamId"]),
-                CpuId = Convert.ToInt16(reader["CpuId"]),
-                GpuId = Convert.ToInt16(reader["GpuId"]),
-                Price = Convert.ToInt16(reader["Price"]),
-                OperatingSystemId = Convert.ToInt16(reader["OperatingSystemId"]),
-                CaseId = Convert.ToInt16(reader["CaseId"]),
-                PowerSupplyId = Convert.ToInt16(reader["PowerSupplyId"]),
-                CpuFanId = Convert.ToInt16(reader["CpuFanId"]),
-                MotherBoardId = Convert.ToInt16(reader["MotherBoardId"]),
+                ComputerTypeId = Convert.ToInt32(reader["ComputerTypeId"]),
+                CompanyId = Convert.ToInt32(reader["CompanyId"]),
+                StorageId = Convert.ToInt32(reader["StorageId"]),
+                RamId = Convert.ToInt32(reader["RamId"]),
+                CpuId = Convert.ToInt32(reader["CpuId"]),
+                GpuId = Convert.ToInt32(reader["GpuId"]),
+                Price = Convert.ToInt32(reader["Price"]),
+                OperatingSystemId = Convert.ToInt32(reader["OperatingSystemId"]),
+                CaseId = Convert.ToInt32(reader["CaseId"]),
+                PowerSupplyId = Convert.ToInt32(reader["PowerSupplyId"]),
+                CpuFanId = Convert.ToInt32(reader["CpuFanId"]),
+                MotherBoardId = Convert.ToInt32(reader["MotherBoardId"]),
                 ComputerPicture = Convert.ToString(reader["ComputerPicture"])
             };
         }

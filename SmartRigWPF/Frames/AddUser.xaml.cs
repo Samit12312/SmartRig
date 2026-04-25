@@ -66,23 +66,34 @@ namespace SmartRigWPF.Frames
 
         private async void AddBtn_Click(object sender, RoutedEventArgs e)
         {
-
-
             EditUserViewModel data = new EditUserViewModel();
-            data.user.UserId = selectedUser.UserId;
-            data.user.UserName = UserNameBox.Text;
-            data.user.UserEmail = UserEmailBox.Text;
-            data.user.UserPhoneNumber = UserPhoneBox.Text;
-            data.user.UserAddress = UserAddressBox.Text;
-            data.user.CityId = CityBox.SelectedValue == null ? 0 : (int)CityBox.SelectedValue;
-            data.user.Manager = ManagerBox.IsChecked == true;
-            if (UserPasswordBox.Password != "")
-            {
-                data.user.UserPassword = UserPasswordBox.Password;
-            }
-            data.user.Validate();
-            bool isValid = data.user.IsValid;
-             if (isValid)
+            data.UserId = selectedUser.UserId;
+            data.UserName = UserNameBox.Text;
+            data.UserEmail = UserEmailBox.Text;
+            data.UserPhoneNumber = UserPhoneBox.Text;
+            data.UserAddress = UserAddressBox.Text;
+            data.CityId = CityBox.SelectedValue == null ? 0 : (int)CityBox.SelectedValue;
+            data.Manager = ManagerBox.IsChecked == true;
+            data.UserPassword = UserPasswordBox.Password;
+
+            bool isValid = true;
+
+            if (string.IsNullOrWhiteSpace(data.UserName))
+                isValid = false;
+
+            if (string.IsNullOrWhiteSpace(data.UserEmail))
+                isValid = false;
+
+            if (string.IsNullOrWhiteSpace(data.UserPhoneNumber))
+                isValid = false;
+
+            if (string.IsNullOrWhiteSpace(data.UserAddress))
+                isValid = false;
+
+            if (data.CityId == 0)
+                isValid = false;
+
+            if (isValid)
             {
                 WebClient<EditUserViewModel> client = new WebClient<EditUserViewModel>();
                 client.Schema = "http";
@@ -105,12 +116,8 @@ namespace SmartRigWPF.Frames
             }
             else
             {
-                MessageBox.Show("Failed to update user", "", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("User is not valid", "", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-
-
-
         }
 
         private void CancelBtn_Click(object sender, RoutedEventArgs e)

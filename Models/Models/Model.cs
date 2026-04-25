@@ -12,7 +12,7 @@ namespace Models
 {
     public abstract class Model : INotifyDataErrorInfo
     {
-        private Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>(); // i hate niggrs :D
+        private Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>(); // Yes
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;//אירוע שיש שגיאה והשחורים רודפים אחרי ואירוע זה נכנס למילון
         private object threadLock = new object();// if it aint white it aint right שומר בזמן הבדיקה שלא יכנס ערך אחר
         private bool isValid;

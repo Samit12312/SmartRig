@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
-    public class PowerSupply
+    public class PowerSupply : Model
     {
         int powerSupplyId;
         string powerSupplyName;
@@ -20,28 +16,49 @@ namespace Models
             set { this.powerSupplyId = value; }
         }
 
+        [Required(ErrorMessage = "You must enter power supply name")]
+        [StringLength(40, MinimumLength = 2, ErrorMessage = "Power supply name must be between 2 and 40 characters")]
         public string PowerSupplyName
         {
             get { return this.powerSupplyName; }
-            set { this.powerSupplyName = value; }
+            set
+            {
+                this.powerSupplyName = value;
+                ValidateProperty(value, "PowerSupplyName");
+            }
         }
 
+        [Range(1, int.MaxValue, ErrorMessage = "Power supply price must be bigger than 0")]
         public int PowerSupplyPrice
         {
             get { return this.powerSupplyPrice; }
-            set { this.powerSupplyPrice = value; }
+            set
+            {
+                this.powerSupplyPrice = value;
+                ValidateProperty(value, "PowerSupplyPrice");
+            }
         }
 
+        [Range(1, int.MaxValue, ErrorMessage = "Power supply watt must be bigger than 0")]
         public int PowerSupplyWatt
         {
             get { return this.powerSupplyWatt; }
-            set { this.powerSupplyWatt = value; }
+            set
+            {
+                this.powerSupplyWatt = value;
+                ValidateProperty(value, "PowerSupplyWatt");
+            }
         }
 
+        [Range(1, int.MaxValue, ErrorMessage = "You must choose company")]
         public int PowerSupplyCompanyId
         {
             get { return this.powerSupplyCompanyId; }
-            set { this.powerSupplyCompanyId = value; }
+            set
+            {
+                this.powerSupplyCompanyId = value;
+                ValidateProperty(value, "PowerSupplyCompanyId");
+            }
         }
     }
 }

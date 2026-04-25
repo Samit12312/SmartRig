@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
-    public class Cities
+    public class Cities : Model
     {
         int cityId;
         string cityName;
@@ -17,11 +12,17 @@ namespace Models
             get { return cityId; }
             set { cityId = value; }
         }
+
         [Required(ErrorMessage = "You must enter city name")]
+        [StringLength(30, MinimumLength = 2, ErrorMessage = "City name must be between 2 and 30 characters")]
         public string CityName
         {
             get { return cityName; }
-            set { cityName = value; }
+            set
+            {
+                cityName = value;
+                ValidateProperty(value, "CityName");
+            }
         }
     }
 }
