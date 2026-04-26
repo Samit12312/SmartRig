@@ -20,6 +20,14 @@ namespace SmartRigWPF.Frames
     /// </summary>
     public partial class LoginPage : UserControl
     {
+
+        bool isLogin = false;
+
+        public bool IsLogin
+        {
+            get { return isLogin; }
+           
+        }   
         public LoginPage()
         {
             InitializeComponent();
@@ -31,7 +39,14 @@ namespace SmartRigWPF.Frames
         }
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
+            this.isLogin = true;
 
+            MainWindow mainWindow = Window.GetWindow(this) as MainWindow;
+
+            if (mainWindow != null)
+            {
+                mainWindow.LoginSuccess();
+            }
         }
     }
 }
