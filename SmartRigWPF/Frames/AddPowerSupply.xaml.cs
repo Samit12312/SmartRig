@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ApiClient;
@@ -62,15 +63,36 @@ namespace SmartRigWPF.Frames
             PowerSupply powerSupply = new PowerSupply();
             powerSupply.PowerSupplyName = PowerSupplyNameBox.Text;
             powerSupply.PowerSupplyWatt = int.Parse(WattBox.Text);
-            powerSupply.PowerSupplyPrice = int.Parse(PriceBox.Text);
+            bool ok = int.TryParse(PriceBox.Text, out int price);
+            if (ok)
+                powerSupply.PowerSupplyPrice = price;
+            else
+                powerSupply.PowerSupplyPrice = -1;
             powerSupply.PowerSupplyCompanyId = (int)CompanyBox.SelectedValue;
+
+            powerSupply.Validate();
+            if (powerSupply.HasErrors)
+            {
+                Dictionary<string, List<string>> errors = powerSupply.AllErrors();
+                StringBuilder errorMessage = new StringBuilder();
+                foreach (var error in errors)
+                {
+                    errorMessage.AppendLine($"{error.Key}:/n ");
+                    foreach (var errorDetail in error.Value)
+                    {
+                        errorMessage.AppendLine($" - {errorDetail}\n");
+                    }
+                }
+                MessageBox.Show(errorMessage.ToString(), "Correct next errors", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             WebClient<PowerSupply> client = new WebClient<PowerSupply>();
             client.Schema = "http";
             client.Host = "localhost";
             client.Port = 5195;
 
-            bool ok = false;
+            ok = false;
 
             if (isEdit)
             {

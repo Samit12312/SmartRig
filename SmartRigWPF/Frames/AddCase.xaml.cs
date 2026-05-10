@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using ApiClient;
 using Models;
@@ -55,15 +56,36 @@ namespace SmartRigWPF.Frames
         {
             Models.Case caseItem = new Models.Case();
             caseItem.CaseName = CaseNameBox.Text;
-            caseItem.CasePrice = int.Parse(PriceBox.Text);
+            bool ok = int.TryParse(PriceBox.Text, out int price);
+            if (ok)
+                caseItem.CasePrice = price;
+            else
+                caseItem.CasePrice = -1;
             caseItem.CaseCompanyId = (int)CompanyBox.SelectedValue;
+
+            caseItem.Validate();
+            if (caseItem.HasErrors)
+            {
+                Dictionary<string, List<string>> errors = caseItem.AllErrors();
+                StringBuilder errorMessage = new StringBuilder();
+                foreach (var error in errors)
+                {
+                    errorMessage.AppendLine($"{error.Key}:/n ");
+                    foreach (var errorDetail in error.Value)
+                    {
+                        errorMessage.AppendLine($" - {errorDetail}\n");
+                    }
+                }
+                MessageBox.Show(errorMessage.ToString(), "Correct next errors", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             WebClient<Models.Case> client = new WebClient<Models.Case>();
             client.Schema = "http";
             client.Host = "localhost";
             client.Port = 5195;
 
-            bool ok = false;
+            ok = false;
 
             if (isEdit)
             {

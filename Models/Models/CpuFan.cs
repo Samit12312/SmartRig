@@ -28,6 +28,7 @@ namespace Models
         }
 
         [Range(1, int.MaxValue, ErrorMessage = "Cpu fan price must be bigger than 0")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "CpuFan price must be a number")]
         public int CpuFanPrice
         {
             get { return this.cpuFanPrice; }

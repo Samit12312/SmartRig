@@ -28,6 +28,7 @@ namespace Models
         }
 
         [Range(1, int.MaxValue, ErrorMessage = "Case price must be bigger than 0")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "Case price must be a number")]
         public int CasePrice
         {
             get { return this.casePrice; }

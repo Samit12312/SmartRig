@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ApiClient;
@@ -83,15 +84,36 @@ namespace SmartRigWPF.Frames
             storage.StorageSize = SizeBox.Text;
             storage.StorageSpeed = SpeedBox.Text;
             storage.StorageType = (int)TypeBox.SelectedValue;
-            storage.StoragePrice = int.Parse(PriceBox.Text);
+            bool ok = int.TryParse(PriceBox.Text, out int price);
+            if (ok)
+                storage.StoragePrice = price;
+            else
+                storage.StoragePrice = -1;
             storage.StorageCompanyId = (int)CompanyBox.SelectedValue;
+
+            storage.Validate();
+            if (storage.HasErrors)
+            {
+                Dictionary<string, List<string>> errors = storage.AllErrors();
+                StringBuilder errorMessage = new StringBuilder();
+                foreach (var error in errors)
+                {
+                    errorMessage.AppendLine($"{error.Key}:/n ");
+                    foreach (var errorDetail in error.Value)
+                    {
+                        errorMessage.AppendLine($" - {errorDetail}\n");
+                    }
+                }
+                MessageBox.Show(errorMessage.ToString(), "Correct next errors", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             WebClient<Storage> client = new WebClient<Storage>();
             client.Schema = "http";
             client.Host = "localhost";
             client.Port = 5195;
 
-            bool ok = false;
+            ok = false;
 
             if (isEdit)
             {

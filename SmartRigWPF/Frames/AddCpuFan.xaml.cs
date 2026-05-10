@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using ApiClient;
 using Models;
@@ -55,15 +56,36 @@ namespace SmartRigWPF.Frames
         {
             CpuFan cpuFan = new CpuFan();
             cpuFan.CpuFanName = CpuFanNameBox.Text;
-            cpuFan.CpuFanPrice = int.Parse(PriceBox.Text);
+            bool ok = int.TryParse(PriceBox.Text, out int price);
+            if (ok)
+                cpuFan.CpuFanPrice = price;
+            else
+                cpuFan.CpuFanPrice = -1;
             cpuFan.CpuFanCompanyId = (int)CompanyBox.SelectedValue;
+
+            cpuFan.Validate();
+            if (cpuFan.HasErrors)
+            {
+                Dictionary<string, List<string>> errors = cpuFan.AllErrors();
+                StringBuilder errorMessage = new StringBuilder();
+                foreach (var error in errors)
+                {
+                    errorMessage.AppendLine($"{error.Key}:/n ");
+                    foreach (var errorDetail in error.Value)
+                    {
+                        errorMessage.AppendLine($" - {errorDetail}\n");
+                    }
+                }
+                MessageBox.Show(errorMessage.ToString(), "Correct next errors", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             WebClient<CpuFan> client = new WebClient<CpuFan>();
             client.Schema = "http";
             client.Host = "localhost";
             client.Port = 5195;
 
-            bool ok = false;
+            ok = false;
 
             if (isEdit)
             {

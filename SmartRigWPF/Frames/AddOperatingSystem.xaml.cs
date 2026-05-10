@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ApiClient;
@@ -60,15 +61,36 @@ namespace SmartRigWPF.Frames
         {
             Models.OperatingSystem operatingSystem = new Models.OperatingSystem();
             operatingSystem.OperatingSystemName = OperatingSystemNameBox.Text;
-            operatingSystem.OperatingSystemPrice = int.Parse(PriceBox.Text);
+            bool ok = int.TryParse(PriceBox.Text, out int price);
+            if (ok)
+                operatingSystem.OperatingSystemPrice = price;
+            else
+                operatingSystem.OperatingSystemPrice = -1;
             operatingSystem.OperatingSystemCompanyId = (int)CompanyBox.SelectedValue;
+
+            operatingSystem.Validate();
+            if (operatingSystem.HasErrors)
+            {
+                Dictionary<string, List<string>> errors = operatingSystem.AllErrors();
+                StringBuilder errorMessage = new StringBuilder();
+                foreach (var error in errors)
+                {
+                    errorMessage.AppendLine($"{error.Key}:/n ");
+                    foreach (var errorDetail in error.Value)
+                    {
+                        errorMessage.AppendLine($" - {errorDetail}\n");
+                    }
+                }
+                MessageBox.Show(errorMessage.ToString(), "Correct next errors", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             WebClient<Models.OperatingSystem> client = new WebClient<Models.OperatingSystem>();
             client.Schema = "http";
             client.Host = "localhost";
             client.Port = 5195;
 
-            bool ok = false;
+            ok = false;
 
             if (isEdit)
             {
