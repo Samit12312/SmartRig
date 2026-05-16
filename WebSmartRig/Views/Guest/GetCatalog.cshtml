@@ -4,7 +4,7 @@
     ViewData["Title"] = "ComputersCatalog";
     Layout = "~/Views/Shared/MasterPage.cshtml";
 }
-<link href="~/StyleSheet/computercatalog.css" rel="stylesheet" />
+<link href="~/stylesheet/computercatalog.css" rel="stylesheet" />
 <script>
     function GoLink() {
         document.getElementById("filterForm").submit();
@@ -14,6 +14,15 @@
 @if (TempData["Message"] != null)
 {
     <div class="success-message">@TempData["Message"]</div>
+
+    <script>
+        setTimeout(function () {
+            const message = document.querySelector(".success-message");
+            if (message) {
+                message.style.display = "none";
+            }
+        }, 2000);
+    </script>
 }
 
 <div class="catalog-container">

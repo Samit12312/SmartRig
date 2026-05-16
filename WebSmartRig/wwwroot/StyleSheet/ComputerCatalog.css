@@ -5,6 +5,7 @@
     background-color: #f4f6f8;
     overflow-x: hidden; /* removes horizontal scroll */
 }
+
 .catalog-container {
     display: flex;
     max-width: 1200px;
@@ -101,6 +102,7 @@
     font-weight: bold;
     color: #27ae60;
 }
+
 .cartButton {
     background-color: #26898f;
     color: black;
@@ -109,4 +111,17 @@
     border-radius: 6px;
     cursor: pointer;
     font-size: 14px;
+}
+
+.success-message {
+    position: fixed;
+    top: 75px;
+    right: 25px;
+    background-color: #24384a;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.20);
+    z-index: 9999;
 }

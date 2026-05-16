@@ -13,12 +13,12 @@ namespace SmartRigWeb
 
         public bool Create(Cart item)
         {
-            string sql = @"INSERT INTO [Cart] (UserId, Date, IsPayed) 
-                           VALUES (@UserId, @Date, @IsPayed)";
+            string sql = @"INSERT INTO [Cart] ([UserId], [Date], [IsPayed]) 
+                   VALUES (@UserId, @Date, @IsPayed)";
 
             this.dbContext.AddParameter("@UserId", item.UserId.ToString());
             this.dbContext.AddParameter("@Date", item.Date);
-            this.dbContext.AddParameter("@IsPayed", item.IsPayed.ToString());
+            this.dbContext.AddParameter("@IsPayed", item.IsPayed ? -1 : 0);
 
             return this.dbContext.Insert(sql) > 0;
         }
