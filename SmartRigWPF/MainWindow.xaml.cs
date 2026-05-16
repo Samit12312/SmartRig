@@ -15,8 +15,10 @@ namespace SmartRigWPF
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
     public partial class MainWindow : Window
     {
+        bool IsAdmin = false;
         StartPage startPage;
         LoginPage loginPage;
         ManageUsers manageUsers;
@@ -27,7 +29,46 @@ namespace SmartRigWPF
         public MainWindow()
         {
             InitializeComponent();
-            ViewStartPage();
+
+            IsAdmin = false;
+            UpdateMain();
+
+            ViewLoginPage();
+        }
+        private void UpdateMain()
+        {
+            if (IsAdmin == false)
+            {
+                LoginButton.Content = "Login";
+
+                HomeButton.Visibility = Visibility.Collapsed;
+
+                SideBarBorder.Visibility = Visibility.Collapsed;
+                SideBarColumn.Width = new GridLength(0);
+
+                DashBoard.Visibility = Visibility.Collapsed;
+                UsersButton.Visibility = Visibility.Collapsed;
+                ComputersButton.Visibility = Visibility.Collapsed;
+                ComponentsButton.Visibility = Visibility.Collapsed;
+                OrdersButton.Visibility = Visibility.Collapsed;
+                ReportsButton.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                LoginButton.Content = "Logout";
+
+                HomeButton.Visibility = Visibility.Visible;
+
+                SideBarColumn.Width = new GridLength(220);
+                SideBarBorder.Visibility = Visibility.Visible;
+
+                DashBoard.Visibility = Visibility.Visible;
+                UsersButton.Visibility = Visibility.Visible;
+                ComputersButton.Visibility = Visibility.Visible;
+                ComponentsButton.Visibility = Visibility.Visible;
+                OrdersButton.Visibility = Visibility.Visible;
+                ReportsButton.Visibility = Visibility.Visible;
+            }
         }
 
         private void btnLogout_Click(object sender, RoutedEventArgs e)
@@ -38,14 +79,20 @@ namespace SmartRigWPF
         {
             if (this.loginPage == null)
                 this.loginPage = new LoginPage();
+
             this.ContentFrame.Content = this.loginPage;
         }
 
-        public void ViewStartPage()
+        public void ViewStartPage(bool isLogin)
         {
+            this.IsAdmin = isLogin;
+
             if (this.startPage == null)
                 this.startPage = new StartPage();
+
             this.ContentFrame.Content = this.startPage;
+
+            UpdateMain();
         }
 
         public void ViewManageUsers()
@@ -84,12 +131,21 @@ namespace SmartRigWPF
         }
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            ViewLoginPage();
+            if (IsAdmin == false)
+            {
+                ViewLoginPage();
+            }
+            else
+            {
+                IsAdmin = false;
+                UpdateMain();
+                ViewLoginPage();
+            }
         }
 
         private void HomePage_Click(object sender, RoutedEventArgs e)
         {
-            ViewStartPage();
+            ViewStartPage(IsAdmin);
         }
 
         private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
@@ -111,7 +167,13 @@ namespace SmartRigWPF
         {
             ViewManageComputers();
         }
-
+        public void LoginSuccess()
+        {
+            IsAdmin = true;
+            LoginButton.Content = "Logout";
+            UpdateMain();
+            ViewStartPage(true);
+        }
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
             ViewManageUsers();

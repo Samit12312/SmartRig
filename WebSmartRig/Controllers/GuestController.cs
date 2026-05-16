@@ -96,7 +96,7 @@ namespace WebSmartRig.Controllers
         [HttpGet]
         public IActionResult Profile()
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            string? userId = HttpContext.Session.GetString("userId");
             if (userId == null)
             {
                 return RedirectToAction("ViewLoginForm");
@@ -160,7 +160,8 @@ namespace WebSmartRig.Controllers
             bool ok = PostUser(user);
             if (ok)
             {
-                HttpContext.Session.SetString("userId", user.UserId.ToString());
+                HttpContext.Session.SetInt32("userId", user.UserId);
+                HttpContext.Session.SetString("userName", user.UserName);
                 return RedirectToAction("GetCatalog", "guest");
             }
             ViewBag.Massage = "Registration failed. Try again";

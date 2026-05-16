@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ApiClient;
@@ -64,15 +65,36 @@ namespace SmartRigWPF.Frames
             gpu.GpuName = GpuNameBox.Text;
             gpu.GpuSize = SizeBox.Text;
             gpu.GpuSpeed = SpeedBox.Text;
-            gpu.GpuPrice = int.Parse(PriceBox.Text);
+            bool ok = int.TryParse(PriceBox.Text, out int price);
+            if (ok)
+                gpu.GpuPrice = price;
+            else
+                gpu.GpuPrice = -1;
             gpu.GpuCompanyId = (int)CompanyBox.SelectedValue;
+
+            gpu.Validate();
+            if (gpu.HasErrors)
+            {
+                Dictionary<string, List<string>> errors = gpu.AllErrors();
+                StringBuilder errorMessage = new StringBuilder();
+                foreach (var error in errors)
+                {
+                    errorMessage.AppendLine($"{error.Key}:/n ");
+                    foreach (var errorDetail in error.Value)
+                    {
+                        errorMessage.AppendLine($" - {errorDetail}\n");
+                    }
+                }
+                MessageBox.Show(errorMessage.ToString(), "Correct next errors", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             WebClient<Gpu> client = new WebClient<Gpu>();
             client.Schema = "http";
             client.Host = "localhost";
             client.Port = 5195;
 
-            bool ok = false;
+            ok = false;
 
             if (isEdit)
             {

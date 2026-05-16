@@ -64,6 +64,7 @@ namespace Models
         }
 
         [Range(1, int.MaxValue, ErrorMessage = "Ram price must be bigger than 0")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "Ram price must be a number")]
         public int RamPrice
         {
             get { return this.ramPrice; }

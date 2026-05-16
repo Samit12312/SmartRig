@@ -28,6 +28,7 @@ namespace Models
         }
 
         [Range(1, int.MaxValue, ErrorMessage = "Motherboard price must be bigger than 0")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "MotherBoard price must be a number")]
         public int MotherBoardPrice
         {
             get { return this.motherBoardPrice; }

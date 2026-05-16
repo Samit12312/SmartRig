@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using ApiClient;
@@ -83,15 +84,36 @@ namespace SmartRigWPF.Frames
             ram.RamSize = SizeBox.Text;
             ram.RamSpeed = SpeedBox.Text;
             ram.RamTypeId = (int)TypeBox.SelectedValue;
-            ram.RamPrice = int.Parse(PriceBox.Text);
+            bool ok = int.TryParse(PriceBox.Text, out int price);
+            if (ok)
+                ram.RamPrice = price;
+            else
+                ram.RamPrice = -1;
             ram.RamCompanyId = (int)CompanyBox.SelectedValue;
+
+            ram.Validate();
+            if (ram.HasErrors)
+            {
+                Dictionary<string, List<string>> errors = ram.AllErrors();
+                StringBuilder errorMessage = new StringBuilder();
+                foreach (var error in errors)
+                {
+                    errorMessage.AppendLine($"{error.Key}:/n ");
+                    foreach (var errorDetail in error.Value)
+                    {
+                        errorMessage.AppendLine($" - {errorDetail}\n");
+                    }
+                }
+                MessageBox.Show(errorMessage.ToString(), "Correct next errors", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             WebClient<Ram> client = new WebClient<Ram>();
             client.Schema = "http";
             client.Host = "localhost";
             client.Port = 5195;
 
-            bool ok = false;
+            ok = false;
 
             if (isEdit)
             {
