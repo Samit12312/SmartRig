@@ -28,13 +28,15 @@ namespace SmartRigWPF.Frames
 
             ComponentTypeComboBox.IsEnabled = true;
             isLoaded = true;
+
+            ApplyComponentFilter();
         }
 
         private async Task LoadAllComponents()
         {
             try
             {
-                allComponents.Clear();
+                List<object> freshComponents = new List<object>();
 
                 WebClient<ManageComponentsViewModel> client = new WebClient<ManageComponentsViewModel>();
                 client.Schema = "http";
@@ -46,25 +48,74 @@ namespace SmartRigWPF.Frames
 
                 if (vm != null)
                 {
-                    if (vm.cpus != null) allComponents.AddRange(vm.cpus);
-                    if (vm.gpus != null) allComponents.AddRange(vm.gpus);
-                    if (vm.rams != null) allComponents.AddRange(vm.rams);
-                    if (vm.storages != null) allComponents.AddRange(vm.storages);
-                    if (vm.motherBoards != null) allComponents.AddRange(vm.motherBoards);
-                    if (vm.cases != null) allComponents.AddRange(vm.cases);
-                    if (vm.cpuFans != null) allComponents.AddRange(vm.cpuFans);
-                    if (vm.powerSupplies != null) allComponents.AddRange(vm.powerSupplies);
-                    if (vm.operatingSystems != null) allComponents.AddRange(vm.operatingSystems);
+                    if (vm.cpus != null) freshComponents.AddRange(vm.cpus);
+                    if (vm.gpus != null) freshComponents.AddRange(vm.gpus);
+                    if (vm.rams != null) freshComponents.AddRange(vm.rams);
+                    if (vm.storages != null) freshComponents.AddRange(vm.storages);
+                    if (vm.motherBoards != null) freshComponents.AddRange(vm.motherBoards);
+                    if (vm.cases != null) freshComponents.AddRange(vm.cases);
+                    if (vm.cpuFans != null) freshComponents.AddRange(vm.cpuFans);
+                    if (vm.powerSupplies != null) freshComponents.AddRange(vm.powerSupplies);
+                    if (vm.operatingSystems != null) freshComponents.AddRange(vm.operatingSystems);
                 }
 
-                if (listView != null)
-                {
-                    listView.ItemsSource = allComponents;
-                }
+                allComponents = freshComponents;
+                ApplyComponentFilter();
             }
             catch (System.Exception ex)
             {
                 MessageBox.Show("Error loading components: " + ex.Message);
+            }
+        }
+
+        private void ApplyComponentFilter()
+        {
+            if (listView == null || ComponentTypeComboBox.SelectedItem == null)
+                return;
+
+            string selectedType = ((ComboBoxItem)ComponentTypeComboBox.SelectedItem).Content.ToString();
+
+            listView.ItemsSource = null;
+
+            if (selectedType == "All")
+            {
+                listView.ItemsSource = allComponents;
+            }
+            else if (selectedType == "CPU")
+            {
+                listView.ItemsSource = allComponents.OfType<CpuManageViewModel>().ToList();
+            }
+            else if (selectedType == "GPU")
+            {
+                listView.ItemsSource = allComponents.OfType<GpuManageViewModel>().ToList();
+            }
+            else if (selectedType == "RAM")
+            {
+                listView.ItemsSource = allComponents.OfType<RamManageViewModel>().ToList();
+            }
+            else if (selectedType == "Storage")
+            {
+                listView.ItemsSource = allComponents.OfType<StorageManageViewModel>().ToList();
+            }
+            else if (selectedType == "Motherboard")
+            {
+                listView.ItemsSource = allComponents.OfType<MotherBoardManageViewModel>().ToList();
+            }
+            else if (selectedType == "Case")
+            {
+                listView.ItemsSource = allComponents.OfType<CaseManageViewModel>().ToList();
+            }
+            else if (selectedType == "CPU Fan")
+            {
+                listView.ItemsSource = allComponents.OfType<CpuFanManageViewModel>().ToList();
+            }
+            else if (selectedType == "Power Supply")
+            {
+                listView.ItemsSource = allComponents.OfType<PowerSupplyManageViewModel>().ToList();
+            }
+            else if (selectedType == "Operating System")
+            {
+                listView.ItemsSource = allComponents.OfType<OperatingSystemManageViewModel>().ToList();
             }
         }
 
@@ -133,7 +184,6 @@ namespace SmartRigWPF.Frames
             if (result == true)
             {
                 await LoadAllComponents();
-                ComponentTypeComboBox_SelectionChanged(null, null);
             }
         }
 
@@ -196,7 +246,6 @@ namespace SmartRigWPF.Frames
             if (result == true)
             {
                 await LoadAllComponents();
-                ComponentTypeComboBox_SelectionChanged(null, null);
             }
         }
 
@@ -210,167 +259,126 @@ namespace SmartRigWPF.Frames
 
             MessageBoxResult confirmation = MessageBox.Show("Are you sure?", "Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            if (confirmation == MessageBoxResult.Yes)
+            if (confirmation != MessageBoxResult.Yes)
+                return;
+
+            try
             {
-                try
-                {
-                    bool success = false;
+                bool success = false;
 
-                    if (listView.SelectedItem is CpuManageViewModel cpuVm)
-                    {
-                        WebClient<bool> client = new WebClient<bool>();
-                        client.Schema = "http";
-                        client.Host = "localhost";
-                        client.Port = 5195;
-                        client.Path = "api/Manager/RemoveCpu";
-                        client.AddParameter("cpuId", cpuVm.cpu.CpuId.ToString());
-                        success = await client.GetAsync();
-                    }
-                    else if (listView.SelectedItem is GpuManageViewModel gpuVm)
-                    {
-                        WebClient<bool> client = new WebClient<bool>();
-                        client.Schema = "http";
-                        client.Host = "localhost";
-                        client.Port = 5195;
-                        client.Path = "api/Manager/RemoveGpu";
-                        client.AddParameter("gpuId", gpuVm.gpu.GpuId.ToString());
-                        success = await client.GetAsync();
-                    }
-                    else if (listView.SelectedItem is RamManageViewModel ramVm)
-                    {
-                        WebClient<bool> client = new WebClient<bool>();
-                        client.Schema = "http";
-                        client.Host = "localhost";
-                        client.Port = 5195;
-                        client.Path = "api/Manager/RemoveRam";
-                        client.AddParameter("ramId", ramVm.ram.RamId.ToString());
-                        success = await client.GetAsync();
-                    }
-                    else if (listView.SelectedItem is StorageManageViewModel storageVm)
-                    {
-                        WebClient<bool> client = new WebClient<bool>();
-                        client.Schema = "http";
-                        client.Host = "localhost";
-                        client.Port = 5195;
-                        client.Path = "api/Manager/RemoveStorage";
-                        client.AddParameter("storageId", storageVm.storage.StorageId.ToString());
-                        success = await client.GetAsync();
-                    }
-                    else if (listView.SelectedItem is MotherBoardManageViewModel motherBoardVm)
-                    {
-                        WebClient<bool> client = new WebClient<bool>();
-                        client.Schema = "http";
-                        client.Host = "localhost";
-                        client.Port = 5195;
-                        client.Path = "api/Manager/RemoveMotherBoard";
-                        client.AddParameter("motherBoardId", motherBoardVm.motherBoard.MotherBoardId.ToString());
-                        success = await client.GetAsync();
-                    }
-                    else if (listView.SelectedItem is CaseManageViewModel caseVm)
-                    {
-                        WebClient<bool> client = new WebClient<bool>();
-                        client.Schema = "http";
-                        client.Host = "localhost";
-                        client.Port = 5195;
-                        client.Path = "api/Manager/RemoveCase";
-                        client.AddParameter("caseId", caseVm.computerCase.CaseId.ToString());
-                        success = await client.GetAsync();
-                    }
-                    else if (listView.SelectedItem is CpuFanManageViewModel cpuFanVm)
-                    {
-                        WebClient<bool> client = new WebClient<bool>();
-                        client.Schema = "http";
-                        client.Host = "localhost";
-                        client.Port = 5195;
-                        client.Path = "api/Manager/RemoveCpuFan";
-                        client.AddParameter("cpuFanId", cpuFanVm.cpuFan.CpuFanId.ToString());
-                        success = await client.GetAsync();
-                    }
-                    else if (listView.SelectedItem is PowerSupplyManageViewModel powerSupplyVm)
-                    {
-                        WebClient<bool> client = new WebClient<bool>();
-                        client.Schema = "http";
-                        client.Host = "localhost";
-                        client.Port = 5195;
-                        client.Path = "api/Manager/RemovePowerSupply";
-                        client.AddParameter("powerSupplyId", powerSupplyVm.powerSupply.PowerSupplyId.ToString());
-                        success = await client.GetAsync();
-                    }
-                    else if (listView.SelectedItem is OperatingSystemManageViewModel operatingSystemVm)
-                    {
-                        WebClient<bool> client = new WebClient<bool>();
-                        client.Schema = "http";
-                        client.Host = "localhost";
-                        client.Port = 5195;
-                        client.Path = "api/Manager/RemoveOperatingSystem";
-                        client.AddParameter("operatingSystemId", operatingSystemVm.operatingSystem.OperatingSystemId.ToString());
-                        success = await client.GetAsync();
-                    }
-
-                    if (success)
-                    {
-                        MessageBox.Show("Deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        await LoadAllComponents();
-                        ComponentTypeComboBox_SelectionChanged(null, null);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Failed to delete.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
-                catch (System.Exception ex)
+                if (listView.SelectedItem is CpuManageViewModel cpuVm)
                 {
-                    MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    WebClient<bool> client = new WebClient<bool>();
+                    client.Schema = "http";
+                    client.Host = "localhost";
+                    client.Port = 5195;
+                    client.Path = "api/Manager/RemoveCpu";
+                    client.AddParameter("cpuId", cpuVm.cpu.CpuId.ToString());
+                    success = await client.GetAsync();
                 }
+                else if (listView.SelectedItem is GpuManageViewModel gpuVm)
+                {
+                    WebClient<bool> client = new WebClient<bool>();
+                    client.Schema = "http";
+                    client.Host = "localhost";
+                    client.Port = 5195;
+                    client.Path = "api/Manager/RemoveGpu";
+                    client.AddParameter("gpuId", gpuVm.gpu.GpuId.ToString());
+                    success = await client.GetAsync();
+                }
+                else if (listView.SelectedItem is RamManageViewModel ramVm)
+                {
+                    WebClient<bool> client = new WebClient<bool>();
+                    client.Schema = "http";
+                    client.Host = "localhost";
+                    client.Port = 5195;
+                    client.Path = "api/Manager/RemoveRam";
+                    client.AddParameter("ramId", ramVm.ram.RamId.ToString());
+                    success = await client.GetAsync();
+                }
+                else if (listView.SelectedItem is StorageManageViewModel storageVm)
+                {
+                    WebClient<bool> client = new WebClient<bool>();
+                    client.Schema = "http";
+                    client.Host = "localhost";
+                    client.Port = 5195;
+                    client.Path = "api/Manager/RemoveStorage";
+                    client.AddParameter("storageId", storageVm.storage.StorageId.ToString());
+                    success = await client.GetAsync();
+                }
+                else if (listView.SelectedItem is MotherBoardManageViewModel motherBoardVm)
+                {
+                    WebClient<bool> client = new WebClient<bool>();
+                    client.Schema = "http";
+                    client.Host = "localhost";
+                    client.Port = 5195;
+                    client.Path = "api/Manager/RemoveMotherBoard";
+                    client.AddParameter("motherBoardId", motherBoardVm.motherBoard.MotherBoardId.ToString());
+                    success = await client.GetAsync();
+                }
+                else if (listView.SelectedItem is CaseManageViewModel caseVm)
+                {
+                    WebClient<bool> client = new WebClient<bool>();
+                    client.Schema = "http";
+                    client.Host = "localhost";
+                    client.Port = 5195;
+                    client.Path = "api/Manager/RemoveCase";
+                    client.AddParameter("caseId", caseVm.computerCase.CaseId.ToString());
+                    success = await client.GetAsync();
+                }
+                else if (listView.SelectedItem is CpuFanManageViewModel cpuFanVm)
+                {
+                    WebClient<bool> client = new WebClient<bool>();
+                    client.Schema = "http";
+                    client.Host = "localhost";
+                    client.Port = 5195;
+                    client.Path = "api/Manager/RemoveCpuFan";
+                    client.AddParameter("cpuFanId", cpuFanVm.cpuFan.CpuFanId.ToString());
+                    success = await client.GetAsync();
+                }
+                else if (listView.SelectedItem is PowerSupplyManageViewModel powerSupplyVm)
+                {
+                    WebClient<bool> client = new WebClient<bool>();
+                    client.Schema = "http";
+                    client.Host = "localhost";
+                    client.Port = 5195;
+                    client.Path = "api/Manager/RemovePowerSupply";
+                    client.AddParameter("powerSupplyId", powerSupplyVm.powerSupply.PowerSupplyId.ToString());
+                    success = await client.GetAsync();
+                }
+                else if (listView.SelectedItem is OperatingSystemManageViewModel operatingSystemVm)
+                {
+                    WebClient<bool> client = new WebClient<bool>();
+                    client.Schema = "http";
+                    client.Host = "localhost";
+                    client.Port = 5195;
+                    client.Path = "api/Manager/RemoveOperatingSystem";
+                    client.AddParameter("operatingSystemId", operatingSystemVm.operatingSystem.OperatingSystemId.ToString());
+                    success = await client.GetAsync();
+                }
+
+                if (success)
+                {
+                    MessageBox.Show("Deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    await LoadAllComponents();
+                }
+                else
+                {
+                    MessageBox.Show("Failed to delete.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void ComponentTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!isLoaded || ComponentTypeComboBox.SelectedItem == null || listView == null) return;
+            if (!isLoaded)
+                return;
 
-            string selectedType = ((ComboBoxItem)ComponentTypeComboBox.SelectedItem).Content.ToString();
-
-            if (selectedType == "All")
-            {
-                listView.ItemsSource = allComponents;
-            }
-            else if (selectedType == "CPU")
-            {
-                listView.ItemsSource = allComponents.OfType<CpuManageViewModel>().ToList();
-            }
-            else if (selectedType == "GPU")
-            {
-                listView.ItemsSource = allComponents.OfType<GpuManageViewModel>().ToList();
-            }
-            else if (selectedType == "RAM")
-            {
-                listView.ItemsSource = allComponents.OfType<RamManageViewModel>().ToList();
-            }
-            else if (selectedType == "Storage")
-            {
-                listView.ItemsSource = allComponents.OfType<StorageManageViewModel>().ToList();
-            }
-            else if (selectedType == "Motherboard")
-            {
-                listView.ItemsSource = allComponents.OfType<MotherBoardManageViewModel>().ToList();
-            }
-            else if (selectedType == "Case")
-            {
-                listView.ItemsSource = allComponents.OfType<CaseManageViewModel>().ToList();
-            }
-            else if (selectedType == "CPU Fan")
-            {
-                listView.ItemsSource = allComponents.OfType<CpuFanManageViewModel>().ToList();
-            }
-            else if (selectedType == "Power Supply")
-            {
-                listView.ItemsSource = allComponents.OfType<PowerSupplyManageViewModel>().ToList();
-            }
-            else if (selectedType == "Operating System")
-            {
-                listView.ItemsSource = allComponents.OfType<OperatingSystemManageViewModel>().ToList();
-            }
+            ApplyComponentFilter();
         }
     }
 }

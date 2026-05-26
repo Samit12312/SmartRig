@@ -72,8 +72,16 @@ namespace SmartRigWPF.Frames
 
                     if (!string.IsNullOrEmpty(selectedComputer.ComputerPicture))
                     {
-                        Uri uri = new Uri("http://localhost:5195/Images/Computers/" + selectedComputer.ComputerPicture);
-                        this.image.Source = new BitmapImage(uri);
+                        string imageUrl = "http://localhost:5195/Images/Computers/" + selectedComputer.ComputerPicture + "?t=" + DateTime.Now.Ticks;
+
+                        BitmapImage bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                        bitmap.UriSource = new Uri(imageUrl, UriKind.Absolute);
+                        bitmap.EndInit();
+
+                        this.image.Source = bitmap;
                     }
                 }
                 else
@@ -182,7 +190,7 @@ namespace SmartRigWPF.Frames
                 }
                 else
                 {
-                    ok = await client.PostAsync(computer);
+                    ok = await client.PostAsync(computer, new List<Stream>());
                 }
 
                 if (ok)

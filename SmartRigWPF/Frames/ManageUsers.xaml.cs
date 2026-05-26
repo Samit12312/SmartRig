@@ -34,7 +34,10 @@ namespace SmartRigWPF.Frames
             client.Host = "localhost";
             client.Port = 5195;
             client.Path = "api/Manager/GetAllUsers";
-            this.users = await client.GetAsync();
+
+            this.users = await client.GetAsync() ?? new List<User>();
+
+            listView.ItemsSource = null;
             listView.ItemsSource = this.users;
         }
 

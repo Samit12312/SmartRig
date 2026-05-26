@@ -66,7 +66,7 @@ namespace SmartRigWPF.Frames
                 operatingSystem.OperatingSystemPrice = price;
             else
                 operatingSystem.OperatingSystemPrice = -1;
-            operatingSystem.OperatingSystemCompanyId = (int)CompanyBox.SelectedValue;
+            operatingSystem.OperatingSystemCompanyId = CompanyBox.SelectedValue == null ? 0 : (int)CompanyBox.SelectedValue;
 
             operatingSystem.Validate();
             if (operatingSystem.HasErrors)

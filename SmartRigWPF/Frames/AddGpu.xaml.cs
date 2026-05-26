@@ -70,7 +70,7 @@ namespace SmartRigWPF.Frames
                 gpu.GpuPrice = price;
             else
                 gpu.GpuPrice = -1;
-            gpu.GpuCompanyId = (int)CompanyBox.SelectedValue;
+            gpu.GpuCompanyId = CompanyBox.SelectedValue == null ? 0 : (int)CompanyBox.SelectedValue;
 
             gpu.Validate();
             if (gpu.HasErrors)

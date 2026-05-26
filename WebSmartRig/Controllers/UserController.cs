@@ -32,7 +32,7 @@ namespace WebAppSmartRig.Controllers
             }
 
             // Dummy password required by API / DB validation
-            user.UserPassword = "XXXXX5";
+            user.UserPassword = "";
 
             // Make sure the correct user is updated from session
             string userIdStr = HttpContext.Session.GetString("userId");

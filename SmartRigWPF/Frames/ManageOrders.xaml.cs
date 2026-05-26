@@ -34,7 +34,10 @@ namespace SmartRigWPF.Frames
             client.Host = "localhost";
             client.Port = 5195;
             client.Path = "api/Manager/GetAllOrders";
-            this.orders = await client.GetAsync();
+
+            this.orders = await client.GetAsync() ?? new List<Cart>();
+
+            listView.ItemsSource = null;
             listView.ItemsSource = this.orders;
         }
 

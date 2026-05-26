@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -34,10 +35,11 @@ namespace SmartRigWPF.Frames
             if (isEdit && selectedRam != null)
             {
                 RamNameBox.Text = selectedRam.RamName;
-                SizeBox.Text = selectedRam.RamSize.ToString();
-                SpeedBox.Text = selectedRam.RamSpeed.ToString();
-                TypeBox.SelectedValue = selectedRam.RamTypeId;
+                SizeBox.Text = selectedRam.RamSize;
+                SpeedBox.Text = selectedRam.RamSpeed;
                 PriceBox.Text = selectedRam.RamPrice.ToString();
+
+                TypeBox.SelectedValue = selectedRam.RamTypeId;
                 CompanyBox.SelectedValue = selectedRam.RamCompanyId;
 
                 Title = "Edit Ram";
@@ -58,6 +60,11 @@ namespace SmartRigWPF.Frames
             if (companies != null)
             {
                 CompanyBox.ItemsSource = companies;
+
+                if (isEdit && selectedRam != null)
+                {
+                    CompanyBox.SelectedItem = companies.FirstOrDefault(x => x.CompanyId == selectedRam.RamCompanyId);
+                }
             }
         }
 
@@ -74,36 +81,79 @@ namespace SmartRigWPF.Frames
             if (types != null)
             {
                 TypeBox.ItemsSource = types;
+
+                if (isEdit && selectedRam != null)
+                {
+                    TypeBox.SelectedItem = types.FirstOrDefault(x => x.TypeId == selectedRam.RamTypeId);
+                }
             }
+        }
+
+        private int GetSelectedCompanyId()
+        {
+            if (CompanyBox.SelectedValue != null && int.TryParse(CompanyBox.SelectedValue.ToString(), out int id))
+                return id;
+
+            if (CompanyBox.SelectedItem is Company company)
+                return company.CompanyId;
+
+            if (isEdit && selectedRam != null)
+                return selectedRam.RamCompanyId;
+
+            return 0;
+        }
+
+        private int GetSelectedTypeId()
+        {
+            if (TypeBox.SelectedValue != null && int.TryParse(TypeBox.SelectedValue.ToString(), out int id))
+                return id;
+
+            if (TypeBox.SelectedItem is Models.Type type)
+                return type.TypeId;
+
+            if (isEdit && selectedRam != null)
+                return selectedRam.RamTypeId;
+
+            return 0;
         }
 
         private async void AddBtn_Click(object sender, RoutedEventArgs e)
         {
             Ram ram = new Ram();
+
             ram.RamName = RamNameBox.Text;
             ram.RamSize = SizeBox.Text;
             ram.RamSpeed = SpeedBox.Text;
-            ram.RamTypeId = (int)TypeBox.SelectedValue;
-            bool ok = int.TryParse(PriceBox.Text, out int price);
-            if (ok)
+            ram.RamTypeId = GetSelectedTypeId();
+            ram.RamCompanyId = GetSelectedCompanyId();
+
+            bool priceOk = int.TryParse(PriceBox.Text, out int price);
+
+            if (priceOk)
                 ram.RamPrice = price;
             else
                 ram.RamPrice = -1;
-            ram.RamCompanyId = (int)CompanyBox.SelectedValue;
+
+            if (isEdit && selectedRam != null)
+                ram.RamId = selectedRam.RamId;
 
             ram.Validate();
+
             if (ram.HasErrors)
             {
                 Dictionary<string, List<string>> errors = ram.AllErrors();
                 StringBuilder errorMessage = new StringBuilder();
+
                 foreach (var error in errors)
                 {
-                    errorMessage.AppendLine($"{error.Key}:/n ");
+                    errorMessage.AppendLine($"{error.Key}:");
+
                     foreach (var errorDetail in error.Value)
                     {
-                        errorMessage.AppendLine($" - {errorDetail}\n");
+                        errorMessage.AppendLine(" - " + errorDetail);
                     }
                 }
+
                 MessageBox.Show(errorMessage.ToString(), "Correct next errors", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
@@ -113,11 +163,10 @@ namespace SmartRigWPF.Frames
             client.Host = "localhost";
             client.Port = 5195;
 
-            ok = false;
+            bool ok = false;
 
             if (isEdit)
             {
-                ram.RamId = selectedRam.RamId;
                 client.Path = "api/Manager/EditRam";
                 ok = await client.PostAsync(ram);
 

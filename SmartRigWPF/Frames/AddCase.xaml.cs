@@ -61,7 +61,7 @@ namespace SmartRigWPF.Frames
                 caseItem.CasePrice = price;
             else
                 caseItem.CasePrice = -1;
-            caseItem.CaseCompanyId = (int)CompanyBox.SelectedValue;
+            caseItem.CaseCompanyId = CompanyBox.SelectedValue == null ? 0 : (int)CompanyBox.SelectedValue;
 
             caseItem.Validate();
             if (caseItem.HasErrors)

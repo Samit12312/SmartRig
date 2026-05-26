@@ -127,16 +127,32 @@ namespace SmartRigWeb
         [HttpPost]
         public bool AddComputer()
         {
-            string jsonData = Request.Form["data"];
-            Computer data = JsonSerializer.Deserialize<Computer>(jsonData);
-            IFormFile file = Request.Form.Files[0];
+            bool transactionStarted = false;
 
             try
             {
+                if (!Request.HasFormContentType)
+                    return false;
+
+                if (!Request.Form.ContainsKey("data"))
+                    return false;
+
+                if (Request.Form.Files.Count == 0)
+                    return false;
+
+                string jsonData = Request.Form["data"];
+                Computer data = JsonSerializer.Deserialize<Computer>(jsonData);
+
+                IFormFile file = Request.Form.Files[0];
+
+                if (data == null || file == null || file.Length == 0)
+                    return false;
+
                 string format = data.ComputerPicture;
 
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.OpenTransaction();
+                transactionStarted = true;
 
                 this.repositoryFactory.ComputerRepository.Create(data);
 
@@ -147,13 +163,16 @@ namespace SmartRigWeb
 
                 this.repositoryFactory.ComputerRepository.Update(data);
 
-                string filePath = Path.Combine(
+                string folderPath = Path.Combine(
                     Directory.GetCurrentDirectory(),
                     "wwwroot",
                     "Images",
-                    "Computers",
-                    data.ComputerPicture
+                    "Computers"
                 );
+
+                Directory.CreateDirectory(folderPath);
+
+                string filePath = Path.Combine(folderPath, data.ComputerPicture);
 
                 using (FileStream stream = new FileStream(filePath, FileMode.Create))
                 {
@@ -166,12 +185,25 @@ namespace SmartRigWeb
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                this.repositoryFactory.Rollback();
+
+                if (transactionStarted)
+                {
+                    try
+                    {
+                        this.repositoryFactory.Rollback();
+                    }
+                    catch { }
+                }
+
                 return false;
             }
             finally
             {
-                this.repositoryFactory.DisconnectDb();
+                try
+                {
+                    this.repositoryFactory.DisconnectDb();
+                }
+                catch { }
             }
         }
         [HttpGet]
@@ -221,14 +253,29 @@ namespace SmartRigWeb
         {
             try
             {
-                JsonSerializerOptions options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                if (string.IsNullOrEmpty(data))
+                    return false;
+
+                JsonSerializerOptions options = new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
                 Computer computer = JsonSerializer.Deserialize<Computer>(data, options);
+
+                if (computer == null)
+                    return false;
 
                 this.repositoryFactory.ConnectDbContext();
 
-                if (file != null)
+                if (file != null && file.Length > 0)
                 {
-                    computer.ComputerPicture = computer.ComputerId + computer.ComputerPicture;
+                    string extension = computer.ComputerPicture;
+
+                    if (!extension.StartsWith("."))
+                        extension = Path.GetExtension(extension);
+
+                    computer.ComputerPicture = computer.ComputerId + extension;
 
                     string imagePath = Path.Combine(
                         Directory.GetCurrentDirectory(),
@@ -244,7 +291,9 @@ namespace SmartRigWeb
                     }
                 }
 
-                return this.repositoryFactory.ComputerRepository.Update(computer);
+                this.repositoryFactory.ComputerRepository.Update(computer);
+
+                return true;
             }
             catch (Exception ex)
             {
@@ -256,7 +305,7 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
-    
+
 
         // Cpu section
         [HttpPost]

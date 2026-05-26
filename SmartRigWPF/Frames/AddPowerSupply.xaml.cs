@@ -62,13 +62,14 @@ namespace SmartRigWPF.Frames
         {
             PowerSupply powerSupply = new PowerSupply();
             powerSupply.PowerSupplyName = PowerSupplyNameBox.Text;
-            powerSupply.PowerSupplyWatt = int.Parse(WattBox.Text);
+            bool wattOk = int.TryParse(WattBox.Text, out int watt);
+            powerSupply.PowerSupplyWatt = wattOk ? watt : -1;
             bool ok = int.TryParse(PriceBox.Text, out int price);
             if (ok)
                 powerSupply.PowerSupplyPrice = price;
             else
                 powerSupply.PowerSupplyPrice = -1;
-            powerSupply.PowerSupplyCompanyId = (int)CompanyBox.SelectedValue;
+            powerSupply.PowerSupplyCompanyId = CompanyBox.SelectedValue == null ? 0 : (int)CompanyBox.SelectedValue;
 
             powerSupply.Validate();
             if (powerSupply.HasErrors)

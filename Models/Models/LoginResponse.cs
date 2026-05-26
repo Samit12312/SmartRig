@@ -10,6 +10,7 @@ namespace Models
     {
         public bool Success { get; set; }
         public string UserId { get; set; }
-        public string UserName { get; set; } // Add this
+        public string UserName { get; set; }
+        public bool Manager { get; set; }
     }
 }

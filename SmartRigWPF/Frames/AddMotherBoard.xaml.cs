@@ -66,7 +66,7 @@ namespace SmartRigWPF.Frames
                 motherBoard.MotherBoardPrice = price;
             else
                 motherBoard.MotherBoardPrice = -1;
-            motherBoard.MotherBoardCompanyId = (int)CompanyBox.SelectedValue;
+            motherBoard.MotherBoardCompanyId = CompanyBox.SelectedValue == null ? 0 : (int)CompanyBox.SelectedValue;
 
             motherBoard.Validate();
             if (motherBoard.HasErrors)

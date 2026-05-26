@@ -54,15 +54,24 @@ namespace WebSmartRig.Controllers
         [HttpGet]
         public IActionResult GetComputer(string computerId)
         {
-            // 1. get data from webservice
-            // 2. 
+            if (!int.TryParse(computerId, out int id))
+            {
+                return RedirectToAction("GetCatalog", "Guest");
+            }
+
             WebClient<ComputerDetailsViewModel> webClient = new WebClient<ComputerDetailsViewModel>();
             webClient.Schema = "http";
             webClient.Host = "localhost";
             webClient.Port = 5195;
             webClient.Path = "api/Guest/GetComputerDetails";
-            webClient.AddParameter("computerId", computerId);
+            webClient.AddParameter("computerId", id.ToString());
+
             ComputerDetailsViewModel computerDetailsViewModel = webClient.Get();
+
+            if (computerDetailsViewModel == null || computerDetailsViewModel.computer == null)
+            {
+                return RedirectToAction("GetCatalog", "Guest");
+            }
 
             return View(computerDetailsViewModel);
         }

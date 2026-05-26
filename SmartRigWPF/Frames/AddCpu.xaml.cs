@@ -66,7 +66,7 @@ namespace SmartRigWPF.Frames
                 cpu.CpuPrice = price;
             else
                 cpu.CpuPrice = -1;
-            cpu.CpuCompanyId = (int)CompanyBox.SelectedValue;
+            cpu.CpuCompanyId = CompanyBox.SelectedValue == null ? 0 : (int)CompanyBox.SelectedValue;
             cpu.Validate(); 
             if(cpu.HasErrors)
             {

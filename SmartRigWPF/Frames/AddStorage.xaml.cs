@@ -89,7 +89,7 @@ namespace SmartRigWPF.Frames
                 storage.StoragePrice = price;
             else
                 storage.StoragePrice = -1;
-            storage.StorageCompanyId = (int)CompanyBox.SelectedValue;
+            storage.StorageType = TypeBox.SelectedValue == null ? 0 : (int)TypeBox.SelectedValue;
 
             storage.Validate();
             if (storage.HasErrors)
@@ -117,7 +117,7 @@ namespace SmartRigWPF.Frames
 
             if (isEdit)
             {
-                storage.StorageId = selectedStorage.StorageId;
+                storage.StorageType = TypeBox.SelectedValue == null ? 0 : (int)TypeBox.SelectedValue;
                 client.Path = "api/Manager/EditStorage";
                 ok = await client.PostAsync(storage);
 

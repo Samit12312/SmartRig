@@ -43,17 +43,29 @@
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"/>
             <!-- RIGHT ACTION -->
-            <Button Grid.Column="2"
-                    x:Name="LoginButton"
-                    Content="Login"
-                    Width="80"
-                    Height="32"
-                    Margin="0,0,20,0"
-                    VerticalAlignment="Center"
-                    Click="Login_Click"
-                    Background="White"
-                    Foreground="#6460D5"
-                    BorderThickness="0"/>
+            <StackPanel Grid.Column="2"
+            Orientation="Horizontal"
+            VerticalAlignment="Center"
+            Margin="0,0,20,0">
+
+                <TextBlock x:Name="HelloText"
+               Text=""
+               Foreground="White"
+               FontSize="14"
+               FontWeight="SemiBold"
+               VerticalAlignment="Center"
+               Margin="0,0,15,0"
+               Visibility="Collapsed"/>
+
+                <Button x:Name="LoginButton"
+            Content="Login"
+            Width="80"
+            Height="32"
+            Click="Login_Click"
+            Background="White"
+            Foreground="#6460D5"
+            BorderThickness="0"/>
+            </StackPanel>
         </Grid>
         
         <!-- SIDEBAR AND CONTENT -->

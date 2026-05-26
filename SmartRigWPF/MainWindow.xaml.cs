@@ -1,24 +1,14 @@
-﻿using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+﻿using System.Windows;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using SmartRigWPF.Frames;
 
 namespace SmartRigWPF
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    /// 
     public partial class MainWindow : Window
     {
         bool IsAdmin = false;
+        string currentUserName = "";
+
         StartPage startPage;
         LoginPage loginPage;
         ManageUsers manageUsers;
@@ -26,6 +16,7 @@ namespace SmartRigWPF
         ManageComponents manageComponents;
         ManageOrders manageOrders;
         ManageReports manageReports;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -35,11 +26,14 @@ namespace SmartRigWPF
 
             ViewLoginPage();
         }
+
         private void UpdateMain()
         {
             if (IsAdmin == false)
             {
                 LoginButton.Content = "Login";
+                HelloText.Text = "";
+                HelloText.Visibility = Visibility.Collapsed;
 
                 HomeButton.Visibility = Visibility.Collapsed;
 
@@ -56,6 +50,8 @@ namespace SmartRigWPF
             else
             {
                 LoginButton.Content = "Logout";
+                HelloText.Text = "Hello, " + currentUserName;
+                HelloText.Visibility = Visibility.Visible;
 
                 HomeButton.Visibility = Visibility.Visible;
 
@@ -71,64 +67,63 @@ namespace SmartRigWPF
             }
         }
 
-        private void btnLogout_Click(object sender, RoutedEventArgs e)
+        private void ClearPages()
         {
-
+            startPage = null;
+            loginPage = null;
+            manageUsers = null;
+            manageComputers = null;
+            manageComponents = null;
+            manageOrders = null;
+            manageReports = null;
         }
+
         public void ViewLoginPage()
         {
-            if (this.loginPage == null)
-                this.loginPage = new LoginPage();
-
-            this.ContentFrame.Content = this.loginPage;
+            loginPage = new LoginPage();
+            ContentFrame.Content = loginPage;
         }
 
         public void ViewStartPage(bool isLogin)
         {
-            this.IsAdmin = isLogin;
+            IsAdmin = isLogin;
 
-            if (this.startPage == null)
-                this.startPage = new StartPage();
-
-            this.ContentFrame.Content = this.startPage;
+            startPage = new StartPage();
+            ContentFrame.Content = startPage;
 
             UpdateMain();
         }
 
         public void ViewManageUsers()
         {
-            if (this.manageUsers == null)
-                this.manageUsers = new ManageUsers();
-            this.ContentFrame.Content = this.manageUsers;
+            manageUsers = new ManageUsers();
+            ContentFrame.Content = manageUsers;
         }
 
         public void ViewManageComputers()
         {
-            if (this.manageComputers == null)
-                this.manageComputers = new ManageComputers();
-            this.ContentFrame.Content = this.manageComputers;
+            manageComputers = new ManageComputers();
+            ContentFrame.Content = manageComputers;
         }
 
         public void ViewManageComponents()
         {
-            if (this.manageComponents == null)
-                this.manageComponents = new ManageComponents();
-            this.ContentFrame.Content = this.manageComponents;
+            manageComponents = new ManageComponents();
+            ContentFrame.Content = manageComponents;
         }
 
         public void ViewManageOrders()
         {
-            if (this.manageOrders == null)
-                this.manageOrders = new ManageOrders();
-            this.ContentFrame.Content = this.manageOrders;
+            manageOrders = new ManageOrders();
+            ContentFrame.Content = manageOrders;
         }
 
         public void ViewManageReports()
         {
-            if (this.manageReports == null)
-                this.manageReports = new ManageReports();
-            this.ContentFrame.Content = this.manageReports;
+            manageReports = new ManageReports();
+            ContentFrame.Content = manageReports;
         }
+
         private void Login_Click(object sender, RoutedEventArgs e)
         {
             if (IsAdmin == false)
@@ -138,6 +133,9 @@ namespace SmartRigWPF
             else
             {
                 IsAdmin = false;
+                currentUserName = "";
+
+                ClearPages();
                 UpdateMain();
                 ViewLoginPage();
             }
@@ -167,13 +165,7 @@ namespace SmartRigWPF
         {
             ViewManageComputers();
         }
-        public void LoginSuccess()
-        {
-            IsAdmin = true;
-            LoginButton.Content = "Logout";
-            UpdateMain();
-            ViewStartPage(true);
-        }
+
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
             ViewManageUsers();
@@ -182,6 +174,21 @@ namespace SmartRigWPF
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             ViewManageReports();
+        }
+
+        private void btnLogout_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        public void LoginSuccess(string userName)
+        {
+            IsAdmin = true;
+            currentUserName = userName;
+
+            ClearPages();
+            UpdateMain();
+            ViewStartPage(true);
         }
     }
 }

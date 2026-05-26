@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 
@@ -16,10 +12,18 @@ namespace SmartRigWPF
             if (value == null)
                 return null;
 
-            string url = $"http://localhost:5195/Images/Computers/{value.ToString()}";
+            string url = "http://localhost:5195/Images/Computers/" + value.ToString() + "?t=" + DateTime.Now.Ticks;
+
             try
             {
-                return new BitmapImage(new Uri(url, UriKind.Absolute));
+                BitmapImage image = new BitmapImage();
+                image.BeginInit();
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                image.UriSource = new Uri(url, UriKind.Absolute);
+                image.EndInit();
+
+                return image;
             }
             catch
             {
@@ -32,5 +36,4 @@ namespace SmartRigWPF
             throw new NotImplementedException();
         }
     }
-
 }

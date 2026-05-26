@@ -49,15 +49,19 @@ namespace ApiClient
         }
         public void AddParameter(string key, string value)
         {
+            string encodedKey = Uri.EscapeDataString(key ?? "");
+            string encodedValue = Uri.EscapeDataString(value ?? "");
+            string newParam = encodedKey + "=" + encodedValue;
 
-            if (this.uriBuilder.Query == string.Empty)
+            string currentQuery = this.uriBuilder.Query;
+
+            if (string.IsNullOrWhiteSpace(currentQuery))
             {
-                this.uriBuilder.Query += "?" + key + "=" + value;
+                this.uriBuilder.Query = newParam;
             }
-
             else
             {
-                this.uriBuilder.Query += "&" + key + "=" + value;
+                this.uriBuilder.Query = currentQuery.TrimStart('?') + "&" + newParam;
             }
         }
         public T Get()

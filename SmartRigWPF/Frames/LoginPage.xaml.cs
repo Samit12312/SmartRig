@@ -12,7 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using ApiClient;
+using Models;
 namespace SmartRigWPF.Frames
 {
     /// <summary>
@@ -39,13 +40,40 @@ namespace SmartRigWPF.Frames
         }
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            this.isLogin = true;
-
-            MainWindow mainWindow = Window.GetWindow(this) as MainWindow;
-
-            if (mainWindow != null)
+            if (EmailTextBox.Text == "" || PasswordBox.Password == "")
             {
-                mainWindow.LoginSuccess();
+                MessageBox.Show("Enter email and password");
+                return;
+            }
+
+            WebClient<LoginResponse> client = new WebClient<LoginResponse>();
+            client.Schema = "http";
+            client.Host = "localhost";
+            client.Port = 5195;
+            client.Path = "api/Guest/Login";
+            client.AddParameter("email", EmailTextBox.Text);
+            client.AddParameter("password", PasswordBox.Password);
+
+            LoginResponse response = client.Get();
+
+            if (response != null && response.Success && response.Manager)
+            {
+                this.isLogin = true;
+
+                MainWindow mainWindow = Window.GetWindow(this) as MainWindow;
+
+                if (mainWindow != null)
+                {
+                    mainWindow.LoginSuccess(response.UserName);
+                }
+            }
+            else if (response != null && response.Success && response.Manager == false)
+            {
+                MessageBox.Show("This user is not a manager");
+            }
+            else
+            {
+                MessageBox.Show("Invalid email or password");
             }
         }
     }

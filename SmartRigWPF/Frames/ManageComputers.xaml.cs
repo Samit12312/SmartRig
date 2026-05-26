@@ -35,14 +35,22 @@ namespace SmartRigWPF.Frames
             client.Host = "localhost";
             client.Port = 5195;
             client.Path = "api/Manager/GetAllComputers";
-            this.computers = await client.GetAsync();
+
+            this.computers = await client.GetAsync() ?? new List<ComputersViewModel>();
+
+            listView.ItemsSource = null;
             listView.ItemsSource = this.computers;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
             AddComputer addComputer = new AddComputer();
-            addComputer.ShowDialog();
+            bool? result = addComputer.ShowDialog();
+
+            if (result == true)
+            {
+                await GetComputers();
+            }
         }
 
         private async void EditBtn_Click(object sender, RoutedEventArgs e)
@@ -54,8 +62,12 @@ namespace SmartRigWPF.Frames
             }
             ComputersViewModel selected = (ComputersViewModel)listView.SelectedItem;
             AddComputer win = new AddComputer(selected.computer);
-            win.ShowDialog();
-            await GetComputers();
+            bool? result = win.ShowDialog();
+
+            if (result == true)
+            {
+                await GetComputers();
+            }
         }
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)

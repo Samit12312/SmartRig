@@ -138,29 +138,33 @@ WHERE UserId = @UserId";
             return this.dbContext.Update(sql) > 0;
         }
 
-        public string Login(string userEmail, string userPassword)
+        public User Login(string userEmail, string userPassword)
+        {
+            string sql = @"SELECT *
+                   FROM [User]
+                   WHERE UserEmail = @UserEmail";
+
+            this.dbContext.AddParameter("@UserEmail", userEmail.Trim());
+
+            using (IDataReader reader = this.dbContext.Select(sql))
             {
-                string sql = @"SELECT UserId, UserPassword, UserSalt
-                       FROM [User] 
-                       WHERE UserEmail = @UserEmail";
-
-                this.dbContext.AddParameter("@UserEmail", userEmail);
-
-                using (IDataReader reader = this.dbContext.Select(sql))
+                if (reader.Read())
                 {
-                    if (reader.Read())
-                    {
-                        string hash = reader["UserPassword"].ToString();
-                        string salt = reader["UserSalt"].ToString();
-                        string userId = reader["UserId"].ToString();
+                    User user = this.modelsFactory.UserCreator.CreateModel(reader);
 
-                        if (hash == CaculateHash(userPassword, salt))
-                            return userId;
+                    string hashFromDb = user.UserPassword.Trim();
+                    string salt = user.UserSalt.Trim();
+                    string typedPasswordHash = CaculateHash(userPassword, salt);
+
+                    if (hashFromDb == typedPasswordHash)
+                    {
+                        return user;
                     }
                 }
-
-                return null;
             }
+
+            return null;
+        }
 
     }
 }

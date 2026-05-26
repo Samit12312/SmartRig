@@ -61,7 +61,7 @@ namespace SmartRigWPF.Frames
                 cpuFan.CpuFanPrice = price;
             else
                 cpuFan.CpuFanPrice = -1;
-            cpuFan.CpuFanCompanyId = (int)CompanyBox.SelectedValue;
+            cpuFan.CpuFanCompanyId = CompanyBox.SelectedValue == null ? 0 : (int)CompanyBox.SelectedValue;
 
             cpuFan.Validate();
             if (cpuFan.HasErrors)

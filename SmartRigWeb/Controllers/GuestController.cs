@@ -254,24 +254,30 @@ namespace SmartRigWeb
             }
         }
         [HttpGet]
+        [HttpGet]
         public LoginResponse Login(string email, string password)
         {
             LoginResponse lR = new LoginResponse();
+
             try
             {
                 this.repositoryFactory.ConnectDbContext();
-                lR.UserId = this.repositoryFactory.UserRepository.Login(email, password);
 
-                if (lR.UserId != null)
+                User user = this.repositoryFactory.UserRepository.Login(email, password);
+
+                if (user != null)
                 {
-                    User user = this.repositoryFactory.UserRepository.GetById(int.Parse(lR.UserId));
                     lR.Success = true;
+                    lR.UserId = user.UserId.ToString();
                     lR.UserName = user.UserName;
+                    lR.Manager = user.Manager;
                 }
                 else
                 {
                     lR.Success = false;
+                    lR.UserId = null;
                     lR.UserName = null;
+                    lR.Manager = false;
                 }
 
                 return lR;
@@ -279,9 +285,12 @@ namespace SmartRigWeb
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+
                 lR.Success = false;
                 lR.UserId = null;
                 lR.UserName = null;
+                lR.Manager = false;
+
                 return lR;
             }
             finally
