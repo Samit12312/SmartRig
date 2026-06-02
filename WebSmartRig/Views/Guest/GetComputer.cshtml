@@ -19,7 +19,7 @@
     <div class="computer-details">
         <h2>@Model.computer.ComputerName</h2>
         <ul>
-            <li>Price: $@Model.computer.Price</li>
+            <li>Price: ₪@Model.computer.Price.ToString("N0")</li>
             <li>Company: @Model.company.CompanyName</li>
             <li>Computer Type: @Model.type.TypeName</li>
             <li>Operating System: @Model.operatingSystem.OperatingSystemName</li>

@@ -1,116 +1,138 @@
-﻿body {
+﻿* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f8;
-    overflow-x: hidden; /* removes horizontal scroll */
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #f8fafc;
+    overflow-x: hidden;
+    background: linear-gradient(rgba(8, 13, 24, 0.32), rgba(8, 13, 24, 0.52)), url('/images/homepage.jpg') center center / cover fixed no-repeat;
 }
 
-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #2c3e50;
-    padding: 10px 20px;
-    color: white;
+.computer-container {
+    max-width: 1120px;
+    margin: 48px auto 60px auto;
+    padding: 28px;
+    display: grid;
+    grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
+    gap: 34px;
+    background: rgba(13, 22, 38, 0.88);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 22px;
+    box-shadow: 0 20px 46px rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(7px);
+    overflow: hidden;
+    position: relative;
 }
 
-.logo img {
-    height: 40px;
-    width: auto;
-    vertical-align: middle;
-}
-
-.center-links {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    flex: 1;
-    justify-content: center;
-}
-
-.right-links {
-    display: flex;
-    gap: 20px;
-}
-
-    .right-links a, .center-links a {
-        color: white;
-        text-decoration: none;
-        font-weight: bold;
+    .computer-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 6px;
+        width: 100%;
+        background: linear-gradient(90deg, #f97316, #2563eb);
     }
 
-        .right-links a:hover, .center-links a:hover {
-            text-decoration: underline;
-        }
-.computer-container {
-    display: flex;
-    max-width: 1000px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 12px rgba(0,0,0,0.1);
-}
-
 .computer-image {
-    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.09);
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
 }
 
     .computer-image img {
         max-width: 100%;
-        border-radius: 10px;
-        object-fit: cover;
+        max-height: 360px;
+        border-radius: 14px;
+        object-fit: contain;
+        filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.30));
     }
 
 .computer-details {
-    flex: 2;
-    padding: 20px;
+    padding: 10px 4px;
 }
 
     .computer-details h2 {
-        margin-bottom: 20px;
-        color: #2c3e50;
+        margin: 5px 0 22px 0;
+        color: #f8fafc;
+        font-size: 33px;
+        line-height: 1.15;
     }
 
     .computer-details ul {
         list-style: none;
         padding: 0;
-        margin: 0 0 20px 0;
+        margin: 0 0 24px 0;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(190px, 1fr));
+        gap: 11px;
     }
 
     .computer-details li {
-        margin: 8px 0;
-        font-size: 16px;
+        font-size: 15px;
+        background-color: rgba(15, 23, 42, 0.72);
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        border-radius: 11px;
+        padding: 11px 12px;
+        color: #dbeafe;
     }
 
     .computer-details strong {
-        color: #2c3e50;
+        color: #ffffff;
     }
 
-.buy-btn {
-    padding: 12px 20px;
-    font-size: 16px;
-    background-color: #2c3e50;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-    .buy-btn:hover {
-        background-color: #34495e;
+    .buy-btn,
+    .computer-details button,
+    .computer-details a {
+        min-width: 160px;
+        min-height: 44px;
+        padding: 12px 20px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        background: linear-gradient(135deg, #f97316, #ea580c);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: bold;
         text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        box-shadow: 0 9px 20px rgba(249, 115, 22, 0.28);
+        transition: 0.18s ease;
     }
+
+        .buy-btn:hover,
+        .computer-details button:hover,
+        .computer-details a:hover {
+            background: linear-gradient(135deg, #fb923c, #f97316);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
 .success-message {
-    background-color: #27ae60;
+    max-width: 1120px;
+    margin: 26px auto 0 auto;
+    background-color: rgba(22, 163, 74, 0.95);
     color: white;
-    padding: 15px;
+    padding: 14px 18px;
     text-align: center;
-    margin-bottom: 20px;
-    border-radius: 4px;
+    border-radius: 12px;
+    font-weight: bold;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
 }

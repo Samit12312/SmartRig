@@ -876,17 +876,22 @@ namespace SmartRigWeb
         {
             try
             {
-                User user = new User();
-                user.UserId = data.UserId;
-                user.UserName = data.UserName;
-                user.UserEmail = data.UserEmail;
-                user.UserPassword = data.UserPassword;
-                user.UserAddress = data.UserAddress;
-                user.UserPhoneNumber = data.UserPhoneNumber;
-                user.CityId = data.CityId;
-                user.Manager = data.Manager;
+                if (data == null)
+                {
+                    return false;
+                }
+
+                data.Validate();
+
+                if (data.HasErrors)
+                {
+                    return false;
+                }
+
+                User user = this.repositoryFactory.ModelsFactory.UserCreator.CreateFromEditUser(data);
 
                 this.repositoryFactory.ConnectDbContext();
+
                 return this.repositoryFactory.UserRepository.Update(user);
             }
             catch (Exception ex)

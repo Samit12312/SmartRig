@@ -1,43 +1,62 @@
-﻿body {
+﻿* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f8;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #f8fafc;
+    overflow-x: hidden;
+    background: linear-gradient(rgba(8, 13, 24, 0.34), rgba(8, 13, 24, 0.56)), url('/images/homepage.jpg') center center / cover fixed no-repeat;
 }
 
 .order-history-container {
-    max-width: 900px;
-    margin: 50px auto;
+    max-width: 940px;
+    margin: 48px auto 60px auto;
     padding: 30px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: rgba(13, 22, 38, 0.90);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 22px;
+    box-shadow: 0 20px 46px rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(7px);
 }
 
     .order-history-container h2 {
         text-align: center;
-        margin-bottom: 30px;
-        color: #2c3e50;
+        margin: 0 0 30px 0;
+        color: #f8fafc;
+        font-size: 30px;
     }
 
 .no-orders {
     text-align: center;
-    color: #666;
+    color: #cbd5e1;
     padding: 40px;
     font-size: 16px;
+    background: rgba(15, 23, 42, 0.72);
+    border-radius: 14px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
 }
 
 .order-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 16px;
+    margin-bottom: 22px;
     overflow: hidden;
+    background: rgba(15, 23, 42, 0.72);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
 }
 
 .order-header {
-    background-color: #2c3e50;
+    background: linear-gradient(135deg, #f97316, #ea580c);
     color: white;
-    padding: 15px 20px;
+    padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -50,17 +69,19 @@
 
 .order-date {
     font-size: 14px;
+    color: #fff7ed;
 }
 
 .order-items {
-    padding: 20px;
+    padding: 18px;
 }
 
 .order-item {
     display: flex;
-    gap: 15px;
+    align-items: center;
+    gap: 16px;
     padding: 15px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.22);
 }
 
     .order-item:last-child {
@@ -68,10 +89,13 @@
     }
 
     .order-item img {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 4px;
+        width: 86px;
+        height: 86px;
+        object-fit: contain;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.10);
+        padding: 6px;
+        border: 1px solid rgba(148, 163, 184, 0.22);
     }
 
 .item-details {
@@ -79,44 +103,53 @@
 }
 
     .item-details h4 {
-        margin: 0 0 5px 0;
-        color: #2c3e50;
-        font-size: 16px;
+        margin: 0 0 6px 0;
+        color: #f8fafc;
+        font-size: 17px;
     }
 
     .item-details p {
         margin: 3px 0;
-        color: #666;
+        color: #cbd5e1;
         font-size: 14px;
     }
 
 .item-price {
-    color: #27ae60;
+    color: #4ade80;
     font-weight: bold;
     font-size: 16px;
 }
 
 .order-total {
-    background-color: #f8f9fa;
-    padding: 15px 20px;
+    background-color: rgba(15, 23, 42, 0.85);
+    padding: 16px 20px;
     text-align: right;
-    font-size: 18px;
+    font-size: 19px;
     font-weight: bold;
-    color: #2c3e50;
+    color: #f8fafc;
+    border-top: 1px solid rgba(148, 163, 184, 0.22);
 }
 
 .back-btn {
-    display: block;
-    width: 200px;
-    margin: 20px auto 0;
-    padding: 12px;
-    background-color: #2c3e50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 210px;
+    min-height: 44px;
+    margin: 24px auto 0 auto;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #f97316, #ea580c);
     color: white;
     text-align: center;
     text-decoration: none;
-    border-radius: 4px;
+    border-radius: 12px;
+    font-weight: bold;
+    box-shadow: 0 8px 18px rgba(249, 115, 22, 0.25);
+    transition: 0.18s ease;
 }
 
     .back-btn:hover {
-        background-color: #34495e;
+        background: linear-gradient(135deg, #fb923c, #f97316);
+        transform: translateY(-2px);
+        text-decoration: none;
     }

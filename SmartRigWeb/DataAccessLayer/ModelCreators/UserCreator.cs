@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using Models;
+using Models.ViewModels;
 
 namespace SmartRigWeb
 {
@@ -20,6 +21,22 @@ namespace SmartRigWeb
                 UserSalt = reader["UserSalt"].ToString(),
                 Manager = Convert.ToBoolean(reader["Manager"])
             };
+
+        }
+        public User CreateFromEditUser(EditUserViewModel data)
+        {
+            User user = new User();
+
+            user.UserId = data.UserId;
+            user.UserName = data.UserName;
+            user.UserEmail = data.UserEmail;
+            user.UserPassword = data.UserPassword;
+            user.UserAddress = data.UserAddress;
+            user.UserPhoneNumber = data.UserPhoneNumber;
+            user.CityId = data.CityId;
+            user.Manager = data.Manager;
+
+            return user;
         }
     }
 }
