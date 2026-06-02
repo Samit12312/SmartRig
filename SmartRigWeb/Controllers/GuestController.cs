@@ -19,15 +19,18 @@ namespace SmartRigWeb
             repositoryFactory = new RepositoryFactory();
             this.currencyService = new CurrencyService(new HttpClient());
         }
+
         [HttpGet]
         public async Task<CatalogViewModel> GetCatalog(
-    int? minPrice = null,
-    int? maxPrice = null,
-    int? companyId = null,
-    int? operatingSystemId = null,
-    int? typeId = null,
-    int? priceSort = null,
-    string currencyCode = "ILS")
+     int? minPrice = null,
+     int? maxPrice = null,
+     int? companyId = null,
+     int? operatingSystemId = null,
+     int? typeId = null,
+     int? priceSort = null,
+     string currencyCode = "ILS",
+     int page = 1,
+     int pageSize = 6)
         {
             CatalogViewModel catalogViewModel = new CatalogViewModel();
 
@@ -51,6 +54,16 @@ namespace SmartRigWeb
                     currencyCode = "ILS";
                 }
 
+                if (page < 1)
+                {
+                    page = 1;
+                }
+
+                if (pageSize < 1)
+                {
+                    pageSize = 6;
+                }
+
                 catalogViewModel.MinPrice = realMinPrice;
                 catalogViewModel.MaxPrice = realMaxPrice;
                 catalogViewModel.CompanyId = companyId;
@@ -58,6 +71,7 @@ namespace SmartRigWeb
                 catalogViewModel.TypeId = typeId;
                 catalogViewModel.PriceSort = priceSort;
                 catalogViewModel.CurrencyCode = currencyCode.ToUpper();
+
                 catalogViewModel.Currencies = await this.currencyService.GetCurrencies();
                 catalogViewModel.CurrencySymbol = this.currencyService.GetSymbol(catalogViewModel.CurrencyCode);
 
@@ -70,57 +84,69 @@ namespace SmartRigWeb
                 List<Computer> computers = new List<Computer>();
 
                 if (minPrice.HasValue && maxPrice.HasValue && !companyId.HasValue && !operatingSystemId.HasValue && !typeId.HasValue)
+                {
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRange(minPrice.Value, maxPrice.Value);
-
+                }
                 else if (!minPrice.HasValue && !maxPrice.HasValue && companyId.HasValue && !operatingSystemId.HasValue && !typeId.HasValue)
+                {
                     computers = this.repositoryFactory.ComputerRepository.GetComputersByCompanyId(companyId.Value);
-
+                }
                 else if (!minPrice.HasValue && !maxPrice.HasValue && !companyId.HasValue && operatingSystemId.HasValue && !typeId.HasValue)
+                {
                     computers = this.repositoryFactory.ComputerRepository.GetComputersByOperatingSystemId(operatingSystemId.Value);
-
+                }
                 else if (!minPrice.HasValue && !maxPrice.HasValue && !companyId.HasValue && !operatingSystemId.HasValue && typeId.HasValue)
+                {
                     computers = this.repositoryFactory.ComputerRepository.GetComputerByType(typeId.Value);
-
+                }
                 else if (minPrice.HasValue && maxPrice.HasValue && companyId.HasValue && !operatingSystemId.HasValue && !typeId.HasValue)
+                {
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyId(minPrice.Value, maxPrice.Value, companyId.Value);
-
+                }
                 else if (minPrice.HasValue && maxPrice.HasValue && !companyId.HasValue && operatingSystemId.HasValue && !typeId.HasValue)
+                {
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndOperatingSystemId(minPrice.Value, maxPrice.Value, operatingSystemId.Value);
-
+                }
                 else if (minPrice.HasValue && maxPrice.HasValue && !companyId.HasValue && !operatingSystemId.HasValue && typeId.HasValue)
+                {
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndTypeId(minPrice.Value, maxPrice.Value, typeId.Value);
-
+                }
                 else if (!minPrice.HasValue && !maxPrice.HasValue && companyId.HasValue && operatingSystemId.HasValue && !typeId.HasValue)
+                {
                     computers = this.repositoryFactory.ComputerRepository.GetComputersByCompanyIdAndOperatingSystemId(companyId.Value, operatingSystemId.Value);
-
+                }
                 else if (!minPrice.HasValue && !maxPrice.HasValue && companyId.HasValue && !operatingSystemId.HasValue && typeId.HasValue)
+                {
                     computers = this.repositoryFactory.ComputerRepository.GetComputersByCompanyIdAndTypeId(companyId.Value, typeId.Value);
-
+                }
                 else if (!minPrice.HasValue && !maxPrice.HasValue && !companyId.HasValue && operatingSystemId.HasValue && typeId.HasValue)
+                {
                     computers = this.repositoryFactory.ComputerRepository.GetComputersByOperatingSystemIdAndTypeId(operatingSystemId.Value, typeId.Value);
-
+                }
                 else if (!minPrice.HasValue && !maxPrice.HasValue && companyId.HasValue && operatingSystemId.HasValue && typeId.HasValue)
-                    computers = this.repositoryFactory.ComputerRepository.GetComputersByCompanyIdAndOperatingSystemIdAndTypeId(
-                        companyId.Value, operatingSystemId.Value, typeId.Value);
-
+                {
+                    computers = this.repositoryFactory.ComputerRepository.GetComputersByCompanyIdAndOperatingSystemIdAndTypeId(companyId.Value, operatingSystemId.Value, typeId.Value);
+                }
                 else if (minPrice.HasValue && maxPrice.HasValue && companyId.HasValue && operatingSystemId.HasValue && !typeId.HasValue)
-                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyIdAndOperatingSystemId(
-                        minPrice.Value, maxPrice.Value, companyId.Value, operatingSystemId.Value);
-
+                {
+                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyIdAndOperatingSystemId(minPrice.Value, maxPrice.Value, companyId.Value, operatingSystemId.Value);
+                }
                 else if (minPrice.HasValue && maxPrice.HasValue && companyId.HasValue && !operatingSystemId.HasValue && typeId.HasValue)
-                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyIdAndTypeId(
-                        minPrice.Value, maxPrice.Value, companyId.Value, typeId.Value);
-
+                {
+                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyIdAndTypeId(minPrice.Value, maxPrice.Value, companyId.Value, typeId.Value);
+                }
                 else if (minPrice.HasValue && maxPrice.HasValue && !companyId.HasValue && operatingSystemId.HasValue && typeId.HasValue)
-                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndOperatingSystemIdAndTypeId(
-                        minPrice.Value, maxPrice.Value, operatingSystemId.Value, typeId.Value);
-
+                {
+                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndOperatingSystemIdAndTypeId(minPrice.Value, maxPrice.Value, operatingSystemId.Value, typeId.Value);
+                }
                 else if (minPrice.HasValue && maxPrice.HasValue && companyId.HasValue && operatingSystemId.HasValue && typeId.HasValue)
-                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyIdAndOperatingSystemIdAndTypeId(
-                        minPrice.Value, maxPrice.Value, companyId.Value, operatingSystemId.Value, typeId.Value);
-
+                {
+                    computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyIdAndOperatingSystemIdAndTypeId(minPrice.Value, maxPrice.Value, companyId.Value, operatingSystemId.Value, typeId.Value);
+                }
                 else
+                {
                     computers = this.repositoryFactory.ComputerRepository.GetAll();
+                }
 
                 if (priceSort.HasValue)
                 {
@@ -128,8 +154,8 @@ namespace SmartRigWeb
                     {
                         for (int j = i + 1; j < computers.Count; j++)
                         {
-                            if (priceSort.Value == 1 && computers[i].Price > computers[j].Price ||
-                                priceSort.Value == 2 && computers[i].Price < computers[j].Price)
+                            if ((priceSort.Value == 1 && computers[i].Price > computers[j].Price) ||
+                                (priceSort.Value == 2 && computers[i].Price < computers[j].Price))
                             {
                                 Computer temp = computers[i];
                                 computers[i] = computers[j];
@@ -139,7 +165,36 @@ namespace SmartRigWeb
                     }
                 }
 
+                catalogViewModel.TotalItems = computers.Count;
+
+                int totalPages = (int)Math.Ceiling((double)computers.Count / pageSize);
+
+                if (totalPages < 1)
+                {
+                    totalPages = 1;
+                }
+
+                if (page > totalPages)
+                {
+                    page = totalPages;
+                }
+
+                catalogViewModel.Page = page;
+                catalogViewModel.PageSize = pageSize;
+
+                int startIndex = (page - 1) * pageSize;
+
+                List<Computer> pagedComputers = new List<Computer>();
+
+                for (int i = startIndex; i < computers.Count && pagedComputers.Count < pageSize; i++)
+                {
+                    pagedComputers.Add(computers[i]);
+                }
+
+                computers = pagedComputers;
+
                 List<ComputerCatalogViewModel> catalogComputers = new List<ComputerCatalogViewModel>();
+
                 double rate = 1;
 
                 if (catalogViewModel.CurrencyCode != "ILS")
@@ -173,6 +228,7 @@ namespace SmartRigWeb
                 }
 
                 catalogViewModel.Computers = catalogComputers;
+
                 return catalogViewModel;
             }
             catch (Exception ex)

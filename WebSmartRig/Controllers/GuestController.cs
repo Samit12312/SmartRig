@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Models;
-using System.Net;
+using ApiClient;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -18,42 +18,74 @@ namespace WebSmartRig.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult GetCatalog(string? operatingSystemId = null,
-            string? typeId = null, int? minPrice = null, int? maxPrice = null,
-            int? priceSort = null, int? companyId = null, string? currencyCode = "ILS")
+        public IActionResult GetCatalog(
+     string? operatingSystemId = null,
+     string? typeId = null,
+     int? minPrice = null,
+     int? maxPrice = null,
+     int? priceSort = null,
+     int? companyId = null,
+     string? currencyCode = "ILS",
+     int page = 1,
+     int pageSize = 6)
         {
-            // 1. get data from webservice
-            // 2. 
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            if (pageSize < 1)
+            {
+                pageSize = 6;
+            }
+
             WebClient<CatalogViewModel> webClient = new WebClient<CatalogViewModel>();
+
             webClient.Schema = "http";
             webClient.Host = "localhost";
             webClient.Port = 5195;
             webClient.Path = "api/Guest/GetCatalog";
 
-            // 3. Add optional filters if they are provided
             if (operatingSystemId != null)
+            {
                 webClient.AddParameter("operatingSystemId", operatingSystemId);
+            }
 
             if (companyId.HasValue)
             {
-                webClient.AddParameter("companyId", companyId.ToString());
+                webClient.AddParameter("companyId", companyId.Value.ToString());
             }
+
             if (typeId != null)
+            {
                 webClient.AddParameter("typeId", typeId);
+            }
 
             if (minPrice.HasValue)
+            {
                 webClient.AddParameter("minPrice", minPrice.Value.ToString());
+            }
 
             if (maxPrice.HasValue)
+            {
                 webClient.AddParameter("maxPrice", maxPrice.Value.ToString());
+            }
 
             if (priceSort.HasValue)
-                webClient.AddParameter("priceSort", priceSort.Value.ToString()); // 1 = ascending, 2 = descending
+            {
+                webClient.AddParameter("priceSort", priceSort.Value.ToString());
+            }
+
             if (currencyCode != null)
+            {
                 webClient.AddParameter("currencyCode", currencyCode);
+            }
+
+            webClient.AddParameter("page", page.ToString());
+            webClient.AddParameter("pageSize", pageSize.ToString());
 
             CatalogViewModel viewModel = webClient.Get();
-            
+
             return View(viewModel);
         }
         [HttpGet]

@@ -1,62 +1,49 @@
 ﻿@using Models
 @model CatalogViewModel
+
 @{
     ViewData["Title"] = "ComputersCatalog";
     Layout = "~/Views/Shared/MasterPage.cshtml";
 }
-<link href="~/stylesheet/computercatalog.css" rel="stylesheet" />
-<script>
-    function GoLink() {
-        document.getElementById("filterForm").submit();
-    }
-</script>
-<script>
-    function GoLink() {
-        document.getElementById("filterForm").submit();
-    }
 
-    function ClearPrice() {
-        document.getElementById("minPrice").value = "";
-        document.getElementById("maxPrice").value = "";
-        document.getElementById("filterForm").submit();
-    }
-</script>
+<link rel="stylesheet" href="~/StyleSheet/ComputerCatalog.css" />
 
 @if (TempData["Message"] != null)
 {
-    <div class="success-message">@TempData["Message"]</div>
-
-    <script>
-        setTimeout(function () {
-            const message = document.querySelector(".success-message");
-            if (message) {
-                message.style.display = "none";
-            }
-        }, 2000);
-    </script>
-}
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success">
+    <div class="success-message">
         @TempData["Message"]
     </div>
 }
 
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger">
+    <div class="success-message">
         @TempData["Error"]
     </div>
 }
 
 <div class="catalog-container">
-    <aside class="filters">
-        <form action="http://localhost:5036/Guest/GetCatalog/" method="get" id="filterForm">
 
-            <h3>Computer Type</h3>
-            <select name="typeId" onchange="GoLink()">
+    <form method="get" asp-controller="Guest" asp-action="GetCatalog" class="filters">
+
+        <input type="hidden" name="page" value="1" />
+        <input type="hidden" name="pageSize" value="@Model.PageSize" />
+
+        <h3>Computer Type</h3>
+
+        <select name="typeId" onchange="this.form.submit()">
+            @if (Model.TypeId == null)
+            {
+                <option value="" selected="selected">All Types</option>
+            }
+            else
+            {
                 <option value="">All Types</option>
-                @foreach (Models.Type type in Model.Types)
+            }
+
+            @if (Model.Types != null)
+            {
+                foreach (Models.Type type in Model.Types)
                 {
                     if (Model.TypeId == type.TypeId)
                     {
@@ -67,13 +54,24 @@
                         <option value="@type.TypeId">@type.TypeName</option>
                     }
                 }
+            }
+        </select>
 
-            </select>
+        <h3>Company</h3>
 
-            <h3>Company</h3>
-            <select name="companyId" onchange="GoLink()">
+        <select name="companyId" onchange="this.form.submit()">
+            @if (Model.CompanyId == null)
+            {
+                <option value="" selected="selected">All Companies</option>
+            }
+            else
+            {
                 <option value="">All Companies</option>
-                @foreach (Company company in Model.Companys)
+            }
+
+            @if (Model.Companys != null)
+            {
+                foreach (Company company in Model.Companys)
                 {
                     if (Model.CompanyId == company.CompanyId)
                     {
@@ -84,51 +82,76 @@
                         <option value="@company.CompanyId">@company.CompanyName</option>
                     }
                 }
-            </select>
+            }
+        </select>
 
-            <h3>Operating System</h3>
-            <select name="operatingSystemId" onchange="GoLink()">
+        <h3>Operating System</h3>
+
+        <select name="operatingSystemId" onchange="this.form.submit()">
+            @if (Model.OperatingSystemId == null)
+            {
+                <option value="" selected="selected">All OS</option>
+            }
+            else
+            {
                 <option value="">All OS</option>
+            }
 
-                @if (Model.OperatingSystemId == 8)
-                {
-                    <option value="8" selected="selected">Windows</option>
-                }
-                else
-                {
-                    <option value="8">Windows</option>
-                }
+            @if (Model.OperatingSystemId == 8)
+            {
+                <option value="8" selected="selected">Windows</option>
+            }
+            else
+            {
+                <option value="8">Windows</option>
+            }
 
-                @if (Model.OperatingSystemId == 9)
-                {
-                    <option value="9" selected="selected">Linux</option>
-                }
-                else
-                {
-                    <option value="9">Linux</option>
-                }
+            @if (Model.OperatingSystemId == 9)
+            {
+                <option value="9" selected="selected">Linux</option>
+            }
+            else
+            {
+                <option value="9">Linux</option>
+            }
 
-                @if (Model.OperatingSystemId == 10)
-                {
-                    <option value="10" selected="selected">Ubuntu</option>
-                }
-                else
-                {
-                    <option value="10">Ubuntu</option>
-                }
-            </select>
+            @if (Model.OperatingSystemId == 10)
+            {
+                <option value="10" selected="selected">Ubuntu</option>
+            }
+            else
+            {
+                <option value="10">Ubuntu</option>
+            }
+        </select>
 
-            <h3>Price Range</h3>
+        <h3>Price Range</h3>
 
-            <input id="minPrice" type="number" name="minPrice" placeholder="Min $" value="@(Model.MinPrice?.ToString() ?? "")" onchange="GoLink()" />
+        <label>Minimum Price</label>
+        <input type="number" name="minPrice" value="@Model.MinPrice" />
 
-            <input id="maxPrice" type="number" name="maxPrice" placeholder="Max $" value="@(Model.MaxPrice?.ToString() ?? "")" onchange="GoLink()" />
+        <label>Maximum Price</label>
+        <input type="number" name="maxPrice" value="@Model.MaxPrice" />
 
-            <button type="button" class="clear-price-btn" onclick="ClearPrice()">Clear Price</button>
+        <a class="clear-price-btn"
+           asp-controller="Guest"
+           asp-action="GetCatalog"
+           asp-route-typeId="@Model.TypeId"
+           asp-route-companyId="@Model.CompanyId"
+           asp-route-operatingSystemId="@Model.OperatingSystemId"
+           asp-route-priceSort="@Model.PriceSort"
+           asp-route-currencyCode="@Model.CurrencyCode"
+           asp-route-page="1"
+           asp-route-pageSize="@Model.PageSize">
+            Clear Price
+        </a>
 
-            <h3>Currency</h3>
-            <select name="currencyCode" onchange="GoLink()">
-                @foreach (KeyValuePair<string, string> item in Model.Currencies)
+        <h3>Currency</h3>
+
+        <select name="currencyCode" onchange="this.form.submit()">
+            @if (Model.Currencies != null)
+            {
+                foreach (KeyValuePair<string, string> item in Model.Currencies)
                 {
                     if (Model.CurrencyCode == item.Key)
                     {
@@ -139,43 +162,154 @@
                         <option value="@item.Key">@item.Key - @item.Value</option>
                     }
                 }
-            </select>
+            }
+        </select>
 
-            <h3>Sort by Price</h3>
-            <label class="sort-option">
-                <input type="radio" name="priceSort" value="1" onchange="GoLink()"
-                       @(Model.PriceSort == 1 ? "checked" : "") />
-                <span>Low to High</span>
-            </label>
+        <h3>Sort by Price</h3>
 
-            <label class="sort-option">
-                <input type="radio" name="priceSort" value="2" onchange="GoLink()"
-                       @(Model.PriceSort == 2 ? "checked" : "") />
-                <span>High to Low</span>
-            </label>
-        </form>
-    </aside>
+        <label class="sort-option">
+            @if (Model.PriceSort == 1)
+            {
+                <input type="radio" name="priceSort" value="1" checked="checked" onchange="this.form.submit()" />
+            }
+            else
+            {
+                <input type="radio" name="priceSort" value="1" onchange="this.form.submit()" />
+            }
 
-    <main class="computers">
-        @foreach (var computer in Model.Computers)
+            <span>Low to High</span>
+        </label>
+
+        <label class="sort-option">
+            @if (Model.PriceSort == 2)
+            {
+                <input type="radio" name="priceSort" value="2" checked="checked" onchange="this.form.submit()" />
+            }
+            else
+            {
+                <input type="radio" name="priceSort" value="2" onchange="this.form.submit()" />
+            }
+
+            <span>High to Low</span>
+        </label>
+
+    </form>
+
+    <div class="catalog-results">
+
+        <div class="computers">
+
+            @if (Model.Computers == null || Model.Computers.Count == 0)
+            {
+                <h2>No computers found</h2>
+            }
+            else
+            {
+                foreach (ComputerCatalogViewModel computer in Model.Computers)
+                {
+                    <div class="computer-card">
+
+                        <a asp-controller="Guest"
+                           asp-action="GetComputer"
+                           asp-route-computerId="@computer.Id">
+                            <img src="http://localhost:5195/Images/Computers/@computer.ComputerPicture" alt="@computer.ComputerName" />
+                        </a>
+
+                        <h1>@computer.ComputerName</h1>
+
+                        <p>
+                            CPU: @computer.Cpu<br />
+                            GPU: @computer.Gpu<br />
+                            RAM: @computer.Ram<br />
+                            Storage: @computer.Storage<br />
+                            OS: @computer.OperatingSystem
+                        </p>
+
+                        <div class="card-bottom">
+                            <span class="price">@Model.CurrencySymbol@computer.DisplayPrice.ToString("0.00")</span>
+
+                            <a class="cartButton"
+                               asp-controller="User"
+                               asp-action="AddToCart"
+                               asp-route-computerId="@computer.Id">
+                                Add to Cart
+                            </a>
+                        </div>
+
+                    </div>
+                }
+            }
+
+        </div>
+
+        @if (Model.TotalPages > 1)
         {
-            <div class="computer-card">
-                <a href="http://localhost:5036/Guest/GetComputer/?computerId=@computer.Id">
-                    <img src="http://localhost:5195/Images/Computers/@computer.ComputerPicture" />
-                </a>
-                <h1>@computer.ComputerName</h1>
-                <p>
-                    CPU: @computer.Cpu <br />
-                    GPU: @computer.Gpu <br />
-                    RAM: @computer.Ram <br />
-                    Storage: @computer.Storage <br />
-                    OS: @computer.OperatingSystem
-                </p>
-                <div class="card-bottom">
-                    <span class="price">@Model.CurrencySymbol@computer.DisplayPrice.ToString("0.00")</span>
-                    <a href="@Url.Action("AddToCart", "User", new { computerId = computer.Id })" class="cartButton">Add to Cart</a>
-                </div>
+            <div class="pagination-box">
+
+                @if (Model.HasPreviousPage)
+                {
+                    <a class="page-btn"
+                       asp-controller="Guest"
+                       asp-action="GetCatalog"
+                       asp-route-page="@(Model.Page - 1)"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-typeId="@Model.TypeId"
+                       asp-route-companyId="@Model.CompanyId"
+                       asp-route-operatingSystemId="@Model.OperatingSystemId"
+                       asp-route-minPrice="@Model.MinPrice"
+                       asp-route-maxPrice="@Model.MaxPrice"
+                       asp-route-priceSort="@Model.PriceSort"
+                       asp-route-currencyCode="@Model.CurrencyCode">
+                        Previous
+                    </a>
+                }
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    if (i == Model.Page)
+                    {
+                        <span class="page-btn active">@i</span>
+                    }
+                    else
+                    {
+                        <a class="page-btn"
+                           asp-controller="Guest"
+                           asp-action="GetCatalog"
+                           asp-route-page="@i"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-typeId="@Model.TypeId"
+                           asp-route-companyId="@Model.CompanyId"
+                           asp-route-operatingSystemId="@Model.OperatingSystemId"
+                           asp-route-minPrice="@Model.MinPrice"
+                           asp-route-maxPrice="@Model.MaxPrice"
+                           asp-route-priceSort="@Model.PriceSort"
+                           asp-route-currencyCode="@Model.CurrencyCode">
+                            @i
+                        </a>
+                    }
+                }
+
+                @if (Model.HasNextPage)
+                {
+                    <a class="page-btn"
+                       asp-controller="Guest"
+                       asp-action="GetCatalog"
+                       asp-route-page="@(Model.Page + 1)"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-typeId="@Model.TypeId"
+                       asp-route-companyId="@Model.CompanyId"
+                       asp-route-operatingSystemId="@Model.OperatingSystemId"
+                       asp-route-minPrice="@Model.MinPrice"
+                       asp-route-maxPrice="@Model.MaxPrice"
+                       asp-route-priceSort="@Model.PriceSort"
+                       asp-route-currencyCode="@Model.CurrencyCode">
+                        Next
+                    </a>
+                }
+
             </div>
         }
-    </main>
+
+    </div>
+
 </div>

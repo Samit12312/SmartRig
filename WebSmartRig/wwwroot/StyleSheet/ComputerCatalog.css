@@ -180,3 +180,40 @@
     .clear-price-btn:hover {
         background-color: #34495e;
     }
+.catalog-results {
+    flex: 1;
+}
+
+.pagination-box {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 30px 0;
+    width: 100%;
+}
+
+.page-btn {
+    padding: 8px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    text-decoration: none;
+    color: black;
+    background: white;
+    font-weight: bold;
+}
+
+    .page-btn:hover {
+        background: #eeeeee;
+    }
+
+    .page-btn.active {
+        background: #2c3e50;
+        color: white;
+    }
+
+.clear-price-btn {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+}
