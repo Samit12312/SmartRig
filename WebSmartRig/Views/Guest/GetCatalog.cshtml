@@ -10,6 +10,17 @@
         document.getElementById("filterForm").submit();
     }
 </script>
+<script>
+    function GoLink() {
+        document.getElementById("filterForm").submit();
+    }
+
+    function ClearPrice() {
+        document.getElementById("minPrice").value = "";
+        document.getElementById("maxPrice").value = "";
+        document.getElementById("filterForm").submit();
+    }
+</script>
 
 @if (TempData["Message"] != null)
 {
@@ -23,6 +34,19 @@
             }
         }, 2000);
     </script>
+}
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
 }
 
 <div class="catalog-container">
@@ -65,14 +89,16 @@
             <h3>Operating System</h3>
             <select name="operatingSystemId" onchange="GoLink()">
                 <option value="">All OS</option>
-                @if (Model.OperatingSystemId == 10)
+
+                @if (Model.OperatingSystemId == 8)
                 {
-                    <option value="10" selected="selected">Windows</option>
+                    <option value="8" selected="selected">Windows</option>
                 }
                 else
                 {
-                    <option value="10">Windows</option>
+                    <option value="8">Windows</option>
                 }
+
                 @if (Model.OperatingSystemId == 9)
                 {
                     <option value="9" selected="selected">Linux</option>
@@ -81,19 +107,24 @@
                 {
                     <option value="9">Linux</option>
                 }
-                @if (Model.OperatingSystemId == 8)
+
+                @if (Model.OperatingSystemId == 10)
                 {
-                    <option value="8" selected="selected">Ubuntu</option>
+                    <option value="10" selected="selected">Ubuntu</option>
                 }
                 else
                 {
-                    <option value="8">Ubuntu</option>
+                    <option value="10">Ubuntu</option>
                 }
             </select>
 
             <h3>Price Range</h3>
-            <input type="number" name="minPrice" placeholder="Min $" value="@(Model.MinPrice?.ToString() ?? "")" />
-            <input type="number" name="maxPrice" placeholder="Max $" value="@(Model.MaxPrice?.ToString() ?? "")" />
+
+            <input id="minPrice" type="number" name="minPrice" placeholder="Min $" value="@(Model.MinPrice?.ToString() ?? "")" onchange="GoLink()" />
+
+            <input id="maxPrice" type="number" name="maxPrice" placeholder="Max $" value="@(Model.MaxPrice?.ToString() ?? "")" onchange="GoLink()" />
+
+            <button type="button" class="clear-price-btn" onclick="ClearPrice()">Clear Price</button>
 
             <h3>Currency</h3>
             <select name="currencyCode" onchange="GoLink()">
@@ -111,16 +142,17 @@
             </select>
 
             <h3>Sort by Price</h3>
-            <label>
+            <label class="sort-option">
                 <input type="radio" name="priceSort" value="1" onchange="GoLink()"
-                       @(Model.PriceSort == 1 ? "checked" : "")> Low to High
-            </label><br />
-            <label>
-                <input type="radio" name="priceSort" value="2" onchange="GoLink()"
-                       @(Model.PriceSort == 2 ? "checked" : "")> High to Low
+                       @(Model.PriceSort == 1 ? "checked" : "") />
+                <span>Low to High</span>
             </label>
 
-            <button type="submit">Apply Filters</button>
+            <label class="sort-option">
+                <input type="radio" name="priceSort" value="2" onchange="GoLink()"
+                       @(Model.PriceSort == 2 ? "checked" : "") />
+                <span>High to Low</span>
+            </label>
         </form>
     </aside>
 
@@ -139,8 +171,10 @@
                     Storage: @computer.Storage <br />
                     OS: @computer.OperatingSystem
                 </p>
-                <span class="price">@Model.CurrencySymbol@computer.DisplayPrice.ToString("0.00")</span>
-                <a href="@Url.Action("AddToCart", "User", new { computerId = computer.Id })" class="cartButton">Add to Cart</a>
+                <div class="card-bottom">
+                    <span class="price">@Model.CurrencySymbol@computer.DisplayPrice.ToString("0.00")</span>
+                    <a href="@Url.Action("AddToCart", "User", new { computerId = computer.Id })" class="cartButton">Add to Cart</a>
+                </div>
             </div>
         }
     </main>

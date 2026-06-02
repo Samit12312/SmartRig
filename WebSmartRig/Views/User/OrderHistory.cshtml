@@ -33,14 +33,14 @@
                             <div class="item-details">
                                 <h4>@item.ComputerName</h4>
                                 <p>Quantity: @item.Quantity</p>
-                                <p class="item-price">$@item.Price</p>
+                                <p class="item-price">₪@item.Price.ToString("N0")</p>
                             </div>
                         </div>
                     }
                 </div>
 
                 <div class="order-total">
-                    <span>Total: $@order.TotalPrice</span>
+                    <span>Total: ₪@order.TotalPrice.ToString("N0")</span>
                 </div>
             </div>
         }

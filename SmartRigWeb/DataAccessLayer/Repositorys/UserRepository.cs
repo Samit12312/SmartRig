@@ -50,6 +50,28 @@ namespace SmartRigWeb
             }
         }
 
+        public bool UpdateProfile(User user)
+        {
+            string sql = @"UPDATE [User]
+SET UserName = @UserName,
+    UserEmail = @UserEmail,
+    UserAddress = @UserAddress,
+    CityId = @CityId,
+    UserPhoneNumber = @UserPhoneNumber,
+    Manager = @Manager
+WHERE UserId = @UserId";
+
+            this.dbContext.AddParameter("@UserName", user.UserName);
+            this.dbContext.AddParameter("@UserEmail", user.UserEmail);
+            this.dbContext.AddParameter("@UserAddress", user.UserAddress);
+            this.dbContext.AddParameter("@CityId", user.CityId);
+            this.dbContext.AddParameter("@UserPhoneNumber", user.UserPhoneNumber);
+            this.dbContext.AddParameter("@Manager", user.Manager ? -1 : 0);
+            this.dbContext.AddParameter("@UserId", user.UserId);
+
+            this.dbContext.Update(sql);
+            return true;
+        }
         public bool Delete(string Id)
         {
             string sql = $@"DELETE FROM [User] 
@@ -73,16 +95,20 @@ namespace SmartRigWeb
         }
         public User GetById(int id)
         {
-            string sql = $@"SELECT * FROM [User] WHERE UserId = @UserId";
-            this.dbContext.AddParameter("@UserId", id.ToString());
+            string sql = @"SELECT * FROM [User] WHERE UserId = @UserId";
+
+            this.dbContext.AddParameter("@UserId", id);
+
             using (IDataReader reader = this.dbContext.Select(sql))
             {
-                reader.Read();
-                return this.modelsFactory.UserCreator.CreateModel(reader);
+                if (reader.Read())
+                {
+                    return this.modelsFactory.UserCreator.CreateModel(reader);
+                }
             }
+
             return null;
         }
-
 
         public bool Update(User item)
         {
@@ -160,6 +186,22 @@ WHERE UserId = @UserId";
                     {
                         return user;
                     }
+                }
+            }
+
+            return null;
+        }
+        public User GetByEmail(string email)
+        {
+            string sql = "SELECT * FROM [User] WHERE UserEmail=@UserEmail";
+
+            this.dbContext.AddParameter("@UserEmail", email);
+
+            using (IDataReader reader = this.dbContext.Select(sql))
+            {
+                if (reader.Read())
+                {
+                    return this.modelsFactory.UserCreator.CreateModel(reader);
                 }
             }
 

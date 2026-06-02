@@ -189,10 +189,11 @@ namespace SmartRigWeb
         [HttpGet]
         public CartViewModel GetCart(int userId)
         {
+            CartViewModel cartViewModel = new CartViewModel();
+
             try
             {
                 this.repositoryFactory.ConnectDbContext();
-                CartViewModel cartViewModel = new CartViewModel();
 
                 cartViewModel.Computers = this.repositoryFactory.CartRepository.GetCartById(userId);
                 cartViewModel.Total = 0;
@@ -207,7 +208,11 @@ namespace SmartRigWeb
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return null;
+
+                cartViewModel.Computers = new List<CartComputer>();
+                cartViewModel.Total = 0;
+
+                return cartViewModel;
             }
             finally
             {
@@ -258,13 +263,47 @@ namespace SmartRigWeb
             }
         }
 
+
+
         [HttpPost]
         public bool UpdateProfile(User user)
         {
             try
             {
+                if (user == null)
+                    return false;
+
                 this.repositoryFactory.ConnectDbContext();
-                return this.repositoryFactory.UserRepository.Update(user);
+
+                User oldUser = this.repositoryFactory.UserRepository.GetById(user.UserId);
+
+                if (oldUser == null)
+                    return false;
+
+                // Profile update should not change password or manager permission
+                user.UserPassword = "Abcd1234"; // only for validation, not saved
+                user.UserSalt = oldUser.UserSalt;
+                user.Manager = oldUser.Manager;
+
+                user.Validate();
+
+                if (user.HasErrors)
+                {
+                    Dictionary<string, List<string>> errors = user.AllErrors();
+
+                    foreach (var error in errors)
+                    {
+                        Console.WriteLine(error.Key);
+
+                        foreach (string msg in error.Value)
+                        {
+                            Console.WriteLine(msg);
+                        }
+                    }
+
+                    return false;
+                }
+                return this.repositoryFactory.UserRepository.UpdateProfile(user);
             }
             catch (Exception ex)
             {
@@ -291,7 +330,9 @@ namespace SmartRigWeb
                     newCart.UserId = userId;
                     newCart.Date = DateTime.Now.ToString("yyyy-MM-dd");
                     newCart.IsPayed = false;
+
                     this.repositoryFactory.CartRepository.Create(newCart);
+
                     cart = this.repositoryFactory.CartRepository.GetUnpaidCart(userId);
                 }
 

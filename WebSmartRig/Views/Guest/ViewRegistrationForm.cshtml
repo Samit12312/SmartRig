@@ -1,41 +1,43 @@
 ﻿@using Models;
 @model RegistrationViewModel
+
 @{
     ViewData["Title"] = "ViewRegistrationForm";
     Layout = "~/Views/Shared/MasterPage.cshtml";
+
+    bool isUpdate = ViewBag.IsUpdate != null && ViewBag.IsUpdate == true;
+    string actionName = isUpdate ? "UpdateProfile" : "Registrations";
+    string controllerName = isUpdate ? "User" : "Guest";
 }
 
 <link href="~/stylesheet/register-login.css" rel="stylesheet" />
 
 <div class="register-container">
 
-    @{
-        bool isNotNull = Model.User != null;
-    }
+    <h2 class="form-title">@(isUpdate ? "Update Profile" : "Register")</h2>
 
-    <h2 class="form-title">@((isNotNull) ? "Update Profile" : "Register")</h2>
+    <form asp-controller="@controllerName"
+          asp-action="@actionName"
+          method="post"
+          class="Signup">
 
-    <form asp-controller="@(isNotNull ? "User" : "Guest")"
-          asp-action="@(isNotNull ? "UpdateProfile" : "Registrations")"
-          method="post" class="Signup">
+        <input asp-for="User.UserId" type="hidden" />
 
         <ul class="fields">
-            <!-- Full Name -->
+
             <li class="field">
                 <label asp-for="User.UserName">Full Name</label>
                 <input asp-for="User.UserName" placeholder="Full Name" required />
                 <span asp-validation-for="User.UserName" class="error-message"></span>
             </li>
 
-            <!-- Email -->
             <li class="field">
                 <label asp-for="User.UserEmail">Email</label>
                 <input asp-for="User.UserEmail" type="email" placeholder="Email" required />
                 <span asp-validation-for="User.UserEmail" class="error-message"></span>
             </li>
 
-            <!-- Password -->
-            @if (!isNotNull)
+            @if (!isUpdate)
             {
                 <li class="field">
                     <label asp-for="User.UserPassword">Password</label>
@@ -45,18 +47,15 @@
             }
             else
             {
-                <!-- Hidden password for updates -->
                 <input asp-for="User.UserPassword" type="hidden" value="" />
-            }   
+            }
 
-            <!-- Address -->
             <li class="field">
                 <label asp-for="User.UserAddress">Address</label>
                 <input asp-for="User.UserAddress" type="text" placeholder="Address" required />
                 <span asp-validation-for="User.UserAddress" class="error-message"></span>
             </li>
 
-            <!-- City -->
             <li class="field">
                 <label asp-for="User.CityId">City</label>
                 <select asp-for="User.CityId" asp-items="@(new SelectList(Model.Cities, "CityId", "CityName", Model.User?.CityId))">
@@ -65,23 +64,22 @@
                 <span asp-validation-for="User.CityId" class="error-message"></span>
             </li>
 
-            <!-- Phone Number -->
             <li class="field">
                 <label asp-for="User.UserPhoneNumber">Phone Number</label>
                 <input asp-for="User.UserPhoneNumber" type="text" placeholder="Phone Number" required />
                 <span asp-validation-for="User.UserPhoneNumber" class="error-message"></span>
             </li>
 
-            <!-- Buttons -->
             <li class="field buttons">
                 <button type="reset" class="buttonReset">Reset</button>
+
                 <button type="submit" class="buttonSignUp">
-                    @(isNotNull ? "Save Changes" : "Register")
+                    @(isUpdate ? "Save Changes" : "Register")
                 </button>
             </li>
         </ul>
 
-        @if (!isNotNull)
+        @if (!isUpdate)
         {
             <div class="login-link">
                 <p>Already have an account? <a href="~/Guest/ViewLoginForm">Login</a></p>

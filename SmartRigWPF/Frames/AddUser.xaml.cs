@@ -66,7 +66,14 @@ namespace SmartRigWPF.Frames
 
         private async void AddBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (selectedUser == null)
+            {
+                MessageBox.Show("You must choose a user first", "", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             EditUserViewModel data = new EditUserViewModel();
+
             data.UserId = selectedUser.UserId;
             data.UserName = UserNameBox.Text;
             data.UserEmail = UserEmailBox.Text;
@@ -76,47 +83,43 @@ namespace SmartRigWPF.Frames
             data.Manager = ManagerBox.IsChecked == true;
             data.UserPassword = UserPasswordBox.Password;
 
-            bool isValid = true;
+            data.Validate();
 
-            if (string.IsNullOrWhiteSpace(data.UserName))
-                isValid = false;
-
-            if (string.IsNullOrWhiteSpace(data.UserEmail))
-                isValid = false;
-
-            if (string.IsNullOrWhiteSpace(data.UserPhoneNumber))
-                isValid = false;
-
-            if (string.IsNullOrWhiteSpace(data.UserAddress))
-                isValid = false;
-
-            if (data.CityId == 0)
-                isValid = false;
-
-            if (isValid)
+            if (data.HasErrors)
             {
-                WebClient<EditUserViewModel> client = new WebClient<EditUserViewModel>();
-                client.Schema = "http";
-                client.Host = "localhost";
-                client.Port = 5195;
-                client.Path = "api/Manager/EditUser";
+                string message = "";
 
-                bool ok = await client.PostAsync(data);
+                Dictionary<string, List<string>> errors = data.AllErrors();
 
-                if (ok)
+                foreach (KeyValuePair<string, List<string>> error in errors)
                 {
-                    this.DialogResult = true;
-                    MessageBox.Show("User Updated");
-                    this.Close();
+                    foreach (string errorMessage in error.Value)
+                    {
+                        message += errorMessage + "\n";
+                    }
                 }
-                else
-                {
-                    MessageBox.Show("Failed to update user", "", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+
+                MessageBox.Show(message, "User is not valid", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            WebClient<EditUserViewModel> client = new WebClient<EditUserViewModel>();
+            client.Schema = "http";
+            client.Host = "localhost";
+            client.Port = 5195;
+            client.Path = "api/Manager/EditUser";
+
+            bool ok = await client.PostAsync(data);
+
+            if (ok)
+            {
+                this.DialogResult = true;
+                MessageBox.Show("User Updated");
+                this.Close();
             }
             else
             {
-                MessageBox.Show("User is not valid", "", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Failed to update user", "", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

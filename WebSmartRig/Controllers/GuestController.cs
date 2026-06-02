@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ApiClient;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
 using Models;
-using ApiClient;
 using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using Models.ViewModels;
 
 namespace WebSmartRig.Controllers
 {
@@ -83,20 +88,24 @@ namespace WebSmartRig.Controllers
         [HttpPost]
         public IActionResult Login(string email, string password)
         {
-            if (email == null || password == null)
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
                 ViewBag.Message = "Email and password are required";
                 return View("ViewLoginForm");
             }
 
-            LoginResponse response = GetLoginResponse(email, password); // Changed to get full response
+            LoginResponse response = GetLoginResponse(email, password);
+
             if (response != null && response.Success)
             {
+                HttpContext.Session.Clear();
+
                 HttpContext.Session.SetString("userId", response.UserId.ToString());
                 HttpContext.Session.SetString("userName", response.UserName);
+                HttpContext.Session.SetString("Manager", response.Manager.ToString());
+
                 return RedirectToAction("GetCatalog", "Guest");
             }
-
 
             ViewBag.Message = "Invalid email or password";
             return View("ViewLoginForm");
@@ -105,38 +114,24 @@ namespace WebSmartRig.Controllers
         [HttpGet]
         public IActionResult Profile()
         {
-            string? userId = HttpContext.Session.GetString("userId");
-            if (userId == null)
-            {
-                return RedirectToAction("ViewLoginForm");
-            }
-            return View();
+            return RedirectToAction("ViewUpdateProfileForm", "Guest");
         }
 
         private LoginResponse GetLoginResponse(string email, string password)
         {
-            try
-            {
-                WebClient<LoginResponse> webClient = new WebClient<LoginResponse>();
-                webClient.Schema = "http";
-                webClient.Host = "localhost";
-                webClient.Port = 5195;
-                webClient.Path = "api/Guest/Login";
-                webClient.AddParameter("email", email);
-                webClient.AddParameter("password", password);
+            WebClient<LoginResponse> webClient = new WebClient<LoginResponse>();
 
-                LoginResponse response = webClient.Get();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 5195;
+            webClient.Path = "api/Guest/Login";
 
-                if (response != null && response.Success)
-                    return response;
+            webClient.AddParameter("email", email);
+            webClient.AddParameter("password", password);
 
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-                return null;
-            }
+            LoginResponse response = webClient.Get();
+
+            return response;
         }
         [HttpGet]
         public IActionResult ViewRegistrationForm()
@@ -145,48 +140,105 @@ namespace WebSmartRig.Controllers
             webClient.Schema = "http";
             webClient.Host = "localhost";
             webClient.Port = 5195;
-            webClient.Path = "api/Guest/RegistrationViewModel";
-            string sessionId = HttpContext.Session.GetString("userId");
-            if (sessionId != null)
+
+            string userId = HttpContext.Session.GetString("userId");
+
+            if (userId != null)
             {
+                ViewBag.IsUpdate = true;
                 webClient.Path = "api/User/GetUpdateProfileViewModel";
-                webClient.AddParameter("userId", sessionId);
+                webClient.AddParameter("userId", userId);
             }
-            RegistrationViewModel ufvm = webClient.Get();
-            if (ViewBag.ErrorMessage != null)
+            else
             {
-                ufvm.User = TempData["user"] as User;
+                ViewBag.IsUpdate = false;
+                webClient.Path = "api/Guest/RegistrationViewModel";
             }
+
+            RegistrationViewModel ufvm = webClient.Get();
+
+            if (ufvm.User == null)
+            {
+                ufvm.User = new User();
+            }
+
             return View("ViewRegistrationForm", ufvm);
         }
         [HttpPost]
-        public IActionResult Registrations(User user) // can add iformfile to add pictures
+        public IActionResult Registrations(User user)
         {
-            if(ModelState.IsValid == false)
+            ViewBag.IsUpdate = false;
+
+            if (ModelState.IsValid == false)
             {
-            return View("ViewRegistrationForm", GetRegistrationView(user));
+                return View("ViewRegistrationForm", GetRegistrationView(user));
             }
+
+            if (EmailExists(user.UserEmail))
+            {
+                ModelState.AddModelError("User.UserEmail", "This email already exists");
+                return View("ViewRegistrationForm", GetRegistrationView(user));
+            }
+
             bool ok = PostUser(user);
+
             if (ok)
             {
-                HttpContext.Session.SetInt32("userId", user.UserId);
-                HttpContext.Session.SetString("userName", user.UserName);
-                return RedirectToAction("GetCatalog", "guest");
+                TempData["Message"] = "Registration successful. Please login.";
+                return RedirectToAction("ViewLoginForm", "Guest");
             }
-            ViewBag.Massage = "Registration failed. Try again";
-            return View(GetRegistrationView(user));
+
+            ViewBag.Message = "Registration failed. Try again";
+            return View("ViewRegistrationForm", GetRegistrationView(user));
+        }
+        [HttpGet]
+        public IActionResult ViewUpdateProfileForm()
+        {
+            string sessionId = HttpContext.Session.GetString("userId");
+
+            if (sessionId == null)
+            {
+                return RedirectToAction("ViewLoginForm", "Guest");
+            }
+
+            ViewBag.IsUpdate = true;
+
+            WebClient<RegistrationViewModel> webClient = new WebClient<RegistrationViewModel>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 5195;
+            webClient.Path = "api/User/GetUpdateProfileViewModel";
+            webClient.AddParameter("userId", sessionId);
+
+            RegistrationViewModel ufvm = webClient.Get();
+
+            return View("ViewRegistrationForm", ufvm);
         }
         private RegistrationViewModel GetRegistrationView(User user)
         {
-            
+            ViewBag.IsUpdate = false;
+
             WebClient<RegistrationViewModel> webClient = new WebClient<RegistrationViewModel>();
             webClient.Schema = "http";
             webClient.Host = "localhost";
             webClient.Port = 5195;
             webClient.Path = "api/Guest/RegistrationViewModel";
+
             RegistrationViewModel vm = webClient.Get();
             vm.User = user;
+
             return vm;
+        }
+        private bool EmailExists(string email)
+        {
+            WebClient<bool> webClient = new WebClient<bool>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 5195;
+            webClient.Path = "api/Guest/EmailExists";
+            webClient.AddParameter("email", email);
+
+            return webClient.Get();
         }
         private bool PostUser(User user)
         {

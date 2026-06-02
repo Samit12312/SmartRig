@@ -10,8 +10,8 @@ namespace SmartRigWeb
         {
             return new Cart
             {
-                CartId = Convert.ToInt16(reader["CartId"]),
-                UserId = Convert.ToInt16(reader["UserId"]),
+                CartId = Convert.ToInt32(reader["CartId"]),
+                UserId = Convert.ToInt32(reader["UserId"]),
                 Date = Convert.ToString(reader["Date"]),
                 IsPayed = Convert.ToBoolean(reader["IsPayed"])
             };

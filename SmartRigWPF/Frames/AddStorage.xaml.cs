@@ -80,30 +80,62 @@ namespace SmartRigWPF.Frames
         private async void AddBtn_Click(object sender, RoutedEventArgs e)
         {
             Storage storage = new Storage();
+
+            if (isEdit && selectedStorage != null)
+            {
+                storage.StorageId = selectedStorage.StorageId;
+            }
+
             storage.StorageName = StorageNameBox.Text;
             storage.StorageSize = SizeBox.Text;
             storage.StorageSpeed = SpeedBox.Text;
-            storage.StorageType = (int)TypeBox.SelectedValue;
+
             bool ok = int.TryParse(PriceBox.Text, out int price);
+
             if (ok)
+            {
                 storage.StoragePrice = price;
+            }
             else
+            {
                 storage.StoragePrice = -1;
-            storage.StorageType = TypeBox.SelectedValue == null ? 0 : (int)TypeBox.SelectedValue;
+            }
+
+            if (TypeBox.SelectedValue == null)
+            {
+                storage.StorageType = 0;
+            }
+            else
+            {
+                storage.StorageType = (int)TypeBox.SelectedValue;
+            }
+
+            if (CompanyBox.SelectedValue == null)
+            {
+                storage.StorageCompanyId = 0;
+            }
+            else
+            {
+                storage.StorageCompanyId = (int)CompanyBox.SelectedValue;
+            }
 
             storage.Validate();
+
             if (storage.HasErrors)
             {
                 Dictionary<string, List<string>> errors = storage.AllErrors();
                 StringBuilder errorMessage = new StringBuilder();
+
                 foreach (var error in errors)
                 {
-                    errorMessage.AppendLine($"{error.Key}:/n ");
+                    errorMessage.AppendLine(error.Key + ":");
+
                     foreach (var errorDetail in error.Value)
                     {
-                        errorMessage.AppendLine($" - {errorDetail}\n");
+                        errorMessage.AppendLine(" - " + errorDetail);
                     }
                 }
+
                 MessageBox.Show(errorMessage.ToString(), "Correct next errors", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
@@ -117,7 +149,6 @@ namespace SmartRigWPF.Frames
 
             if (isEdit)
             {
-                storage.StorageType = TypeBox.SelectedValue == null ? 0 : (int)TypeBox.SelectedValue;
                 client.Path = "api/Manager/EditStorage";
                 ok = await client.PostAsync(storage);
 

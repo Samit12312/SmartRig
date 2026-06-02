@@ -1,0 +1,75 @@
+﻿body {
+    background-color: #f4f6f8;
+}
+
+.checkout-container {
+    width: 420px;
+    margin: 60px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+    .checkout-container h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 25px;
+    }
+
+.checkout-form .field {
+    margin-bottom: 15px;
+}
+
+.checkout-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.checkout-form input {
+    width: 100%;
+    padding: 9px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.field-row {
+    display: flex;
+    gap: 15px;
+}
+
+.small-field {
+    flex: 1;
+}
+
+.checkout-btn {
+    width: 100%;
+    padding: 11px;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 10px;
+}
+
+    .checkout-btn:hover {
+        background-color: #34495e;
+    }
+
+.error-message {
+    color: red;
+    font-size: 13px;
+    display: block;
+    margin-top: 4px;
+}
+
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #2c3e50;
+    font-weight: bold;
+}

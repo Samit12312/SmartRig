@@ -249,45 +249,69 @@ namespace SmartRigWeb
             }
         }
         [HttpPost]
-        public bool EditComputer([FromForm] string data, IFormFile file)
+        public bool EditComputer()
         {
             try
             {
-                if (string.IsNullOrEmpty(data))
+                if (!Request.HasFormContentType)
+                {
+                    Console.WriteLine("EditComputer: request is not form data");
                     return false;
+                }
+
+                if (!Request.Form.ContainsKey("data"))
+                {
+                    Console.WriteLine("EditComputer: missing data");
+                    return false;
+                }
+
+                string jsonData = Request.Form["data"];
 
                 JsonSerializerOptions options = new JsonSerializerOptions()
                 {
                     PropertyNameCaseInsensitive = true
                 };
 
-                Computer computer = JsonSerializer.Deserialize<Computer>(data, options);
+                Computer computer = JsonSerializer.Deserialize<Computer>(jsonData, options);
 
                 if (computer == null)
+                {
+                    Console.WriteLine("EditComputer: computer is null");
                     return false;
+                }
 
                 this.repositoryFactory.ConnectDbContext();
 
-                if (file != null && file.Length > 0)
+                if (Request.Form.Files.Count > 0)
                 {
-                    string extension = computer.ComputerPicture;
+                    IFormFile file = Request.Form.Files[0];
 
-                    if (!extension.StartsWith("."))
-                        extension = Path.GetExtension(extension);
-
-                    computer.ComputerPicture = computer.ComputerId + extension;
-
-                    string imagePath = Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "Images",
-                        "Computers",
-                        computer.ComputerPicture
-                    );
-
-                    using (FileStream fs = new FileStream(imagePath, FileMode.Create))
+                    if (file != null && file.Length > 0)
                     {
-                        file.CopyTo(fs);
+                        string extension = computer.ComputerPicture;
+
+                        if (!extension.StartsWith("."))
+                        {
+                            extension = Path.GetExtension(extension);
+                        }
+
+                        computer.ComputerPicture = computer.ComputerId + extension;
+
+                        string folderPath = Path.Combine(
+                            Directory.GetCurrentDirectory(),
+                            "wwwroot",
+                            "Images",
+                            "Computers"
+                        );
+
+                        Directory.CreateDirectory(folderPath);
+
+                        string imagePath = Path.Combine(folderPath, computer.ComputerPicture);
+
+                        using (FileStream fs = new FileStream(imagePath, FileMode.Create))
+                        {
+                            file.CopyTo(fs);
+                        }
                     }
                 }
 
@@ -297,7 +321,7 @@ namespace SmartRigWeb
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("EditComputer error: " + ex.Message);
                 return false;
             }
             finally
@@ -305,7 +329,6 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
-
 
         // Cpu section
         [HttpPost]

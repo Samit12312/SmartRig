@@ -15,7 +15,7 @@
         <!-- Title -->
         <TextBlock x:Name="TitleText"
                    Canvas.Left="20" Canvas.Top="20"
-                   Text="Add User"
+                   Text="Edit User"
                    FontSize="24"
                    FontWeight="SemiBold"
                    Foreground="#2c3e50"/>
@@ -110,7 +110,7 @@
         <!-- Add Button -->
         <Button x:Name="AddBtn"
                 Canvas.Left="20" Canvas.Top="360"
-                Content="Add User"
+                Content="Edit User"
                 Width="150" Height="35"
                 Background="#27ae60"
                 Foreground="White"

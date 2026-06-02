@@ -20,23 +20,39 @@ namespace SmartRigWeb
             this.currencyService = new CurrencyService(new HttpClient());
         }
         [HttpGet]
-        [HttpGet]
         public async Task<CatalogViewModel> GetCatalog(
     int? minPrice = null,
     int? maxPrice = null,
     int? companyId = null,
     int? operatingSystemId = null,
     int? typeId = null,
-    int? priceSort = null,// 1 = ascending, 2 = descending
-    string currencyCode = "ILS") 
+    int? priceSort = null,
+    string currencyCode = "ILS")
         {
             CatalogViewModel catalogViewModel = new CatalogViewModel();
 
             try
             {
-                // Assign filter values to ViewModel so the view can use them
-                catalogViewModel.MinPrice = minPrice;
-                catalogViewModel.MaxPrice = maxPrice;
+                int? realMinPrice = minPrice;
+                int? realMaxPrice = maxPrice;
+
+                if (minPrice.HasValue && !maxPrice.HasValue)
+                {
+                    maxPrice = 999999999;
+                }
+
+                if (!minPrice.HasValue && maxPrice.HasValue)
+                {
+                    minPrice = 0;
+                }
+
+                if (string.IsNullOrEmpty(currencyCode))
+                {
+                    currencyCode = "ILS";
+                }
+
+                catalogViewModel.MinPrice = realMinPrice;
+                catalogViewModel.MaxPrice = realMaxPrice;
                 catalogViewModel.CompanyId = companyId;
                 catalogViewModel.OperatingSystemId = operatingSystemId;
                 catalogViewModel.TypeId = typeId;
@@ -53,7 +69,6 @@ namespace SmartRigWeb
 
                 List<Computer> computers = new List<Computer>();
 
-                // -------- FILTERS --------
                 if (minPrice.HasValue && maxPrice.HasValue && !companyId.HasValue && !operatingSystemId.HasValue && !typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRange(minPrice.Value, maxPrice.Value);
 
@@ -84,6 +99,10 @@ namespace SmartRigWeb
                 else if (!minPrice.HasValue && !maxPrice.HasValue && !companyId.HasValue && operatingSystemId.HasValue && typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetComputersByOperatingSystemIdAndTypeId(operatingSystemId.Value, typeId.Value);
 
+                else if (!minPrice.HasValue && !maxPrice.HasValue && companyId.HasValue && operatingSystemId.HasValue && typeId.HasValue)
+                    computers = this.repositoryFactory.ComputerRepository.GetComputersByCompanyIdAndOperatingSystemIdAndTypeId(
+                        companyId.Value, operatingSystemId.Value, typeId.Value);
+
                 else if (minPrice.HasValue && maxPrice.HasValue && companyId.HasValue && operatingSystemId.HasValue && !typeId.HasValue)
                     computers = this.repositoryFactory.ComputerRepository.GetByPriceRangeAndCompanyIdAndOperatingSystemId(
                         minPrice.Value, maxPrice.Value, companyId.Value, operatingSystemId.Value);
@@ -103,7 +122,6 @@ namespace SmartRigWeb
                 else
                     computers = this.repositoryFactory.ComputerRepository.GetAll();
 
-                // -------- SORTING --------
                 if (priceSort.HasValue)
                 {
                     for (int i = 0; i < computers.Count - 1; i++)
@@ -121,7 +139,6 @@ namespace SmartRigWeb
                     }
                 }
 
-                // -------- MAPPING TO VIEW MODEL --------
                 List<ComputerCatalogViewModel> catalogComputers = new List<ComputerCatalogViewModel>();
                 double rate = 1;
 
@@ -129,6 +146,7 @@ namespace SmartRigWeb
                 {
                     rate = await this.currencyService.GetRate("ILS", catalogViewModel.CurrencyCode);
                 }
+
                 foreach (Computer computer in computers)
                 {
                     Cpu cpu = this.repositoryFactory.CpuRepository.GetById(computer.CpuId);
@@ -167,7 +185,26 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
+        [HttpGet]
+        public bool EmailExists(string email)
+        {
+            try
+            {
+                this.repositoryFactory.ConnectDbContext();
 
+                User user = this.repositoryFactory.UserRepository.GetByEmail(email);
+
+                return user != null;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
         [HttpGet]
         public ComputerDetailsViewModel GetComputerDetails(int computerId)
         {
@@ -253,11 +290,11 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
-        [HttpGet]
+
         [HttpGet]
         public LoginResponse Login(string email, string password)
         {
-            LoginResponse lR = new LoginResponse();
+            LoginResponse response = new LoginResponse();
 
             try
             {
@@ -265,33 +302,32 @@ namespace SmartRigWeb
 
                 User user = this.repositoryFactory.UserRepository.Login(email, password);
 
-                if (user != null)
+                if (user == null)
                 {
-                    lR.Success = true;
-                    lR.UserId = user.UserId.ToString();
-                    lR.UserName = user.UserName;
-                    lR.Manager = user.Manager;
-                }
-                else
-                {
-                    lR.Success = false;
-                    lR.UserId = null;
-                    lR.UserName = null;
-                    lR.Manager = false;
+                    response.Success = false;
+                    response.UserId = null;
+                    response.UserName = null;
+                    response.Manager = false;
+                    return response;
                 }
 
-                return lR;
+                response.Success = true;
+                response.UserId = user.UserId.ToString();
+                response.UserName = user.UserName;
+                response.Manager = user.Manager;
+
+                return response;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
 
-                lR.Success = false;
-                lR.UserId = null;
-                lR.UserName = null;
-                lR.Manager = false;
+                response.Success = false;
+                response.UserId = null;
+                response.UserName = null;
+                response.Manager = false;
 
-                return lR;
+                return response;
             }
             finally
             {

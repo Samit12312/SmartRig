@@ -195,7 +195,7 @@ namespace SmartRigWPF.Frames
 
                 if (ok)
                 {
-                    this.DialogResult = true;
+                    this.DialogResult = true; 
                     MessageBox.Show("Computer Updated");
                     this.Close();
                 }

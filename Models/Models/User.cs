@@ -38,8 +38,9 @@ namespace Models
             }
         }
 
-        [Required(ErrorMessage = "You must enter your email address")]
-        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
+        [Required(ErrorMessage = "You must enter your email")]
+        [StringLength(50, MinimumLength = 6, ErrorMessage = "Email must be between 6 and 50 characters")]
+        [RegularExpression(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$", ErrorMessage = "Email must be a valid email address")]
         public string UserEmail
         {
             get { return userEmail; }
@@ -51,7 +52,7 @@ namespace Models
         }
 
 
-        [StringLength(25, MinimumLength = 4, ErrorMessage = "Password must be between 4 and 25 characters.")]
+        [StringLength(25, MinimumLength = 8, ErrorMessage = "Password must be between 8 and 25 characters.")]
         [RegularExpression(@"^(?=.*\d).+$", ErrorMessage = "Password must contain at least one number.")]
         [Required(ErrorMessage = "You must enter your password")]
         public string UserPassword
@@ -76,7 +77,7 @@ namespace Models
         }
 
         [Required(ErrorMessage = "You must enter your phone number")]
-        [Phone(ErrorMessage = "Please enter a valid phone number")]
+        [RegularExpression(@"^(05\d{8}|07\d{8}|0[23489]\d{7})$", ErrorMessage = "Phone number must be a valid Israeli number")]
         public string UserPhoneNumber
         {
             get { return userPhoneNumber; }

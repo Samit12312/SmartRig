@@ -75,11 +75,27 @@ namespace SmartRigWeb
         }
         public bool AddComputer(int cartId, int computerId, int quantity)
         {
-            string sql = @"INSERT INTO CartComputer (CartId, ComputerId, Quantity) 
+            string checkSql = @"SELECT * FROM CartComputer
+                        WHERE CartId = @CartId AND ComputerId = @ComputerId";
+
+            this.dbContext.AddParameter("@CartId", cartId.ToString());
+            this.dbContext.AddParameter("@ComputerId", computerId.ToString());
+
+            using (IDataReader reader = this.dbContext.Select(checkSql))
+            {
+                if (reader.Read())
+                {
+                    return true;
+                }
+            }
+
+            string sql = @"INSERT INTO CartComputer (CartId, ComputerId, Quantity)
                    VALUES (@CartId, @ComputerId, @Quantity)";
+
             this.dbContext.AddParameter("@CartId", cartId.ToString());
             this.dbContext.AddParameter("@ComputerId", computerId.ToString());
             this.dbContext.AddParameter("@Quantity", quantity.ToString());
+
             return this.dbContext.Insert(sql) > 0;
         }
         public bool RemoveComputer(int cartId, int computerId)
@@ -177,7 +193,7 @@ namespace SmartRigWeb
                 ON Computer.ComputerId = CartComputer.ComputerId
         WHERE 
             Cart.UserId = @UserId
-            AND Cart.IsPayed = False;
+            AND Cart.IsPayed = False
     ";
 
             this.dbContext.AddParameter("@UserId", userId.ToString());
@@ -188,10 +204,13 @@ namespace SmartRigWeb
             {
                 while (reader.Read())
                 {
-                    CartComputer cartItem = this.modelsFactory.CartComputerCreator.CreateModel(reader);
+                    CartComputer cartItem = new CartComputer();
 
-                    cartItem.ComputerQuantity = Convert.ToInt16(reader["ComputerQuantity"]);
-                    cartItem.ComputerPrice = Convert.ToInt16(reader["ComputerPrice"]);
+                    cartItem.ComputerId = Convert.ToInt32(reader["ComputerId"]);
+                    cartItem.ComputerName = reader["ComputerName"].ToString();
+                    cartItem.ComputerPicture = reader["ComputerPicture"].ToString();
+                    cartItem.ComputerQuantity = Convert.ToInt32(reader["ComputerQuantity"]);
+                    cartItem.ComputerPrice = Convert.ToInt32(reader["ComputerPrice"]);
 
                     items.Add(cartItem);
                 }
@@ -199,7 +218,6 @@ namespace SmartRigWeb
 
             return items;
         }
-
 
 
         public Cart GetById(int id)
@@ -297,11 +315,11 @@ namespace SmartRigWeb
                     {
                         mostSold = new CartComputer
                         {
-                            ComputerId = Convert.ToInt16(reader["ComputerId"]),
+                            ComputerId = Convert.ToInt32(reader["ComputerId"]),
                             ComputerName = reader["ComputerName"].ToString(),
                             ComputerPicture = reader["ComputerPicture"].ToString(),
-                            computerPrice = Convert.ToInt16(reader["Price"]),
-                            computerQuantity = Convert.ToInt16(reader["TotalSold"])
+                            computerPrice = Convert.ToInt32(reader["Price"]),
+                            computerQuantity = Convert.ToInt32(reader["TotalSold"])
                         };
                     }
                 }

@@ -1,6 +1,7 @@
 ﻿using ApiClient;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Models.ViewModels;
 using System.Text.Json;
 
 namespace WebAppSmartRig.Controllers
@@ -21,47 +22,69 @@ namespace WebAppSmartRig.Controllers
         [HttpPost]
         public IActionResult UpdateProfile(User user)
         {
-            // Remove password validation (we're not changing it)
+            ModelState.Remove("UserPassword");
+            ModelState.Remove("User.UserPassword");
             ModelState.Remove("user.UserPassword");
 
-            if (!ModelState.IsValid)
-            {
-                // Save the user in TempData to reload if validation fails
-                TempData["user"] = JsonSerializer.Serialize(user);
-                return RedirectToAction("UpdateProfile", "User");
-            }
-
-            // Dummy password required by API / DB validation
-            user.UserPassword = "";
-
-            // Make sure the correct user is updated from session
             string userIdStr = HttpContext.Session.GetString("userId");
+
             if (string.IsNullOrEmpty(userIdStr))
             {
                 return RedirectToAction("ViewLoginForm", "Guest");
             }
+
             user.UserId = Convert.ToInt32(userIdStr);
 
-            // Call API
-            WebClient<User> webClient = new WebClient<User>
+            // Dummy password only so API validation passes.
+            // It should NOT be saved by the API repository.
+            if (string.IsNullOrEmpty(user.UserPassword))
             {
-                Schema = "http",
-                Host = "localhost",
-                Port = 5195,
-                Path = "api/User/UpdateProfile"
-            };
+                user.UserPassword = "Abcd1234";
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.IsUpdate = true;
+
+                WebClient<RegistrationViewModel> cityClient = new WebClient<RegistrationViewModel>();
+                cityClient.Schema = "http";
+                cityClient.Host = "localhost";
+                cityClient.Port = 5195;
+                cityClient.Path = "api/Guest/RegistrationViewModel";
+
+                RegistrationViewModel vm = cityClient.Get();
+                vm.User = user;
+
+                return View("~/Views/Guest/ViewRegistrationForm.cshtml", vm);
+            }
+
+            WebClient<User> webClient = new WebClient<User>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 5195;
+            webClient.Path = "api/User/UpdateProfile";
 
             bool ok = webClient.Post(user);
 
             if (ok)
             {
-                // Update session with new username
                 HttpContext.Session.SetString("userName", user.UserName);
-                return RedirectToAction("GetCatalog", "Guest");
+                return RedirectToAction("ViewRegistrationForm", "Guest");
             }
 
-            ViewBag.Error = true;
-            return RedirectToAction("UpdateProfile", "User");
+            ViewBag.IsUpdate = true;
+            ViewBag.Message = "Failed to update profile";
+
+            WebClient<RegistrationViewModel> client = new WebClient<RegistrationViewModel>();
+            client.Schema = "http";
+            client.Host = "localhost";
+            client.Port = 5195;
+            client.Path = "api/Guest/RegistrationViewModel";
+
+            RegistrationViewModel errorVm = client.Get();
+            errorVm.User = user;
+
+            return View("~/Views/Guest/ViewRegistrationForm.cshtml", errorVm);
         }
 
         [HttpGet]
@@ -100,10 +123,13 @@ namespace WebAppSmartRig.Controllers
         public IActionResult ViewCart()
         {
             string userId = HttpContext.Session.GetString("userId");
+
             if (string.IsNullOrEmpty(userId))
             {
                 return RedirectToAction("ViewLoginForm", "Guest");
             }
+
+            Console.WriteLine("MVC VIEW CART USER ID = " + userId);
 
             WebClient<CartViewModel> webClient = new WebClient<CartViewModel>();
             webClient.Schema = "http";
@@ -113,6 +139,19 @@ namespace WebAppSmartRig.Controllers
             webClient.AddParameter("userId", userId);
 
             CartViewModel cart = webClient.Get();
+
+            if (cart == null)
+            {
+                cart = new CartViewModel();
+                cart.Computers = new List<CartComputer>();
+                cart.Total = 0;
+            }
+
+            if (cart.Computers == null)
+            {
+                cart.Computers = new List<CartComputer>();
+            }
+
             return View(cart);
         }
 
@@ -120,6 +159,7 @@ namespace WebAppSmartRig.Controllers
         public IActionResult AddToCart(int computerId)
         {
             string userId = HttpContext.Session.GetString("userId");
+
             if (string.IsNullOrEmpty(userId))
             {
                 return RedirectToAction("ViewLoginForm", "Guest");
@@ -137,6 +177,117 @@ namespace WebAppSmartRig.Controllers
 
             TempData["Message"] = "Added to cart!";
             return RedirectToAction("GetCatalog", "Guest");
+        }
+        [HttpGet]
+        public IActionResult CheckSession()
+        {
+            string userId = HttpContext.Session.GetString("userId");
+            string userName = HttpContext.Session.GetString("userName");
+            string manager = HttpContext.Session.GetString("Manager");
+
+            return Content("userId = " + userId + " | userName = " + userName + " | Manager = " + manager);
+        }
+        [HttpGet]
+        public IActionResult ViewCheckout()
+        {
+            string userId = HttpContext.Session.GetString("userId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("ViewLoginForm", "Guest");
+            }
+
+            WebClient<CartViewModel> webClient = new WebClient<CartViewModel>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 5195;
+            webClient.Path = "api/User/GetCart";
+            webClient.AddParameter("userId", userId);
+
+            CartViewModel cart = webClient.Get();
+
+            if (cart != null)
+            {
+                ViewBag.Total = cart.Total;
+            }
+            else
+            {
+                ViewBag.Total = 0;
+            }
+
+            CheckoutViewModel vm = new CheckoutViewModel();
+
+            return View("ViewCheckout", vm);
+        }
+
+        [HttpPost]
+        public IActionResult Checkout(CheckoutViewModel checkout)
+        {
+            string userId = HttpContext.Session.GetString("userId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("ViewLoginForm", "Guest");
+            }
+
+            if (!IsCardDateValid(checkout.CardDate))
+            {
+                ModelState.AddModelError("CardDate", "Card date is expired");
+            }
+
+            if (ModelState.IsValid == false)
+            {
+                return View("ViewCheckout", checkout);
+            }
+
+            WebClient<bool> webClient = new WebClient<bool>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 5195;
+            webClient.Path = "api/User/BuyCart";
+            webClient.AddParameter("userId", userId);
+
+            bool ok = webClient.Get();
+
+            if (ok)
+            {
+                TempData["Message"] = "Payment completed successfully!";
+                return RedirectToAction("OrderHistory", "User");
+            }
+
+            ViewBag.Message = "Payment failed. Try again";
+            return View("ViewCheckout", checkout);
+        }
+
+        private bool IsCardDateValid(string cardDate)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(cardDate))
+                    return false;
+
+                string[] parts = cardDate.Split('/');
+
+                if (parts.Length != 2)
+                    return false;
+
+                int month = Convert.ToInt32(parts[0]);
+                int year = Convert.ToInt32(parts[1]) + 2000;
+
+                if (month < 1 || month > 12)
+                    return false;
+
+                DateTime lastDayOfCardMonth = new DateTime(year, month, 1).AddMonths(1).AddDays(-1);
+
+                if (lastDayOfCardMonth < DateTime.Today)
+                    return false;
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         [HttpGet]

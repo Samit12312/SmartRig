@@ -75,14 +75,22 @@ namespace ApiClient
                     if (responseMessage.IsSuccessStatusCode)
                     {
                         string result = responseMessage.Content.ReadAsStringAsync().Result;
+
+                        if (string.IsNullOrWhiteSpace(result))
+                        {
+                            return default(T);
+                        }
+
                         JsonSerializerOptions options = new JsonSerializerOptions()
                         {
                             PropertyNameCaseInsensitive = true
                         };
-                        T data = JsonSerializer.Deserialize<T>(result,options);
+
+                        T data = JsonSerializer.Deserialize<T>(result, options);
                         return data;
                     }
-                    else return default(T);
+
+                    return default(T);
                 }
             }
         }
@@ -94,17 +102,20 @@ namespace ApiClient
                 requestMessage.RequestUri = this.uriBuilder.Uri; // מגדיר את כתובת הבקשה
                 using (HttpResponseMessage responseMessage = await this.httpClient.SendAsync(requestMessage)) //בעזרתhttpclient שולחים בקשה לשרת
                 {
-                    if (responseMessage.IsSuccessStatusCode)
+                    string result = await responseMessage.Content.ReadAsStringAsync();
+
+                    if (string.IsNullOrWhiteSpace(result))
                     {
-                        string result = await responseMessage.Content.ReadAsStringAsync();
-                        JsonSerializerOptions options = new JsonSerializerOptions()
-                        {
-                            PropertyNameCaseInsensitive = true
-                        };
-                        T data = JsonSerializer.Deserialize<T>(result, options);
-                        return data;
+                        return default(T);
                     }
-                    else return default(T);
+
+                    JsonSerializerOptions options = new JsonSerializerOptions()
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    T data = JsonSerializer.Deserialize<T>(result, options);
+                    return data;
                 }
             }
         }
