@@ -35,14 +35,17 @@ namespace WebAppSmartRig.Controllers
 
             user.UserId = Convert.ToInt32(userIdStr);
 
-            // Dummy password only so API validation passes.
-            // It should NOT be saved by the API repository.
             if (string.IsNullOrEmpty(user.UserPassword))
             {
                 user.UserPassword = "Abcd1234";
             }
 
-            if (!ModelState.IsValid)
+            if (IsEmailAllowed(user.UserEmail) == false)
+            {
+                ModelState.AddModelError("User.UserEmail", "Email must be like name@gmail.com, name@hotmail.com, or name@walla.co.il");
+            }
+
+            if (ModelState.IsValid == false)
             {
                 ViewBag.IsUpdate = true;
 
@@ -69,7 +72,8 @@ namespace WebAppSmartRig.Controllers
             if (ok)
             {
                 HttpContext.Session.SetString("userName", user.UserName);
-                return RedirectToAction("ViewRegistrationForm", "Guest");
+                TempData["Message"] = "Profile updated successfully";
+                return RedirectToAction("ViewUpdateProfileForm", "Guest");
             }
 
             ViewBag.IsUpdate = true;
@@ -86,7 +90,74 @@ namespace WebAppSmartRig.Controllers
 
             return View("~/Views/Guest/ViewRegistrationForm.cshtml", errorVm);
         }
+        private bool IsEmailAllowed(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return false;
+            }
 
+            email = email.ToLower();
+
+            if (email.Contains("@") == false)
+            {
+                return false;
+            }
+
+            string[] parts = email.Split('@');
+
+            if (parts.Length != 2)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(parts[0]))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(parts[1]))
+            {
+                return false;
+            }
+
+            if (email.EndsWith(".com"))
+            {
+                return true;
+            }
+
+            if (email.EndsWith(".net"))
+            {
+                return true;
+            }
+
+            if (email.EndsWith(".org"))
+            {
+                return true;
+            }
+
+            if (email.EndsWith(".edu"))
+            {
+                return true;
+            }
+
+            if (email.EndsWith(".co.il"))
+            {
+                return true;
+            }
+
+            if (email.EndsWith(".org.il"))
+            {
+                return true;
+            }
+
+            if (email.EndsWith(".ac.il"))
+            {
+                return true;
+            }
+
+            return false;
+        }
         [HttpGet]
         public IActionResult GetCatalog(string? operatingSystem = null, string? typeId = null, int? minPrice = null, int? maxPrice = null, int? priceSort = null)
         {
