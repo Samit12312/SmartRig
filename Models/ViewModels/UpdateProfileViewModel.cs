@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Models;
 
 namespace Models.ViewModels
 {
@@ -35,7 +36,7 @@ namespace Models.ViewModels
             }
         }
 
-        [Required(ErrorMessage = "You must enter your email")]
+        [Required(ErrorMessage = "You must enter your email address")]
         [StringLength(50, MinimumLength = 6, ErrorMessage = "Email must be between 6 and 50 characters")]
         [RegularExpression(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$",
             ErrorMessage = "Email must be a valid email address")]
