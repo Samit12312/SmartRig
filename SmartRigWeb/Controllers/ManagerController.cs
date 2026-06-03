@@ -447,15 +447,6 @@ namespace SmartRigWeb
 
 
         // Adding/Editing/Removing Stuff
-        /// <summary>
-        /// Adding/Editing/Removing components and computers is done by sending the component/computer object in the request body.
-        /// For removing,
-        /// only the id is sent as a query parameter.
-        /// The methods return true if the operation was successful,
-        /// false otherwise.
-        /// </summary>
-        /// <param name="gpu"></param>
-        /// <returns></returns>
         // Gpu section
         [HttpPost]
         public bool AddGpu([FromBody] Gpu gpu)
