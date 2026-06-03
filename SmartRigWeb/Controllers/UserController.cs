@@ -263,46 +263,70 @@ namespace SmartRigWeb
             }
         }
 
-
-
-        [HttpPost]
-        public bool UpdateProfile(User user)
+        [HttpGet]
+        public bool IsEmailUsedByAnotherUser(int userId, string email)
         {
             try
             {
+                this.repositoryFactory.ConnectDbContext();
+
+                User user = this.repositoryFactory.UserRepository.GetByEmail(email);
+
                 if (user == null)
+                {
                     return false;
+                }
+
+                return user.UserId != userId;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
+        [HttpPost]
+        public bool UpdateProfile([FromBody] UpdateProfileViewModel model)
+        {
+            try
+            {
+                if (model == null)
+                {
+                    return false;
+                }
+
+                model.Validate();
+
+                if (model.HasErrors)
+                {
+                    return false;
+                }
 
                 this.repositoryFactory.ConnectDbContext();
 
-                User oldUser = this.repositoryFactory.UserRepository.GetById(user.UserId);
+                User oldUser = this.repositoryFactory.UserRepository.GetById(model.UserId);
 
                 if (oldUser == null)
+                {
                     return false;
+                }
 
-                // Profile update should not change password or manager permission
-                user.UserPassword = "Abcd1234"; // only for validation, not saved
+                User user = new User();
+                user.UserId = model.UserId;
+                user.UserName = model.UserName;
+                user.UserEmail = model.UserEmail;
+                user.UserAddress = model.UserAddress;
+                user.CityId = model.CityId;
+                user.UserPhoneNumber = model.UserPhoneNumber;
+
+                user.UserPassword = oldUser.UserPassword;
                 user.UserSalt = oldUser.UserSalt;
                 user.Manager = oldUser.Manager;
 
-                user.Validate();
-
-                if (user.HasErrors)
-                {
-                    Dictionary<string, List<string>> errors = user.AllErrors();
-
-                    foreach (var error in errors)
-                    {
-                        Console.WriteLine(error.Key);
-
-                        foreach (string msg in error.Value)
-                        {
-                            Console.WriteLine(msg);
-                        }
-                    }
-
-                    return false;
-                }
                 return this.repositoryFactory.UserRepository.UpdateProfile(user);
             }
             catch (Exception ex)

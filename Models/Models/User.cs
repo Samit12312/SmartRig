@@ -39,8 +39,8 @@ namespace Models
         }
 
         [Required(ErrorMessage = "You must enter your email")]
-        [StringLength(50, MinimumLength = 6, ErrorMessage = "Email must be between 6 and 50 characters")]
-        [RegularExpression(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$", ErrorMessage = "Email must be a valid email address")]
+        [StringLength(40, MinimumLength = 16, ErrorMessage = "Email must be a valid Gmail address")]
+        [RegularExpression(@"^(?!.*\.\.)[A-Za-z0-9](?:[A-Za-z0-9.]{4,28}[A-Za-z0-9])@gmail\.com$", ErrorMessage = "Email must be a valid Gmail address and end with @gmail.com")]
         public string UserEmail
         {
             get { return userEmail; }
@@ -66,6 +66,7 @@ namespace Models
         }
 
         [Required(ErrorMessage = "You must enter your address")]
+        [StringLength(80, MinimumLength = 2, ErrorMessage = "Address must be between 2 and 80 characters")]
         public string UserAddress
         {
             get { return userAddress; }

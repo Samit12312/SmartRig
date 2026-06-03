@@ -25,7 +25,7 @@ namespace Models.ViewModels
         }
 
         [Required(ErrorMessage = "You must enter your name")]
-        [StringLength(15, MinimumLength = 2, ErrorMessage = "First name cannot be longer than 15 characters and less than 2")]
+        [StringLength(40, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 40 characters")]
         [FirstLetterCapital(ErrorMessage = "First letter must be capital")]
         public string UserName
         {
@@ -39,7 +39,8 @@ namespace Models.ViewModels
 
         [Required(ErrorMessage = "You must enter your email")]
         [StringLength(50, MinimumLength = 6, ErrorMessage = "Email must be between 6 and 50 characters")]
-        [RegularExpression(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$", ErrorMessage = "Email must be a valid email address")]
+        [RegularExpression(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$",
+            ErrorMessage = "Email must be a valid email address")]
         public string UserEmail
         {
             get { return userEmail; }
@@ -49,6 +50,7 @@ namespace Models.ViewModels
                 ValidateProperty(value, "UserEmail");
             }
         }
+
         public string UserPassword
         {
             get { return userPassword; }
@@ -72,7 +74,8 @@ namespace Models.ViewModels
         }
 
         [Required(ErrorMessage = "You must enter your phone number")]
-        [RegularExpression(@"^(05\d{8}|07\d{8}|0[23489]\d{7})$", ErrorMessage = "Phone number must be a valid Israeli number")]
+        [RegularExpression(@"^(05\d{8}|07\d{8}|0[23489]\d{7})$",
+            ErrorMessage = "Phone number must contain only numbers and must be a valid Israeli number")]
         public string UserPhoneNumber
         {
             get { return userPhoneNumber; }

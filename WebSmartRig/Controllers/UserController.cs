@@ -20,12 +20,8 @@ namespace WebAppSmartRig.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateProfile(User user)
+        public IActionResult UpdateProfile([Bind(Prefix = "User")] UpdateProfileViewModel model)
         {
-            ModelState.Remove("UserPassword");
-            ModelState.Remove("User.UserPassword");
-            ModelState.Remove("user.UserPassword");
-
             string userIdStr = HttpContext.Session.GetString("userId");
 
             if (string.IsNullOrEmpty(userIdStr))
@@ -33,62 +29,79 @@ namespace WebAppSmartRig.Controllers
                 return RedirectToAction("ViewLoginForm", "Guest");
             }
 
-            user.UserId = Convert.ToInt32(userIdStr);
+            model.UserId = Convert.ToInt32(userIdStr);
+            model.Validate();
 
-            if (string.IsNullOrEmpty(user.UserPassword))
-            {
-                user.UserPassword = "Abcd1234";
-            }
-
-            if (IsEmailAllowed(user.UserEmail) == false)
+            if (IsEmailAllowed(model.UserEmail) == false)
             {
                 ModelState.AddModelError("User.UserEmail", "Email must be like name@gmail.com, name@hotmail.com, or name@walla.co.il");
             }
 
-            if (ModelState.IsValid == false)
+            if (IsEmailUsedByAnotherUser(model.UserId, model.UserEmail))
             {
-                ViewBag.IsUpdate = true;
-
-                WebClient<RegistrationViewModel> cityClient = new WebClient<RegistrationViewModel>();
-                cityClient.Schema = "http";
-                cityClient.Host = "localhost";
-                cityClient.Port = 5195;
-                cityClient.Path = "api/Guest/RegistrationViewModel";
-
-                RegistrationViewModel vm = cityClient.Get();
-                vm.User = user;
-
-                return View("~/Views/Guest/ViewRegistrationForm.cshtml", vm);
+                ModelState.AddModelError("User.UserEmail", "This email is already used by another user");
             }
 
-            WebClient<User> webClient = new WebClient<User>();
+            if (model.HasErrors || ModelState.IsValid == false)
+            {
+                ViewBag.IsUpdate = true;
+                return View("~/Views/Guest/ViewRegistrationForm.cshtml", GetUpdateRegistrationView(model));
+            }
+
+            WebClient<UpdateProfileViewModel> webClient = new WebClient<UpdateProfileViewModel>();
             webClient.Schema = "http";
             webClient.Host = "localhost";
             webClient.Port = 5195;
             webClient.Path = "api/User/UpdateProfile";
 
-            bool ok = webClient.Post(user);
+            bool ok = webClient.Post(model);
 
             if (ok)
             {
-                HttpContext.Session.SetString("userName", user.UserName);
+                HttpContext.Session.SetString("userName", model.UserName);
                 TempData["Message"] = "Profile updated successfully";
                 return RedirectToAction("ViewUpdateProfileForm", "Guest");
             }
 
             ViewBag.IsUpdate = true;
             ViewBag.Message = "Failed to update profile";
+            return View("~/Views/Guest/ViewRegistrationForm.cshtml", GetUpdateRegistrationView(model));
+        }
+        private bool IsEmailUsedByAnotherUser(int userId, string email)
+        {
+            WebClient<bool> webClient = new WebClient<bool>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 5195;
+            webClient.Path = "api/User/IsEmailUsedByAnotherUser";
+            webClient.AddParameter("userId", userId.ToString());
+            webClient.AddParameter("email", email);
 
-            WebClient<RegistrationViewModel> client = new WebClient<RegistrationViewModel>();
-            client.Schema = "http";
-            client.Host = "localhost";
-            client.Port = 5195;
-            client.Path = "api/Guest/RegistrationViewModel";
+            return webClient.Get();
+        }
 
-            RegistrationViewModel errorVm = client.Get();
-            errorVm.User = user;
+        private RegistrationViewModel GetUpdateRegistrationView(UpdateProfileViewModel model)
+        {
+            WebClient<RegistrationViewModel> webClient = new WebClient<RegistrationViewModel>();
+            webClient.Schema = "http";
+            webClient.Host = "localhost";
+            webClient.Port = 5195;
+            webClient.Path = "api/Guest/RegistrationViewModel";
 
-            return View("~/Views/Guest/ViewRegistrationForm.cshtml", errorVm);
+            RegistrationViewModel vm = webClient.Get();
+
+            User user = new User();
+            user.UserId = model.UserId;
+            user.UserName = model.UserName;
+            user.UserEmail = model.UserEmail;
+            user.UserAddress = model.UserAddress;
+            user.CityId = model.CityId;
+            user.UserPhoneNumber = model.UserPhoneNumber;
+            user.UserPassword = "Password1";
+
+            vm.User = user;
+
+            return vm;
         }
         private bool IsEmailAllowed(string email)
         {

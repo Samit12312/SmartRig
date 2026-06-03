@@ -31,6 +31,8 @@ namespace Models
         }
 
         [Required(ErrorMessage = "You must enter storage size")]
+        [RegularExpression(@"^\d+(\.\d+)?\s?(GB|TB|MB|gb|tb|mb)?$",
+            ErrorMessage = "Storage size must be a number, for example 1TB")]
         public string StorageSize
         {
             get { return this.storageSize; }
@@ -42,6 +44,8 @@ namespace Models
         }
 
         [Required(ErrorMessage = "You must enter storage speed")]
+        [RegularExpression(@"^\d+(\.\d+)?\s?(MB/s|GB/s|mb/s|gb/s|MHz|mhz)?$",
+            ErrorMessage = "Storage speed must be a number, for example 3500MB/s")]
         public string StorageSpeed
         {
             get { return this.storageSpeed; }

@@ -31,6 +31,8 @@ namespace Models
         }
 
         [Required(ErrorMessage = "You must enter ram size")]
+        [RegularExpression(@"^\d+(\.\d+)?\s?(GB|MB|gb|mb)?$",
+            ErrorMessage = "Ram size must be a number, for example 16GB")]
         public string RamSize
         {
             get { return this.ramSize; }
@@ -53,6 +55,8 @@ namespace Models
         }
 
         [Required(ErrorMessage = "You must enter ram speed")]
+        [RegularExpression(@"^\d+(\.\d+)?\s?(MHz|GHz|mhz|ghz)?$",
+            ErrorMessage = "Ram speed must be a number, for example 3200MHz")]
         public string RamSpeed
         {
             get { return this.ramSpeed; }

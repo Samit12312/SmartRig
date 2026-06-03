@@ -311,6 +311,18 @@ namespace SmartRigWeb
         {
             try
             {
+                if (user == null)
+                {
+                    return false;
+                }
+
+                user.Validate();
+
+                if (user.HasErrors)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 return this.repositoryFactory.UserRepository.Create(user);
             }

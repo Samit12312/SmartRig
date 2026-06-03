@@ -1,27 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
-    internal class FirstLetterCapitalAttribute : ValidationAttribute
+    public class FirstLetterCapitalAttribute : ValidationAttribute
     {
         public override bool IsValid(object? value)
         {
-            if(value == null) return false;
-            string str = value.ToString();
-            char firstLetter = str[0];
-            if (firstLetter < 65 || firstLetter >= 90)
-                return false;
-            for (int i = 1; i < str.Length; i++)
+            if (value == null)
             {
-                if (str[i] < 141 && str[i] > 172)
-                    return false;
+                return false;
             }
+
+            string text = value.ToString().Trim();
+
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return false;
+            }
+
+            char firstLetter = text[0];
+
+            if (IsEnglishLetter(firstLetter))
+            {
+                if (char.IsUpper(firstLetter) == false)
+                {
+                    return false;
+                }
+            }
+            else if (IsHebrewLetter(firstLetter) == false)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+
+                if (char.IsLetter(c) == false &&
+                    c != ' ' &&
+                    c != '-' &&
+                    c != '\'')
+                {
+                    return false;
+                }
+            }
+
             return true;
+        }
+
+        private bool IsEnglishLetter(char c)
+        {
+            return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
+        }
+
+        private bool IsHebrewLetter(char c)
+        {
+            return c >= 'א' && c <= 'ת';
         }
     }
 }

@@ -162,9 +162,20 @@ namespace SmartRigWPF.Frames
 
             computer.Validate();
 
-            if (!computer.IsValid)
+            if (computer.HasErrors)
             {
-                MessageText.Text = "Computer is not valid";
+                string message = "";
+                Dictionary<string, List<string>> errors = computer.AllErrors();
+
+                foreach (KeyValuePair<string, List<string>> error in errors)
+                {
+                    foreach (string errorMessage in error.Value)
+                    {
+                        message += errorMessage + "\n";
+                    }
+                }
+
+                MessageText.Text = message;
                 return;
             }
 

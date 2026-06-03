@@ -123,7 +123,44 @@ namespace SmartRigWeb
             }
         }
 
+        [HttpGet]
+        public bool IsEmailUsedByOtherUser(string email, int userId)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    return false;
+                }
 
+                email = email.Trim();
+
+                this.repositoryFactory.ConnectDbContext();
+
+                User existingUser = this.repositoryFactory.UserRepository.GetByEmail(email);
+
+                if (existingUser == null)
+                {
+                    return false;
+                }
+
+                if (existingUser.UserId == userId)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            finally
+            {
+                this.repositoryFactory.DisconnectDb();
+            }
+        }
         [HttpPost]
         public bool AddComputer()
         {
@@ -146,6 +183,9 @@ namespace SmartRigWeb
                 IFormFile file = Request.Form.Files[0];
 
                 if (data == null || file == null || file.Length == 0)
+                    return false;
+
+                if (IsModelValid(data) == false)
                     return false;
 
                 string format = data.ComputerPicture;
@@ -280,6 +320,11 @@ namespace SmartRigWeb
                     return false;
                 }
 
+                if (IsModelValid(computer) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
 
                 if (Request.Form.Files.Count > 0)
@@ -336,6 +381,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(cpu) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.CpuRepository.Create(cpu);
                 return true;
@@ -356,6 +406,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(cpu) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 return this.repositoryFactory.CpuRepository.Update(cpu);
             }
@@ -389,7 +444,7 @@ namespace SmartRigWeb
             }
         }
 
-        
+
 
         // Adding/Editing/Removing Stuff
         /// <summary>
@@ -407,6 +462,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(gpu) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.GpuRepository.Create(gpu);
                 return true;
@@ -427,6 +487,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(gpu) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 return this.repositoryFactory.GpuRepository.Update(gpu);
             }
@@ -466,6 +531,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(ram) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.RamRepository.Create(ram);
                 return true;
@@ -486,6 +556,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(ram) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 return this.repositoryFactory.RamRepository.Update(ram);
             }
@@ -525,6 +600,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(storage) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.StorageRepository.Create(storage);
                 return true;
@@ -545,6 +625,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(storage) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 return this.repositoryFactory.StorageRepository.Update(storage);
             }
@@ -584,6 +669,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(motherBoard) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.MotherBoardRepository.Create(motherBoard);
                 return true;
@@ -604,6 +694,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(motherBoard) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 return this.repositoryFactory.MotherBoardRepository.Update(motherBoard);
             }
@@ -643,6 +738,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(powerSupply) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.PowerSupplyRepository.Create(powerSupply);
                 return true;
@@ -663,6 +763,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(powerSupply) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 return this.repositoryFactory.PowerSupplyRepository.Update(powerSupply);
             }
@@ -702,6 +807,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(operatingSystem) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.OperatingSystemRepository.Create(operatingSystem);
                 return true;
@@ -722,6 +832,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(operatingSystem) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 return this.repositoryFactory.OperatingSystemRepository.Update(operatingSystem);
             }
@@ -759,6 +874,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(caseItem) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.CaseRepository.Create(caseItem);
                 return true;
@@ -779,6 +899,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(caseItem) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 return this.repositoryFactory.CaseRepository.Update(caseItem);
             }
@@ -812,12 +937,17 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
-         //CpuFan Section
+        //CpuFan Section
         [HttpPost]
         public bool AddCpuFan([FromBody] CpuFan cpuFan)
         {
             try
             {
+                if (IsModelValid(cpuFan) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 this.repositoryFactory.CpuFanRepository.Create(cpuFan);
                 return true;
@@ -838,6 +968,11 @@ namespace SmartRigWeb
         {
             try
             {
+                if (IsModelValid(cpuFan) == false)
+                {
+                    return false;
+                }
+
                 this.repositoryFactory.ConnectDbContext();
                 return this.repositoryFactory.CpuFanRepository.Update(cpuFan);
             }
@@ -881,16 +1016,54 @@ namespace SmartRigWeb
                     return false;
                 }
 
-                data.Validate();
-
-                if (data.HasErrors)
+                if (string.IsNullOrWhiteSpace(data.UserEmail))
                 {
                     return false;
                 }
 
-                User user = this.repositoryFactory.ModelsFactory.UserCreator.CreateFromEditUser(data);
+                data.UserEmail = data.UserEmail.Trim();
+
+                if (IsModelValid(data) == false)
+                {
+                    return false;
+                }
 
                 this.repositoryFactory.ConnectDbContext();
+
+                User oldUser = this.repositoryFactory.UserRepository.GetById(data.UserId);
+
+                if (oldUser == null)
+                {
+                    return false;
+                }
+
+                User existingUser = this.repositoryFactory.UserRepository.GetByEmail(data.UserEmail);
+
+                if (existingUser != null && existingUser.UserId != data.UserId)
+                {
+                    return false;
+                }
+
+                User user = new User();
+
+                user.UserId = data.UserId;
+                user.UserName = data.UserName;
+                user.UserEmail = data.UserEmail;
+                user.UserAddress = data.UserAddress;
+                user.UserPhoneNumber = data.UserPhoneNumber;
+                user.CityId = data.CityId;
+                user.Manager = data.Manager;
+
+                if (string.IsNullOrWhiteSpace(data.UserPassword))
+                {
+                    user.UserPassword = oldUser.UserPassword;
+                    user.UserSalt = oldUser.UserSalt;
+                }
+                else
+                {
+                    user.UserPassword = data.UserPassword;
+                    user.UserSalt = oldUser.UserSalt;
+                }
 
                 return this.repositoryFactory.UserRepository.Update(user);
             }
@@ -904,6 +1077,7 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
+
 
         [HttpGet]
         public bool RemoveComputer(string computerId)
@@ -995,13 +1169,39 @@ namespace SmartRigWeb
                 this.repositoryFactory.DisconnectDb();
             }
         }
+        private bool IsModelValid(Model model)
+        {
+            if (model == null)
+            {
+                return false;
+            }
+
+            model.Validate();
+
+            if (model.HasErrors)
+            {
+                Dictionary<string, List<string>> errors = model.AllErrors();
+
+                foreach (KeyValuePair<string, List<string>> error in errors)
+                {
+                    foreach (string message in error.Value)
+                    {
+                        Console.WriteLine(error.Key + ": " + message);
+                    }
+                }
+
+                return false;
+            }
+
+            return true;
+        }
         [HttpGet]
         public List<CartComputer> GetOrderById(int userId)
         {
             try
             {
                 this.repositoryFactory.ConnectDbContext();
-                return this.repositoryFactory.CartRepository.GetOrdersByUserId(userId); 
+                return this.repositoryFactory.CartRepository.GetOrdersByUserId(userId);
             }
             catch (Exception ex)
             {

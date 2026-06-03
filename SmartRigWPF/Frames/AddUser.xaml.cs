@@ -103,6 +103,22 @@ namespace SmartRigWPF.Frames
                 return;
             }
 
+            WebClient<bool> emailClient = new WebClient<bool>();
+            emailClient.Schema = "http";
+            emailClient.Host = "localhost";
+            emailClient.Port = 5195;
+            emailClient.Path = "api/Manager/IsEmailUsedByOtherUser";
+            emailClient.AddParameter("email", data.UserEmail);
+            emailClient.AddParameter("userId", data.UserId.ToString());
+
+            bool emailUsed = await emailClient.GetAsync();
+
+            if (emailUsed)
+            {
+                MessageBox.Show("This Gmail is already used by another user", "Email already exists", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             WebClient<EditUserViewModel> client = new WebClient<EditUserViewModel>();
             client.Schema = "http";
             client.Host = "localhost";

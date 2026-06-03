@@ -30,6 +30,8 @@ namespace Models
         }
 
         [Required(ErrorMessage = "You must enter gpu size")]
+        [RegularExpression(@"^\d+(\.\d+)?\s?(GB|MB|gb|mb)?$",
+            ErrorMessage = "Gpu size must be a number, for example 8GB")]
         public string GpuSize
         {
             get { return this.gpuSize; }
@@ -41,6 +43,8 @@ namespace Models
         }
 
         [Required(ErrorMessage = "You must enter gpu speed")]
+        [RegularExpression(@"^\d+(\.\d+)?\s?(MHz|GHz|mhz|ghz)?$",
+            ErrorMessage = "Gpu speed must be a number, for example 1800MHz")]
         public string GpuSpeed
         {
             get { return this.gpuSpeed; }
