@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace SmartRigWPF.Frames
 {
@@ -10,58 +11,44 @@ namespace SmartRigWPF.Frames
             InitializeComponent();
         }
 
-        private MainWindow GetMainWindow()
+        private void UsersButton_Click(object sender, RoutedEventArgs e)
         {
-            return Window.GetWindow(this) as MainWindow;
+            NavigateToPage(new ManageUsers());
         }
 
-        private void Button_Click_4(object sender, RoutedEventArgs e)
+        private void ComputersButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow mainWindow = GetMainWindow();
-
-            if (mainWindow != null)
-            {
-                mainWindow.ViewManageUsers();
-            }
+            NavigateToPage(new ManageComputers());
         }
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
+        private void ComponentsButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow mainWindow = GetMainWindow();
-
-            if (mainWindow != null)
-            {
-                mainWindow.ViewManageComputers();
-            }
+            NavigateToPage(new ManageComponents());
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void OrdersButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow mainWindow = GetMainWindow();
-
-            if (mainWindow != null)
-            {
-                mainWindow.ViewManageComponents();
-            }
+            NavigateToPage(new ManageOrders());
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void ReportsButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow mainWindow = GetMainWindow();
-
-            if (mainWindow != null)
-            {
-                mainWindow.ViewManageOrders();
-            }
+            NavigateToPage(new ManageReports());
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void NavigateToPage(UserControl page)
         {
-            MainWindow mainWindow = GetMainWindow();
+            DependencyObject parent = this;
 
-            if (mainWindow != null)
+            while (parent != null)
             {
-                mainWindow.ViewManageReports();
+                if (parent is Frame frame)
+                {
+                    frame.Navigate(page);
+                    return;
+                }
+
+                parent = VisualTreeHelper.GetParent(parent);
             }
         }
     }

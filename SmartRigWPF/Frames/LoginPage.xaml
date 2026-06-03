@@ -1,77 +1,97 @@
 ﻿<UserControl x:Class="SmartRigWPF.Frames.LoginPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="#F4F6F8">
+             Background="Transparent">
 
-    <!-- Grid handles centering -->
     <Grid>
-
-        <!-- Login Card -->
-        <Border Width="360"
-                Height="320"
-                Background="White"
-                CornerRadius="10"
-                BorderBrush="#E0E0E0"
+        <Border Width="420"
+                Height="360"
+                Background="#EE101B2D"
+                BorderBrush="#314158"
                 BorderThickness="1"
+                CornerRadius="18"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
 
-            <!-- Canvas used internally -->
             <Canvas>
+                <TextBlock Canvas.Left="0"
+                           Canvas.Top="35"
+                           Width="420"
+                           Text="Login"
+                           FontSize="30"
+                           FontWeight="Bold"
+                           Foreground="White"
+                           TextAlignment="Center"/>
 
-                <!-- Title -->
-                <TextBlock Text="Login"
-                           FontSize="24"
+                <TextBlock Canvas.Left="0"
+                           Canvas.Top="78"
+                           Width="420"
+                           Text="Enter your admin account"
+                           FontSize="13"
+                           Foreground="#94A3B8"
+                           TextAlignment="Center"/>
+
+                <TextBlock Canvas.Left="45"
+                           Canvas.Top="125"
+                           Text="Email"
+                           FontSize="13"
                            FontWeight="SemiBold"
-                           Foreground="#333"
-                           Canvas.Left="140"
-                           Canvas.Top="20"/>
-
-                <!-- Email -->
-                <TextBlock Text="Email"
-                           FontSize="14"
-                           Foreground="#666"
-                           Canvas.Left="40"
-                           Canvas.Top="80"/>
+                           Foreground="#CBD5E1"/>
 
                 <TextBox x:Name="EmailTextBox"
-                         Width="280"
-                         Height="36"
-                         FontSize="14"
-                         Padding="8"
-                         Canvas.Left="40"
-                         Canvas.Top="105"/>
+                         Canvas.Left="45"
+                         Canvas.Top="148"
+                         Width="330"
+                         Height="34"
+                         Padding="8,4"
+                         FontSize="13"
+                         Foreground="White"
+                         Background="#CC111827"
+                         BorderBrush="#475569"
+                         BorderThickness="1"
+                         CaretBrush="White"/>
 
-                <!-- Password -->
-                <TextBlock Text="Password"
-                           FontSize="14"
-                           Foreground="#666"
-                           Canvas.Left="40"
-                           Canvas.Top="155"/>
+                <TextBlock Canvas.Left="45"
+                           Canvas.Top="195"
+                           Text="Password"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           Foreground="#CBD5E1"/>
 
                 <PasswordBox x:Name="PasswordBox"
-                             Width="280"
-                             Height="36"
-                             FontSize="14"
-                             Padding="8"
-                             Canvas.Left="40"
-                             Canvas.Top="180"/>
+                             Canvas.Left="45"
+                             Canvas.Top="218"
+                             Width="330"
+                             Height="34"
+                             Padding="8,4"
+                             FontSize="13"
+                             Foreground="White"
+                             Background="#CC111827"
+                             BorderBrush="#475569"
+                             BorderThickness="1"
+                             CaretBrush="White"/>
 
-                <!-- Login Button -->
                 <Button Content="Login"
-                        Width="280"
-                        Height="40"
-                        FontSize="14"
-                        Background="#6460D5"
+                        Canvas.Left="45"
+                        Canvas.Top="275"
+                        Width="330"
+                        Height="38"
+                        Background="#C2410C"
                         Foreground="White"
-                        BorderThickness="0"
+                        BorderBrush="#F97316"
+                        BorderThickness="1"
+                        FontWeight="SemiBold"
                         Cursor="Hand"
-                        Canvas.Left="40"
-                        Canvas.Top="235"
                         Click="Button_Click_2"/>
 
+                <TextBlock Canvas.Left="0"
+                           Canvas.Top="325"
+                           Width="420"
+                           Text="SmartRig Management System"
+                           FontSize="12"
+                           Foreground="#94A3B8"
+                           TextAlignment="Center"/>
             </Canvas>
         </Border>
-
     </Grid>
 </UserControl>

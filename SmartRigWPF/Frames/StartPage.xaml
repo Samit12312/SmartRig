@@ -1,85 +1,204 @@
 ﻿<UserControl x:Class="SmartRigWPF.Frames.StartPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             d:DesignHeight="520" d:DesignWidth="800"
-             Background="#F4F6F8">
+             Background="Transparent">
 
-    <!-- 1️⃣ Resources -->
     <UserControl.Resources>
-        <!-- Drop shadow effect -->
-        <DropShadowEffect x:Key="DropShadowEffect"
-                          Color="Black"
-                          BlurRadius="10"
-                          Opacity="0.2"
-                          ShadowDepth="3"/>
 
-        <!-- Dashboard button style -->
-        <Style x:Key="DashboardButton" TargetType="Button">
-            <Setter Property="Width" Value="200"/>
-            <Setter Property="Height" Value="80"/>
+        <Style x:Key="DashboardCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#CC162235"/>
+            <Setter Property="BorderBrush" Value="#314158"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="Padding" Value="24"/>
             <Setter Property="Margin" Value="10"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="DashboardButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="MinWidth" Value="135"/>
+            <Setter Property="Padding" Value="16,8"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#6460D5"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#C2410C"/>
+            <Setter Property="BorderBrush" Value="#F97316"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="0,22,0,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="buttonBorder"
+                        <Border x:Name="BtnBorder"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="12"
-                                SnapsToDevicePixels="True"
-                                Effect="{StaticResource DropShadowEffect}">
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
                             <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
                         </Border>
+
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="buttonBorder" Property="Background" Value="#5047C5"/>
-                                <Setter TargetName="buttonBorder" Property="Effect">
-                                    <Setter.Value>
-                                        <DropShadowEffect Color="Black" Opacity="0.3" BlurRadius="12" ShadowDepth="4"/>
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#F97316"/>
+                                <Setter TargetName="BtnBorder" Property="BorderBrush" Value="#FB923C"/>
                             </Trigger>
+
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="buttonBorder" Property="Background" Value="#3F3AB5"/>
-                                <Setter TargetName="buttonBorder" Property="Effect" Value="{x:Null}"/>
+                                <Setter TargetName="BtnBorder" Property="Background" Value="#9A3412"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-    </UserControl.Resources>
-    
-    <Grid>
-        <Image Source="/Images/HomePage.jpg" Stretch="UniformToFill" Opacity="0.25"/>
-        <Grid Background="#66000000"/>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Text="Dashboard" FontSize="28" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,30"/>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
 
-                <Button Grid.Row="0" Grid.Column="0" Content="Manage Users" Style="{StaticResource DashboardButton}" Click="Button_Click_4"/>
-                <Button Grid.Row="0" Grid.Column="1" Content="Manage Computers" Style="{StaticResource DashboardButton}" Click="Button_Click_3"/>
-                <Button Grid.Row="0" Grid.Column="2" Content="Computer Components" Style="{StaticResource DashboardButton}" Click="Button_Click_2"/>
-                <Button Grid.Row="1" Grid.Column="0" Content="Manage Orders" Style="{StaticResource DashboardButton}" Click="Button_Click_1"/>
-                <Button Grid.Row="1" Grid.Column="1" Content="View Reports" Style="{StaticResource DashboardButton}" Click="Button_Click"/>
-            </Grid>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- TITLE -->
+        <StackPanel Grid.Row="0" Margin="6,0,0,22">
+            <TextBlock Text="Dashboard"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       Foreground="White"/>
+
+            <TextBlock Text="Welcome to the SmartRig admin panel"
+                       FontSize="14"
+                       Foreground="{StaticResource TextMuted}"
+                       Margin="0,4,0,0"/>
         </StackPanel>
+
+        <!-- CARDS -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+
+            <UniformGrid Columns="3">
+
+                <!-- USERS -->
+                <Border Style="{StaticResource DashboardCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Users"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+
+                        <TextBlock Text="Manage customers and managers"
+                                   FontSize="14"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,10,0,0"/>
+
+                        <Button Content="Open Users"
+                                Style="{StaticResource DashboardButtonStyle}"
+                                Click="UsersButton_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- COMPUTERS -->
+                <Border Style="{StaticResource DashboardCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Computers"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+
+                        <TextBlock Text="Add, edit and delete computer builds"
+                                   FontSize="14"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,10,0,0"/>
+
+                        <Button Content="Open Computers"
+                                Style="{StaticResource DashboardButtonStyle}"
+                                Click="ComputersButton_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- COMPONENTS -->
+                <Border Style="{StaticResource DashboardCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Components"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+
+                        <TextBlock Text="Manage CPU, GPU, RAM, storage and parts"
+                                   FontSize="14"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,10,0,0"/>
+
+                        <Button Content="Open Components"
+                                Style="{StaticResource DashboardButtonStyle}"
+                                Click="ComponentsButton_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- ORDERS -->
+                <Border Style="{StaticResource DashboardCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Orders"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+
+                        <TextBlock Text="View customer orders and order details"
+                                   FontSize="14"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,10,0,0"/>
+
+                        <Button Content="Open Orders"
+                                Style="{StaticResource DashboardButtonStyle}"
+                                Click="OrdersButton_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- REPORTS -->
+                <Border Style="{StaticResource DashboardCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Reports"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+
+                        <TextBlock Text="Check revenue, sales and project reports"
+                                   FontSize="14"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,10,0,0"/>
+
+                        <Button Content="Open Reports"
+                                Style="{StaticResource DashboardButtonStyle}"
+                                Click="ReportsButton_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- INFO CARD -->
+                <Border Style="{StaticResource DashboardCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="SmartRig"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+
+                        <TextBlock Text="Admin system for managing the computer store"
+                                   FontSize="14"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,10,0,0"/>
+
+                        <TextBlock Text="Use the buttons or the side navigation to move between pages."
+                                   FontSize="13"
+                                   Foreground="{StaticResource TextSoft}"
+                                   Margin="0,24,0,0"/>
+                    </StackPanel>
+                </Border>
+
+            </UniformGrid>
+        </ScrollViewer>
     </Grid>
 </UserControl>

@@ -375,8 +375,10 @@ namespace SmartRigWPF.Frames
 
         private void ComponentTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!isLoaded)
+            if (isLoaded == false)
+            {
                 return;
+            }
 
             ApplyComponentFilter();
         }
